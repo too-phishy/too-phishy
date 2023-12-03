@@ -1,0 +1,21 @@
+{
+  "oauthScopes": [
+    "https://www.googleapis.com/auth/gmail.addons.current.message.readonly",
+    "https://www.googleapis.com/auth/gmail.addons.execute",
+    "email"
+  ],
+  "addOns": {
+    "common": {
+      "name": "Too Phishy",
+      "logoUrl": "https://toophishy.com/images/logo.png"
+    },
+    "gmail": {
+      "contextualTriggers": [
+        {
+          "unconditional": {},
+          "onTriggerFunction": "https://too-phishy-gawms72xta-uc.a.run.app"
+        }
+      ]
+    }
+  }
+}
