@@ -67,8 +67,8 @@ export const cardForSubscribedUser = async (
         bottomLabel: overallPhishy ? "Phishy" : "Not Phishy",
         startIcon: {
           iconUrl: overallPhishy
-            ? "https://toophishy.com/images/red.png"
-            : "https://toophishy.com/images/green.png",
+            ? "https://toophishy.com/red.png"
+            : "https://toophishy.com/green.png",
         },
       },
     })
@@ -84,7 +84,7 @@ export const cardForSubscribedUser = async (
                 .join(")")} could be spoofed`,
               startIcon: {
                 iconUrl:
-                  "https://toophishy.com/images/noun-outgoing-mail-367819-FF001C.png",
+                  "https://toophishy.com/noun-outgoing-mail-367819-FF001C.png",
               },
             },
           }
@@ -95,7 +95,7 @@ export const cardForSubscribedUser = async (
         text: `Check out '${senderDomainType}' address info`,
         bottomLabel: `See domain info for ${senderDomain} below`,
         startIcon: {
-          iconUrl: "https://toophishy.com/images/noun-send-2845907-007435.png",
+          iconUrl: "https://toophishy.com/noun-send-2845907-007435.png",
         },
       },
     })
@@ -109,7 +109,7 @@ export const cardForSubscribedUser = async (
               bottomLabel: `${topMillionDomainNames.join(", ")}`,
               startIcon: {
                 iconUrl:
-                  "https://toophishy.com/images/noun-link-5741519-007435.png",
+                  "https://toophishy.com/noun-link-5741519-007435.png",
               },
             },
           }
@@ -127,7 +127,7 @@ export const cardForSubscribedUser = async (
               )}`,
               startIcon: {
                 iconUrl:
-                  "https://toophishy.com/images/noun-link-5741519-FF001C.png",
+                  "https://toophishy.com/noun-link-5741519-FF001C.png",
               },
             },
           }
@@ -143,7 +143,7 @@ export const cardForSubscribedUser = async (
               bottomLabel: `${wellKnownPhishingLinks.join(", ")}`,
               startIcon: {
                 iconUrl:
-                  "https://toophishy.com/images/noun-hate-mail-124279-993AE0.png",
+                  "https://toophishy.com/noun-hate-mail-124279-993AE0.png",
               },
             },
           }
@@ -159,8 +159,8 @@ export const cardForSubscribedUser = async (
         startIcon: {
           iconUrl:
             attachments.length > 0
-              ? "https://toophishy.com/images/noun-attachment-2490420-FF001C.png"
-              : "https://toophishy.com/images/noun-attachment-2490420-007435.png",
+              ? "https://toophishy.com/noun-attachment-2490420-FF001C.png"
+              : "https://toophishy.com/noun-attachment-2490420-007435.png",
         },
       },
     });
@@ -170,7 +170,7 @@ export const cardForSubscribedUser = async (
         widgets: [
           {
             image: {
-              imageUrl: "https://toophishy.com/images/gmail_logo.png",
+              imageUrl: "https://toophishy.com/gmail_logo.png",
               altText: `TooPhishy image`,
               onClick: {
                 openLink: {

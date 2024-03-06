@@ -17,7 +17,7 @@ export const sectionForBitly = (domainNames) => {
             bottomLabel: `Using a url shortener like ${BITLY_PHISHING_SITE_DOMAIN} allows scammers to host malicious code on a website that gets past spam filters.`,
             startIcon: {
               iconUrl:
-                "https://toophishy.com/images/noun-hate-mail-124279-993AE0.png",
+                "https://toophishy.com/noun-hate-mail-124279-993AE0.png",
             },
           },
         },

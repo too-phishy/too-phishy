@@ -7,7 +7,7 @@
   "addOns": {
     "common": {
       "name": "Too Phishy",
-      "logoUrl": "https://toophishy.com/images/logo.png"
+      "logoUrl": "https://toophishy.com/logo.png"
     },
     "gmail": {
       "contextualTriggers": [

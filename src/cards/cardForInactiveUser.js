@@ -4,7 +4,7 @@ export const cardForInactiveUser = {
       widgets: [
         {
           image: {
-            imageUrl: "https://toophishy.com/images/gmail_logo.png",
+            imageUrl: "https://toophishy.com/gmail_logo.png",
           },
         },
         {
