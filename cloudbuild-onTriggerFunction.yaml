@@ -19,6 +19,12 @@ steps: # Build the container image
       - '$_REGION'
       - '--platform'
       - 'managed'
+      - '--concurrency'
+      - '100'
+      - '--min-instances'
+      - '2'
+      - '--max-instances'
+      - '10'
 images:
   - 'gcr.io/$PROJECT_ID/$_SERVICE_NAME'
 substitutions:
