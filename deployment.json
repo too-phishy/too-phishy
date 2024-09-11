@@ -13,7 +13,7 @@
       "contextualTriggers": [
         {
           "unconditional": {},
-          "onTriggerFunction": "https://too-phishy-802749066565.us-central1.run.app/trigger"
+          "onTriggerFunction": "https://too-phishy-802749066565.us-central1.run.app"
         }
       ]
     }

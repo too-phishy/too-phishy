@@ -16,7 +16,7 @@ app.use(express.json());
 
 // Initial route for the add-on
 app.post(
-  "/trigger",
+  "/",
   asyncHandler(async (req, res) => {
     const currentMessageId = req.body.gmail.messageId;
     const event = req.body;
