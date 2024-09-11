@@ -12,11 +12,6 @@ export const sectionForDebugging = (
     widgets: [
       {
         textParagraph: {
-          text: `STRIPE_SECRET_KEY is ${process.env.STRIPE_SECRET_KEY}`,
-        },
-      },
-      {
-        textParagraph: {
           text: `messageBodies is ${util.inspect(messageBodies, {
             depth: null,
           })}`,

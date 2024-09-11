@@ -1,5 +1,6 @@
 import express from "express";
 import { google } from "googleapis";
+import axios from "axios";
 import asyncHandler from "express-async-handler";
 import { OAuth2Client } from "google-auth-library";
 import { processMessage } from "./src/processMessage.js";
@@ -23,6 +24,22 @@ app.post(
     const accessToken = event.authorizationEventObject.userOAuthToken;
 
     const tokenInfo = await new OAuth2Client().getTokenInfo(accessToken);
+    const email = tokenInfo.email;
+    axios
+      .post(process.env.DATASTORE_ENDPOINT, {
+        operation: "create",
+        payload: {
+          Item: { id: email },
+          TableName: "too-phishy-active-users",
+        },
+      })
+      .then((res) => {
+        console.log(res);
+      })
+      .catch((e) => {
+        this.error = "Error";
+        console.error(e);
+      });
 
     const messageToken = event.gmail.accessToken;
     const auth = new OAuth2Client();

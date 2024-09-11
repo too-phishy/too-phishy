@@ -14,7 +14,7 @@ steps: # Build the container image
       - '$_SERVICE_NAME'
       - '--image'
       - 'gcr.io/$PROJECT_ID/$_SERVICE_NAME'
-      - '--update-secrets=STRIPE_SECRET_KEY=STRIPE_SECRET_KEY:latest'
+      - '--update-secrets=DATASTORE_ENDPOINT=DATASTORE_ENDPOINT:latest'
       - '--region'
       - '$_REGION'
       - '--platform'
