@@ -4,11 +4,15 @@ import to from "to-case";
 import { COUNTRY_CODE_TO_COUNTRY_MAP } from "../countryCodeToCountryMap.js";
 
 export const sectionForHeaders = async (headers) => {
-  const fromEmail =
-    headers["From"].split("<").length > 1
-      ? headers["From"].split("<")[1].split(">")[0]
-      : headers["From"];
-  const fromDomain = fromEmail.split("@")[1];
+  let fromEmail;
+  let fromDomain;
+  if (!!headers["From"]) {
+    fromEmail =
+      headers["From"].split("<").length > 1
+        ? headers["From"].split("<")[1].split(">")[0]
+        : headers["From"];
+    fromDomain = fromEmail.split("@")[1];
+  }
 
   let replyToEmail;
   let replyToDomain;
