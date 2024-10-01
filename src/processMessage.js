@@ -67,7 +67,7 @@ export const processPart = async (
     messageBodies.push(Buffer.from(part.body.data, "base64").toString("utf-8"));
   }
   if (part.filename) {
-    if (gmail) {
+    if (gmail && part.body.attachmentId) {
       // production enviornment
       const attachment = await gmail.users.messages.attachments.get({
         id: part.body.attachmentId,
