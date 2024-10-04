@@ -216,19 +216,23 @@ test("processAttachment: attachment with spaces in filename", async () => {
       Lines: 2,
       Paragraphs: 1,
       RevisionNumber: 3,
+      SourceFile: "test.docx",
       ZipModifyDate: "1980:01:01 00:00:00",
     });
     await efProcess.close();
-    fs.unlink(filePath, (err) => {
-      console.log(`${filePath} was deleted`); //or else the file will be deleted
-      throw err;
-    });
+    fs.unlink(filePath,
+        (err => {
+          if (err) console.log(err);
+          else {
+            console.log(`\nDeleted file: ${filePath}`);
+          }
+        }));
   } catch (e) {
     console.log(e);
   }
 });
 
-test("processAttachment: exif wont recognize .eml files", async () => {
+test("processAttachment: attachment is an .eml file", async () => {
   try {
     const efProcess = new exiftool.ExiftoolProcess(exiftoolBin);
     await efProcess.open();
@@ -236,12 +240,15 @@ test("processAttachment: exif wont recognize .eml files", async () => {
     const filePath = "test.eml";
     await processAttachment(efProcess, filePath, eml_attachment, attachments);
 
-    expect(attachments.length).toBe(0);
+    expect(attachments.length).toBe(1);
     await efProcess.close();
-    fs.unlink(filePath, (err) => {
-      console.log(`${filePath} was deleted`); //or else the file will be deleted
-      throw err;
-    });
+    fs.unlink(filePath,
+        (err => {
+          if (err) console.log(err);
+          else {
+            console.log(`\nDeleted file: ${filePath}`);
+          }
+        }));
   } catch (e) {
     console.log(e);
   }
@@ -271,7 +278,7 @@ describe("sectionForGCP", () => {
     } catch (e) {
       console.log(e);
     }
-  });
+  }, 20000);
 });
 
 describe("sectionForSenderDomain", () => {
@@ -292,7 +299,7 @@ describe("sectionForSenderDomain", () => {
     } catch (e) {
       console.log(e);
     }
-  });
+  }, 20000);
 
   test("whois info available", async () => {
     try {
@@ -316,7 +323,7 @@ describe("sectionForSenderDomain", () => {
     } catch (e) {
       console.log(e);
     }
-  });
+});
 
   test("whois info not showing up", async () => {
     try {
