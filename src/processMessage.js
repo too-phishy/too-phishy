@@ -139,16 +139,14 @@ export const processMessage = async (gmail, auth, messageToken, message) => {
     })),
   );
 
-  let domainNames;
+  let domainNames = new Set();
   if (messageBodies[0]) {
     const $ = cheerio.load(messageBodies[0]);
     const relativeLinks = $(LINK_ELEMENT_TYPES);
-    const links = [];
     relativeLinks.each((index, value) => {
       const href = $(value).attr("href");
-      links.push(new URI(href).domain());
+      domainNames.add(new URI(href).domain());
     });
-    domainNames = new Set(links);
   }
 
   return { headers, domainNames, messageBodies, attachments };
