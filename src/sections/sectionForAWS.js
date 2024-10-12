@@ -1,7 +1,7 @@
 import { AWS_PHISHING_SITE_DOMAIN } from "../cards/cardForSubscribedUser.js";
 
-export const sectionForAWS = (domainNames) => {
-  const awsPhishingLinks = [...domainNames].filter(
+export const sectionForAWS = (fullLinkUrls) => {
+  const awsPhishingLinks = [...fullLinkUrls].filter(
     (key) => key.toString().indexOf(AWS_PHISHING_SITE_DOMAIN) !== -1,
   );
   return {

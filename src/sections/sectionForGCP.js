@@ -1,7 +1,7 @@
 import { GCP_PHISHING_SITE_DOMAIN } from "../cards/cardForSubscribedUser.js";
 
-export const sectionForGCP = (domainNames) => {
-  const gcpPhishingLinks = [...domainNames].filter(
+export const sectionForGCP = (fullLinkUrls) => {
+  const gcpPhishingLinks = [...fullLinkUrls].filter(
     (key) =>
       key.toString().indexOf(GCP_PHISHING_SITE_DOMAIN) !== -1,
   );

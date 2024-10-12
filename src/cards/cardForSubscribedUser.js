@@ -10,12 +10,13 @@ import { sectionsForLinks } from "../sections/sectionsForLinks.js";
 import sanitize from "sanitize-filename";
 
 export const BITLY_PHISHING_SITE_DOMAIN = "bit.ly";
-export const GCP_PHISHING_SITE_DOMAIN = "googleapis.com";
-export const AZURE_PHISHING_SITE_DOMAIN = "windows.net";
-export const AWS_PHISHING_SITE_DOMAIN = "amazonaws.com";
+export const GCP_PHISHING_SITE_DOMAIN = "storage.googleapis.com";
+export const AZURE_PHISHING_SITE_DOMAIN = "blob.core.windows.net";
+export const AWS_PHISHING_SITE_DOMAIN = "s3.amazonaws.com";
 
 export const cardForSubscribedUser = async (
   headers,
+  fullLinkUrls,
   domainNames,
   messageBodies,
   attachments,
@@ -31,9 +32,9 @@ export const cardForSubscribedUser = async (
   } = await sectionForHeaders(headers);
 
   const { sectionForBitlyFlagged, bitlySection } = sectionForBitly(domainNames);
-  const { sectionForGCPFlagged, gcpSection } = sectionForGCP(domainNames);
-  const { sectionForAWSFlagged, awsSection } = sectionForAWS(domainNames);
-  const { sectionForAzureFlagged, azureSection } = sectionForAzure(domainNames);
+  const { sectionForGCPFlagged, gcpSection } = sectionForGCP(fullLinkUrls);
+  const { sectionForAWSFlagged, awsSection } = sectionForAWS(fullLinkUrls);
+  const { sectionForAzureFlagged, azureSection } = sectionForAzure(fullLinkUrls);
   const wellKnownPhishingLinks = []
     .concat(sectionForBitlyFlagged ? BITLY_PHISHING_SITE_DOMAIN : [])
     .concat(sectionForGCPFlagged ? GCP_PHISHING_SITE_DOMAIN : [])

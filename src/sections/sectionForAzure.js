@@ -3,8 +3,8 @@ import {
   AZURE_PHISHING_SITE_DOMAIN,
 } from "../cards/cardForSubscribedUser.js";
 
-export const sectionForAzure = (domainNames) => {
-  const azurePhishingLinks = [...domainNames].filter(
+export const sectionForAzure = (fullLinkUrls) => {
+  const azurePhishingLinks = [...fullLinkUrls].filter(
     (key) => key.toString().indexOf(AZURE_PHISHING_SITE_DOMAIN) !== -1,
   );
   return {
