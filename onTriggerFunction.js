@@ -19,7 +19,8 @@ app.use(express.json());
 app.post(
     "/",
     asyncHandler(async (req, res) => {
-        const pushCard = await renderPlugin(req.body);
+        const baseUrl = `${req.protocol}://${req.hostname}${req.baseUrl}`;
+        const pushCard = await renderPlugin(req.body, baseUrl);
 
         const renderAction = {
             action: {
@@ -34,7 +35,27 @@ app.post(
     }),
 );
 
-async function renderPlugin(event) {
+// Initial route for the add-on
+app.post(
+    "/reportPhishing",
+    asyncHandler(async (req, res) => {
+        const baseUrl = `${req.protocol}://${req.hostname}${req.baseUrl}`;
+        const pushCard = await renderPlugin(req.body, baseUrl);
+
+        const renderAction = {
+            action: {
+                navigations: [
+                    {
+                        pushCard,
+                    },
+                ],
+            },
+        };
+        res.json(renderAction);
+    }),
+);
+
+async function renderPlugin(event, baseUrl) {
     const currentMessageId = event.gmail.messageId;
     const accessToken = event.authorizationEventObject.userOAuthToken;
 
@@ -81,6 +102,7 @@ async function renderPlugin(event) {
         messageBodies,
         attachments,
         messageData,
+        baseUrl
     );
 }
 
