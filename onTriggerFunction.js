@@ -66,11 +66,7 @@ export const hasActiveSubscription = async (email) => {
 app.post(
   "/",
   asyncHandler(async (req, res) => {
-    const currentMessageId = req.body.gmail.messageId;
-    const event = req.body;
-    const accessToken = event.authorizationEventObject.userOAuthToken;
-
-    const tokenInfo = await new OAuth2Client().getTokenInfo(accessToken);
+    const { tokenInfo, messageToken } = await setAuth(req);
     const email = tokenInfo.email;
 
     const activeSubscription = await hasActiveSubscription(email);
@@ -90,34 +86,8 @@ app.post(
         this.error = "Error";
         console.error(e);
       });
+    const pushCard = await renderPlugin(req, messageToken);
 
-    const messageToken = event.gmail.accessToken;
-    const auth = new OAuth2Client();
-    auth.setCredentials({ access_token: accessToken });
-
-    const gmailResponse = await gmail.users.messages.get({
-      id: currentMessageId,
-      userId: "me",
-      format: "full",
-      auth,
-      headers: {
-        "X-Goog-Gmail-Access-Token": messageToken,
-      },
-    });
-    const messageData = gmailResponse.data;
-
-    const { headers, fullLinkURIs, messageBodies, attachments } =
-      await processMessage(messageData);
-
-    const pushCard = activeSubscription
-      ? await cardForSubscribedUser(
-          headers,
-          fullLinkURIs,
-          messageBodies,
-          attachments,
-          messageData
-        )
-      : cardForInactiveUser;
     const renderAction = {
       action: {
         navigations: [
@@ -130,6 +100,105 @@ app.post(
     res.json(renderAction);
   })
 );
+
+// Initial route for the add-on
+app.post(
+  "/reportPhishing",
+  asyncHandler(async (req, res) => {
+    const { tokenInfo, messageToken } = await setAuth(req);
+
+    const threadId = req.body.gmail.messageMetadata.threadId;
+
+    const labelName = "mobile-phishing-reported";
+    let labelId;
+
+    // 3. Check if the label exists, and create it if it doesn't.
+    const listLabelsResponse = await gmail.users.labels.list({
+      userId: "me",
+      auth: auth,
+    });
+
+    const existingLabel = listLabelsResponse.data.labels.find(
+      (label) => label.name === labelName
+    );
+
+    if (!existingLabel) {
+      const createLabelResponse = await gmail.users.labels.create({
+        userId: "me",
+        auth: auth,
+        requestBody: {
+          name: labelName,
+          labelListVisibility: "labelShow",
+          messageListVisibility: "show",
+        },
+      });
+      labelId = createLabelResponse.data.id;
+      console.log(`Label "${labelName}" created with ID: ${labelId}`);
+    }
+
+    // Apply the label to the email thread.
+    await gmail.users.threads.modify({
+      userId: "me",
+      id: threadId,
+      auth: auth,
+      requestBody: {
+        addLabelIds: [labelId],
+      },
+    });
+
+    const pushCard = await renderPlugin(req, messageToken);
+    const renderAction = {
+      action: {
+        navigations: [
+          {
+            pushCard,
+          },
+        ],
+      },
+    };
+    res.json(renderAction);
+  })
+);
+
+async function setAuth(req) {
+  const event = req.body;
+  const currentMessageId = event.gmail.messageId;
+  const accessToken = event.authorizationEventObject.userOAuthToken;
+
+  const tokenInfo = await new OAuth2Client().getTokenInfo(accessToken);
+
+  const messageToken = event.gmail.accessToken;
+  const auth = new OAuth2Client();
+  auth.setCredentials({ access_token: accessToken });
+  return { tokenInfo, messageToken };
+}
+
+async function renderPlugin(req, messageToken) {
+  const baseUrl = `${req.protocol}://${req.hostname}${req.baseUrl}`;
+  const gmailResponse = await gmail.users.messages.get({
+    id: currentMessageId,
+    userId: "me",
+    format: "full",
+    auth,
+    headers: {
+      "X-Goog-Gmail-Access-Token": messageToken,
+    },
+  });
+  const messageData = gmailResponse.data;
+
+  const { headers, fullLinkUrls, domainNames, messageBodies, attachments } =
+    await processMessage(gmail, auth, messageToken, messageData);
+
+  return await cardForSubscribedUser(
+    headers,
+    fullLinkUrls,
+    domainNames,
+    messageBodies,
+    attachments,
+    messageData,
+    baseUrl
+  );
+}
 
 // Start the server
 const port = process.env.PORT || 8080;

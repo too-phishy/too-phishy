@@ -14,7 +14,8 @@ export const cardForSubscribedUser = async (
   fullLinkURIs,
   messageBodies,
   attachments,
-  fullMessageData
+  fullMessageData,
+  baseUrl
 ) => {
   const { phishingLinkFlagged: sectionForAWSFlagged, section: awsSection } =
     sectionForPhishingLink(
@@ -118,13 +119,11 @@ export const cardForSubscribedUser = async (
         ? {
             decoratedText: {
               text: `Hesitate before clicking`,
-              bottomLabel: `${
-                  nonTopMillionURIs.length
-              } non-top-million ${
-                  nonTopMillionURIs.length > 1 ? "links" : "link"
+              bottomLabel: `${nonTopMillionURIs.length} non-top-million ${
+                nonTopMillionURIs.length > 1 ? "links" : "link"
               }: ${nonTopMillionURIs
-                  .map((URI) => URI.domain())
-                  .join(", ")}. Further details below.`,
+                .map((URI) => URI.domain())
+                .join(", ")}. Further details below.`,
               startIcon: {
                 iconUrl: "https://toophishy.com/noun-link-5741519-FF001C.png",
               },
@@ -167,6 +166,28 @@ export const cardForSubscribedUser = async (
         ],
       },
       {
+        widgets: [
+          {
+            selectionInput: {
+              type: "RADIO_BUTTON",
+              label: "Report Phishing",
+              name: "Report Phishing",
+              items: [
+                {
+                  text: `Label "mobile-phishing-reported" has already been added to this email.`,
+                  value: "1",
+                  selected: false,
+                },
+              ],
+              onChangeAction: {
+                function: `${baseUrl}/reportPhishing`,
+                loadIndicator: "SPINNER",
+              },
+            },
+          },
+        ],
+      },
+      {
         header: "Overview",
         widgets: overviewWidgets,
         collapsible: false,
@@ -178,13 +199,5 @@ export const cardForSubscribedUser = async (
       .concat(sectionForGoogleSitesFlagged ? googleSitesSection : [])
       .concat(sectionForGCPFlagged ? gcpSection : [])
       .concat(linksSections),
-    // .concat(
-    //   sectionForDebugging(
-    //     messageBodies,
-    //     headers,
-    //     fullMessageData,
-    //     attachments,
-    //   ),
-    // ),
   };
 };

@@ -76,7 +76,9 @@ const sectionForLink = (URI, formattedResults, results) => {
       },
     },
   ];
-  const widgets = explanationWidgets.concat(widgetsForLink).concat(learnMoreWidget);
+  const widgets = explanationWidgets
+    .concat(widgetsForLink)
+    .concat(learnMoreWidget);
   return {
     header: `Non-Top-Million Link: ${URI.toString()}`,
     widgets: widgets,
