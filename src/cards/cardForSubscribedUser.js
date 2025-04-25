@@ -7,7 +7,6 @@ import { sectionForAzure } from "../sections/sectionForAzure.js";
 import { sectionForHeaders } from "../sections/sectionForHeaders.js";
 import { processNonTopMillion } from "../processNonTopMillion.js";
 import { sectionsForLinks } from "../sections/sectionsForLinks.js";
-import sanitize from "sanitize-filename";
 
 export const BITLY_PHISHING_SITE_DOMAIN = "bit.ly";
 export const GCP_PHISHING_SITE_DOMAIN = "storage.googleapis.com";
@@ -49,13 +48,7 @@ export const cardForSubscribedUser = async (
   const { linksSections } = await sectionsForLinks(nonTopMillionDomainNames);
 
   const attachmentsBottomLabel =
-    attachments.length > 0
-      ? sanitize(
-          `Author data for ${attachments
-            .map((a) => a.SourceFile.toString())
-            .join(", ")}`
-        )
-      : ``;
+    attachments.length > 0 ? `Author data for ${attachments.join(", ")}` : ``;
 
   const overallPhishy =
     sectionForHeadersFlagged ||

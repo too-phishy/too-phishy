@@ -57,7 +57,7 @@ app.post(
     const messageData = gmailResponse.data;
 
     const { headers, fullLinkUrls, domainNames, messageBodies, attachments } =
-      await processMessage(gmail, auth, messageToken, messageData);
+      await processMessage(messageData);
 
     const pushCard = await cardForSubscribedUser(
       headers,

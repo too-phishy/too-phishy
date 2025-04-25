@@ -6,30 +6,24 @@ import { message_body_that_looks_like_css } from "./fixtures/message_body_that_l
 import { email_with_multiple_attachments } from "./fixtures/email_with_multiple_attachments.js";
 import { another_email_with_multiple_attachments } from "./fixtures/another_email_with_multiple_attachments.js";
 import { forwarded_another_email_with_multiple_attachments } from "./fixtures/forwarded_another_email_with_multiple_attachments.js";
-import { phishing_example_attachments } from "./ef_processed_file_fixtures/phishing_example_attachments.js";
 import { email_with_phishy_link_and_sender_domain } from "./fixtures/email_with_phishy_link_and_sender_domain.js";
 import { reply_to_and_from_dont_match } from "./fixtures/reply_to_and_from_dont_match.js";
-import { processAttachment, processMessage } from "../src/processMessage.js";
-import { sectionsForAttachments } from "../src/sections/sectionsForAttachments.js";
+import { processMessage } from "../src/processMessage.js";
 import { sectionForHeaders } from "../src/sections/sectionForHeaders.js";
 import { empty_email_to_myself } from "./fixtures/empty_email_to_myself.js";
-import exiftool from "node-exiftool";
-import exiftoolBin from "dist-exiftool";
-import { attachment_with_spaces_in_filename } from "./attachments_from_google_api/attachment_with_spaces_in_filename.js";
-import * as fs from "fs";
-import { eml_attachment } from "./attachments_from_google_api/eml_attachment.js";
 import { sectionsForLinks } from "../src/sections/sectionsForLinks.js";
 import { processNonTopMillion } from "../src/processNonTopMillion.js";
 import { john_podesta } from "./fixtures/john_podesta.js";
 import { cardForSubscribedUser } from "../src/cards/cardForSubscribedUser.js";
 import { sectionForGCP } from "../src/sections/sectionForGCP.js";
 import { email_with_s3_and_azure_phishing_links } from "./fixtures/email_with_s3_and_azure_phishing_links.js";
+import { sectionsForAttachments } from "../src/sections/sectionsForAttachments.js";
 
 describe("processMessage", () => {
   test("message has body but no attachment", async () => {
     try {
       const { headers, fullLinkUrls, domainNames, messageBodies, attachments } =
-        await processMessage(null, null, null, message_full);
+        await processMessage(message_full);
 
       expect(messageBodies.length).toBe(1);
       expect(messageBodies[0].length).toBe(1934);
@@ -39,19 +33,13 @@ describe("processMessage", () => {
     }
   });
 
-  test("message has attachment but no body", async () => {
+  test("message has inline attachment and no body", async () => {
     try {
       const { headers, fullLinkUrls, domainNames, messageBodies, attachments } =
-        await processMessage(
-          null,
-          null,
-          null,
-          message_with_attachment_but_no_text
-        );
+        await processMessage(message_with_attachment_but_no_text);
 
       expect(messageBodies.length).toBe(1);
-      expect(attachments.length).toBe(1);
-      expect(attachments).toContain("IMG-1127.jpg");
+      expect(attachments.length).toBe(0);
     } catch (e) {
       console.log(e);
     }
@@ -60,7 +48,7 @@ describe("processMessage", () => {
   test("message from aws", async () => {
     try {
       const { headers, fullLinkUrls, domainNames, messageBodies, attachments } =
-        await processMessage(null, null, null, message_from_aws);
+        await processMessage(message_from_aws);
 
       expect(messageBodies.length).toBe(1);
       expect(messageBodies[0].length).toBe(1212);
@@ -73,7 +61,7 @@ describe("processMessage", () => {
   test("forwarded message", async () => {
     try {
       const { headers, fullLinkUrls, domainNames, messageBodies, attachments } =
-        await processMessage(null, null, null, forwarded_message);
+        await processMessage(forwarded_message);
 
       expect(messageBodies.length).toBe(1);
       expect(messageBodies[0].length).toBe(4297);
@@ -86,12 +74,7 @@ describe("processMessage", () => {
   test("message body that looks like css", async () => {
     try {
       const { headers, fullLinkUrls, domainNames, messageBodies, attachments } =
-        await processMessage(
-          null,
-          null,
-          null,
-          message_body_that_looks_like_css
-        );
+        await processMessage(message_body_that_looks_like_css);
 
       expect(messageBodies.length).toBe(1);
       expect(messageBodies[0].length).toBe(57706);
@@ -104,7 +87,7 @@ describe("processMessage", () => {
   test("email with multiple attachments", async () => {
     try {
       const { headers, fullLinkUrls, domainNames, messageBodies, attachments } =
-        await processMessage(null, null, null, email_with_multiple_attachments);
+        await processMessage(email_with_multiple_attachments);
 
       expect(messageBodies.length).toBe(1);
       expect(attachments.length).toBe(2);
@@ -115,38 +98,26 @@ describe("processMessage", () => {
     }
   });
 
-  test("another email with multiple attachments", async () => {
+  test("another email with an attachment", async () => {
     try {
       const { headers, fullLinkUrls, domainNames, messageBodies, attachments } =
-        await processMessage(
-          null,
-          null,
-          null,
-          another_email_with_multiple_attachments
-        );
+        await processMessage(another_email_with_multiple_attachments);
 
       expect(messageBodies.length).toBe(1);
-      expect(attachments.length).toBe(2);
-      expect(attachments).toContain("IMG_6686.JPG");
+      expect(attachments.length).toBe(1);
       expect(attachments).toContain("Congrats-NewNest113SenatorSt1.pdf");
     } catch (e) {
       console.log(e);
     }
   });
 
-  test("another email with multiple attachments that was forwarded", async () => {
+  test("another email with an inline attachment that was forwarded", async () => {
     try {
       const { headers, fullLinkUrls, domainNames, messageBodies, attachments } =
-        await processMessage(
-          null,
-          null,
-          null,
-          forwarded_another_email_with_multiple_attachments
-        );
+        await processMessage(forwarded_another_email_with_multiple_attachments);
 
       expect(messageBodies.length).toBe(1);
-      expect(attachments.length).toBe(1);
-      expect(attachments).toContain("IMG_6686.JPG");
+      expect(attachments.length).toBe(0);
     } catch (e) {
       console.log(e);
     }
@@ -155,12 +126,7 @@ describe("processMessage", () => {
   test("email has multiple phishing links", async () => {
     try {
       const { headers, fullLinkUrls, domainNames, messageBodies, attachments } =
-        await processMessage(
-          null,
-          null,
-          null,
-          email_with_s3_and_azure_phishing_links
-        );
+        await processMessage(email_with_s3_and_azure_phishing_links);
 
       expect([...domainNames].length).toBe(2);
     } catch (e) {
@@ -171,7 +137,7 @@ describe("processMessage", () => {
   test("message has no body", async () => {
     try {
       const { headers, fullLinkUrls, domainNames, messageBodies, attachments } =
-        await processMessage(null, null, null, empty_email_to_myself);
+        await processMessage(empty_email_to_myself);
 
       expect(JSON.stringify(domainNames)).toBe("{}");
       expect(messageBodies.length).toBe(1);
@@ -183,82 +149,10 @@ describe("processMessage", () => {
   test("message has an attachment created by SES client library", async () => {
     try {
       const { headers, fullLinkUrls, domainNames, messageBodies, attachments } =
-        await processMessage(null, null, null, john_podesta);
+        await processMessage(john_podesta);
 
       expect(attachments.length).toBe(1);
       expect(attachments).toContain("hello.xls");
-    } catch (e) {
-      console.log(e);
-    }
-  });
-});
-
-test("processAttachment: attachment with spaces in filename", async () => {
-  try {
-    const efProcess = new exiftool.ExiftoolProcess(exiftoolBin);
-    await efProcess.open();
-    const attachments = [];
-    const filePath = "test.docx";
-    await processAttachment(
-      efProcess,
-      filePath,
-      attachment_with_spaces_in_filename,
-      attachments
-    );
-
-    expect(attachments.length).toBe(1);
-    expect(attachments[0]).toStrictEqual({
-      Application: "Microsoft Office Word",
-      CharactersWithSpaces: 413,
-      CreateDate: "2023:08:24 18:11:00Z",
-      Creator: "Hansen, Valerie",
-      LastModifiedBy: "Hansen, Valerie",
-      Lines: 2,
-      Paragraphs: 1,
-      RevisionNumber: 3,
-      SourceFile: "test.docx",
-      ZipModifyDate: "1980:01:01 00:00:00",
-    });
-    await efProcess.close();
-    fs.unlink(filePath, (err) => {
-      if (err) console.log(err);
-      else {
-        console.log(`\nDeleted file: ${filePath}`);
-      }
-    });
-  } catch (e) {
-    console.log(e);
-  }
-});
-
-test("processAttachment: attachment is an .eml file", async () => {
-  try {
-    const efProcess = new exiftool.ExiftoolProcess(exiftoolBin);
-    await efProcess.open();
-    const attachments = [];
-    const filePath = "test.eml";
-    await processAttachment(efProcess, filePath, eml_attachment, attachments);
-
-    expect(attachments.length).toBe(1);
-    await efProcess.close();
-    fs.unlink(filePath, (err) => {
-      if (err) console.log(err);
-      else {
-        console.log(`\nDeleted file: ${filePath}`);
-      }
-    });
-  } catch (e) {
-    console.log(e);
-  }
-});
-
-describe("sectionsForAttachments", () => {
-  test("another email with multiple attachments that was forwarded", async () => {
-    try {
-      const { sectionsForAttachmentsFlagged, attachmentsSections } =
-        sectionsForAttachments(phishing_example_attachments);
-
-      expect(attachmentsSections.length).toBe(5);
     } catch (e) {
       console.log(e);
     }
@@ -269,7 +163,7 @@ describe("sectionForGCP", () => {
   test("no gcp link", async () => {
     try {
       const { headers, fullLinkUrls, domainNames, messageBodies, attachments } =
-        await processMessage(null, null, null, empty_email_to_myself);
+        await processMessage(empty_email_to_myself);
       const { sectionForGCPFlagged, gcpSection } = sectionForGCP(domainNames);
 
       expect(sectionForGCPFlagged).toBe(false);
@@ -283,7 +177,7 @@ describe("sectionForSenderDomain", () => {
   test("whois info available for lu.ma", async () => {
     try {
       const { headers, fullLinkUrls, domainNames, messageBodies, attachments } =
-        await processMessage(null, null, null, email_with_multiple_attachments);
+        await processMessage(email_with_multiple_attachments);
       const {
         senderDomain,
         senderDomainType,
@@ -302,12 +196,7 @@ describe("sectionForSenderDomain", () => {
   test("whois info available", async () => {
     try {
       const { headers, fullLinkUrls, domainNames, messageBodies, attachments } =
-        await processMessage(
-          null,
-          null,
-          null,
-          email_with_phishy_link_and_sender_domain
-        );
+        await processMessage(email_with_phishy_link_and_sender_domain);
       const {
         senderDomain,
         senderDomainType,
@@ -326,12 +215,7 @@ describe("sectionForSenderDomain", () => {
   test("whois info not showing up", async () => {
     try {
       const { headers, fullLinkUrls, domainNames, messageBodies, attachments } =
-        await processMessage(
-          null,
-          null,
-          null,
-          email_with_s3_and_azure_phishing_links
-        );
+        await processMessage(email_with_s3_and_azure_phishing_links);
       const {
         senderDomain,
         senderDomainType,
@@ -345,6 +229,16 @@ describe("sectionForSenderDomain", () => {
     } catch (e) {
       console.log(e);
     }
+  });
+});
+
+describe("sectionsForAttachments", () => {
+  test("sees attachments", async () => {
+    const { headers, fullLinkUrls, domainNames, messageBodies, attachments } =
+      await processMessage(another_email_with_multiple_attachments);
+    const { sectionsForAttachmentsFlagged, attachmentsSections } =
+      sectionsForAttachments(attachments);
+    expect(sectionsForAttachmentsFlagged).toBe(true);
   });
 });
 
@@ -366,7 +260,7 @@ describe("sectionForHeaders", () => {
           domainNames,
           messageBodies,
           attachments,
-        } = await processMessage(null, null, null, message);
+        } = await processMessage(message);
         const {
           senderDomain,
           senderDomainType,
@@ -385,7 +279,7 @@ describe("sectionForHeaders", () => {
   test("legitimate reply to and from dont match", async () => {
     try {
       const { headers, fullLinkUrls, domainNames, messageBodies, attachments } =
-        await processMessage(null, null, null, email_with_multiple_attachments);
+        await processMessage(email_with_multiple_attachments);
       const {
         senderDomain,
         senderDomainType,
@@ -403,7 +297,7 @@ describe("sectionForHeaders", () => {
   test("spammy reply to and from dont match", async () => {
     try {
       const { headers, fullLinkUrls, domainNames, messageBodies, attachments } =
-        await processMessage(null, null, null, reply_to_and_from_dont_match);
+        await processMessage(reply_to_and_from_dont_match);
       const {
         senderDomain,
         senderDomainType,
@@ -423,12 +317,7 @@ describe("sectionsForLinks", () => {
   test("whois info available", async () => {
     try {
       const { headers, fullLinkUrls, domainNames, messageBodies, attachments } =
-        await processMessage(
-          null,
-          null,
-          null,
-          email_with_phishy_link_and_sender_domain
-        );
+        await processMessage(email_with_phishy_link_and_sender_domain);
       const {
         topMillionDomainNames,
         nonTopMillionDomainNames,
@@ -449,18 +338,12 @@ describe("cardForSubscribedUser", () => {
   test("everything", async () => {
     try {
       const { headers, fullLinkUrls, domainNames, messageBodies, attachments } =
-        await processMessage(
-          null,
-          null,
-          null,
-          email_with_phishy_link_and_sender_domain
-        );
+        await processMessage(email_with_phishy_link_and_sender_domain);
       const card = await cardForSubscribedUser(
         headers,
         fullLinkUrls,
         domainNames,
         messageBodies,
-        phishing_example_attachments,
         email_with_phishy_link_and_sender_domain
       );
 

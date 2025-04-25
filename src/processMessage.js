@@ -1,113 +1,38 @@
-import exiftool from "node-exiftool";
-import * as fs from "fs";
-import exiftoolBin from "dist-exiftool";
 import URI from "urijs";
-import sanitize from "sanitize-filename";
 import cheerio from "cheerio";
+import sanitize from "sanitize-filename";
 
-const IMPORTANT_EXIF_FIELDS = new Set([
-  "Application",
-  "CharactersWithSpaces",
-  "CreateDate",
-  "Creator",
-  "DateTimeOriginal",
-  "DeviceManufacturer",
-  "DeviceModel",
-  "HostComputer",
-  "LastModifiedBy",
-  "Lines",
-  "Make",
-  "Model",
-  "Paragraphs",
-  "ProfileCreator",
-  "RevisionNumber",
-  "SourceFile",
-  "ZipModifyDate",
-]);
 const LINK_ELEMENT_TYPES =
   "a[href^='http://']:not(a[href^='mailto']), " +
   "a[href^='https://']:not(a[href^='mailto']), " +
   "a[href^='/']:not(a[href^='mailto'])";
 
-export const processAttachment = async (
-  efProcess,
-  filePath,
-  attachment,
-  attachments
-) => {
-  const attachmentContents = Buffer.from(attachment.data, "base64");
-  fs.writeFileSync(filePath, attachmentContents);
-  try {
-    const result = await efProcess.readMetadata(filePath, ["-File:all"]);
-    const resultData = result.data[0];
-    // if (!resultData.Error) {
-    Object.keys(resultData).forEach(function (key) {
-      if (!IMPORTANT_EXIF_FIELDS.has(key)) {
-        delete resultData[key];
-      }
-    });
-    attachments.push(resultData);
-    // }
-  } catch (e) {
-    console.error(e);
+export const isNotInlineAttachment = (part) => {
+  for (const header of part.headers) {
+    if (header.name.toLowerCase() === "content-disposition") {
+      return header.value.toLowerCase().startsWith("attachment");
+    }
   }
 };
 
-export const processPart = async (
-  gmail,
-  auth,
-  messageToken,
-  messageId,
-  part,
-  efProcess,
-  messageBodies,
-  attachments
-) => {
-  if (part.mimeType == "text/html" && part.body.size > 0) {
+export const processPart = async (part, attachments, messageBodies) => {
+  if (part.mimeType === "text/html" && part.body.size > 0) {
     messageBodies.push(Buffer.from(part.body.data, "base64").toString("utf-8"));
   }
   if (part.filename) {
-    if (gmail && part.body.attachmentId) {
-      // production enviornment
-      const attachment = await gmail.users.messages.attachments.get({
-        id: part.body.attachmentId,
-        messageId,
-        userId: "me",
-        format: "full",
-        auth,
-        headers: {
-          "X-Goog-Gmail-Access-Token": messageToken,
-        },
-      });
+    if (part.body.attachmentId && isNotInlineAttachment(part)) {
       const filePath = `${sanitize(part.filename)}`; // Provide a suitable file name and extension
-      await processAttachment(
-        efProcess,
-        filePath,
-        attachment.data,
-        attachments
-      );
-    } else {
-      // test environment
-      attachments.push(part.filename);
+      attachments.push(filePath);
     }
   }
   if (part.parts) {
     for (const innerPart of part.parts) {
-      await processPart(
-        gmail,
-        auth,
-        messageToken,
-        messageId,
-        innerPart,
-        efProcess,
-        messageBodies,
-        attachments
-      );
+      await processPart(innerPart, attachments, messageBodies);
     }
   }
 };
 
-export const processMessage = async (gmail, auth, messageToken, message) => {
+export const processMessage = async (message) => {
   const messageBodies = [];
   const attachments = [];
   if (message.payload.body.size > 0) {
@@ -116,21 +41,9 @@ export const processMessage = async (gmail, auth, messageToken, message) => {
     );
   }
   if (message.payload && message.payload.parts) {
-    const efProcess = new exiftool.ExiftoolProcess(exiftoolBin);
-    await efProcess.open();
     for (const part of message.payload.parts) {
-      await processPart(
-        gmail,
-        auth,
-        messageToken,
-        message.id,
-        part,
-        efProcess,
-        messageBodies,
-        attachments
-      );
+      await processPart(part, attachments, messageBodies);
     }
-    await efProcess.close();
   }
   let headers = Object.assign(
     {},
