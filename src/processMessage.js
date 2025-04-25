@@ -33,7 +33,7 @@ export const processAttachment = async (
   efProcess,
   filePath,
   attachment,
-  attachments,
+  attachments
 ) => {
   const attachmentContents = Buffer.from(attachment.data, "base64");
   fs.writeFileSync(filePath, attachmentContents);
@@ -61,7 +61,7 @@ export const processPart = async (
   part,
   efProcess,
   messageBodies,
-  attachments,
+  attachments
 ) => {
   if (part.mimeType == "text/html" && part.body.size > 0) {
     messageBodies.push(Buffer.from(part.body.data, "base64").toString("utf-8"));
@@ -84,7 +84,7 @@ export const processPart = async (
         efProcess,
         filePath,
         attachment.data,
-        attachments,
+        attachments
       );
     } else {
       // test environment
@@ -101,7 +101,7 @@ export const processPart = async (
         innerPart,
         efProcess,
         messageBodies,
-        attachments,
+        attachments
       );
     }
   }
@@ -112,7 +112,7 @@ export const processMessage = async (gmail, auth, messageToken, message) => {
   const attachments = [];
   if (message.payload.body.size > 0) {
     messageBodies.push(
-      Buffer.from(message.payload.body.data, "base64").toString("utf-8"),
+      Buffer.from(message.payload.body.data, "base64").toString("utf-8")
     );
   }
   if (message.payload && message.payload.parts) {
@@ -127,7 +127,7 @@ export const processMessage = async (gmail, auth, messageToken, message) => {
         part,
         efProcess,
         messageBodies,
-        attachments,
+        attachments
       );
     }
     await efProcess.close();
@@ -136,7 +136,7 @@ export const processMessage = async (gmail, auth, messageToken, message) => {
     {},
     ...message.payload.headers.map((rawHeader) => ({
       [rawHeader.name]: Buffer.from(rawHeader.value, "utf-8").toString(),
-    })),
+    }))
   );
 
   let domainNames = new Set();

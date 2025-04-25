@@ -5,7 +5,7 @@ import {
 
 export const sectionForAzure = (fullLinkUrls) => {
   const azurePhishingLinks = [...fullLinkUrls].filter(
-    (key) => key.toString().indexOf(AZURE_PHISHING_SITE_DOMAIN) !== -1,
+    (key) => key.toString().indexOf(AZURE_PHISHING_SITE_DOMAIN) !== -1
   );
   return {
     sectionForAzureFlagged:
@@ -18,8 +18,7 @@ export const sectionForAzure = (fullLinkUrls) => {
             text: "Don’t click.",
             bottomLabel: `Using a common Azure storage url with root domain ${AZURE_PHISHING_SITE_DOMAIN}, i.e. Azure storage links which use the domain "blob.core.windows.net",  allows scammers to host malicious code on a website that gets past spam filters.`,
             startIcon: {
-              iconUrl:
-                "https://toophishy.com/noun-hate-mail-124279-993AE0.png",
+              iconUrl: "https://toophishy.com/noun-hate-mail-124279-993AE0.png",
             },
           },
         },

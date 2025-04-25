@@ -5,7 +5,8 @@
   "main": "index.js",
   "type": "module",
   "scripts": {
-    "test": "jest"
+    "test": "jest",
+    "prettier": "prettier --write . src/ tests/"
   },
   "author": "",
   "license": "ISC",

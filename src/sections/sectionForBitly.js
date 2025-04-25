@@ -2,8 +2,7 @@ import { BITLY_PHISHING_SITE_DOMAIN } from "../cards/cardForSubscribedUser.js";
 
 export const sectionForBitly = (domainNames) => {
   const bitlyPhishingLinks = [...domainNames].filter(
-    (key) =>
-      key.toString().indexOf(BITLY_PHISHING_SITE_DOMAIN) !== -1,
+    (key) => key.toString().indexOf(BITLY_PHISHING_SITE_DOMAIN) !== -1
   );
   return {
     sectionForBitlyFlagged:
@@ -16,8 +15,7 @@ export const sectionForBitly = (domainNames) => {
             text: "Don’t click.",
             bottomLabel: `Using a url shortener like ${BITLY_PHISHING_SITE_DOMAIN} allows scammers to host malicious code on a website that gets past spam filters.`,
             startIcon: {
-              iconUrl:
-                "https://toophishy.com/noun-hate-mail-124279-993AE0.png",
+              iconUrl: "https://toophishy.com/noun-hate-mail-124279-993AE0.png",
             },
           },
         },

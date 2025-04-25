@@ -65,7 +65,7 @@ app.post(
       domainNames,
       messageBodies,
       attachments,
-      messageData,
+      messageData
     );
     const renderAction = {
       action: {
@@ -77,7 +77,7 @@ app.post(
       },
     };
     res.json(renderAction);
-  }),
+  })
 );
 
 // Start the server

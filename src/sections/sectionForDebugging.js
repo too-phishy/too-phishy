@@ -5,7 +5,7 @@ export const sectionForDebugging = (
   domainNames,
   headers,
   fullMessageData,
-  attachments,
+  attachments
 ) => {
   return {
     header: "Debugging",

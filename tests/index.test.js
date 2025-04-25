@@ -46,7 +46,7 @@ describe("processMessage", () => {
           null,
           null,
           null,
-          message_with_attachment_but_no_text,
+          message_with_attachment_but_no_text
         );
 
       expect(messageBodies.length).toBe(1);
@@ -90,7 +90,7 @@ describe("processMessage", () => {
           null,
           null,
           null,
-          message_body_that_looks_like_css,
+          message_body_that_looks_like_css
         );
 
       expect(messageBodies.length).toBe(1);
@@ -122,7 +122,7 @@ describe("processMessage", () => {
           null,
           null,
           null,
-          another_email_with_multiple_attachments,
+          another_email_with_multiple_attachments
         );
 
       expect(messageBodies.length).toBe(1);
@@ -141,7 +141,7 @@ describe("processMessage", () => {
           null,
           null,
           null,
-          forwarded_another_email_with_multiple_attachments,
+          forwarded_another_email_with_multiple_attachments
         );
 
       expect(messageBodies.length).toBe(1);
@@ -159,7 +159,7 @@ describe("processMessage", () => {
           null,
           null,
           null,
-          email_with_s3_and_azure_phishing_links,
+          email_with_s3_and_azure_phishing_links
         );
 
       expect([...domainNames].length).toBe(2);
@@ -203,7 +203,7 @@ test("processAttachment: attachment with spaces in filename", async () => {
       efProcess,
       filePath,
       attachment_with_spaces_in_filename,
-      attachments,
+      attachments
     );
 
     expect(attachments.length).toBe(1);
@@ -220,13 +220,12 @@ test("processAttachment: attachment with spaces in filename", async () => {
       ZipModifyDate: "1980:01:01 00:00:00",
     });
     await efProcess.close();
-    fs.unlink(filePath,
-        (err => {
-          if (err) console.log(err);
-          else {
-            console.log(`\nDeleted file: ${filePath}`);
-          }
-        }));
+    fs.unlink(filePath, (err) => {
+      if (err) console.log(err);
+      else {
+        console.log(`\nDeleted file: ${filePath}`);
+      }
+    });
   } catch (e) {
     console.log(e);
   }
@@ -242,13 +241,12 @@ test("processAttachment: attachment is an .eml file", async () => {
 
     expect(attachments.length).toBe(1);
     await efProcess.close();
-    fs.unlink(filePath,
-        (err => {
-          if (err) console.log(err);
-          else {
-            console.log(`\nDeleted file: ${filePath}`);
-          }
-        }));
+    fs.unlink(filePath, (err) => {
+      if (err) console.log(err);
+      else {
+        console.log(`\nDeleted file: ${filePath}`);
+      }
+    });
   } catch (e) {
     console.log(e);
   }
@@ -308,7 +306,7 @@ describe("sectionForSenderDomain", () => {
           null,
           null,
           null,
-          email_with_phishy_link_and_sender_domain,
+          email_with_phishy_link_and_sender_domain
         );
       const {
         senderDomain,
@@ -323,7 +321,7 @@ describe("sectionForSenderDomain", () => {
     } catch (e) {
       console.log(e);
     }
-});
+  });
 
   test("whois info not showing up", async () => {
     try {
@@ -332,7 +330,7 @@ describe("sectionForSenderDomain", () => {
           null,
           null,
           null,
-          email_with_s3_and_azure_phishing_links,
+          email_with_s3_and_azure_phishing_links
         );
       const {
         senderDomain,
@@ -362,8 +360,13 @@ describe("sectionForHeaders", () => {
         message_full,
         message_with_attachment_but_no_text,
       ].forEach(async (message) => {
-        const { headers, fullLinkUrls, domainNames, messageBodies, attachments } =
-          await processMessage(null, null, null, message);
+        const {
+          headers,
+          fullLinkUrls,
+          domainNames,
+          messageBodies,
+          attachments,
+        } = await processMessage(null, null, null, message);
         const {
           senderDomain,
           senderDomainType,
@@ -424,7 +427,7 @@ describe("sectionsForLinks", () => {
           null,
           null,
           null,
-          email_with_phishy_link_and_sender_domain,
+          email_with_phishy_link_and_sender_domain
         );
       const {
         topMillionDomainNames,
@@ -432,7 +435,7 @@ describe("sectionsForLinks", () => {
         nonTopMillionSection,
       } = processNonTopMillion(domainNames);
       const { linksSections } = await sectionsForLinks(
-        nonTopMillionDomainNames,
+        nonTopMillionDomainNames
       );
 
       expect(linksSections.length).toBe(1);
@@ -450,7 +453,7 @@ describe("cardForSubscribedUser", () => {
           null,
           null,
           null,
-          email_with_phishy_link_and_sender_domain,
+          email_with_phishy_link_and_sender_domain
         );
       const card = await cardForSubscribedUser(
         headers,
@@ -458,7 +461,7 @@ describe("cardForSubscribedUser", () => {
         domainNames,
         messageBodies,
         phishing_example_attachments,
-        email_with_phishy_link_and_sender_domain,
+        email_with_phishy_link_and_sender_domain
       );
 
       expect(card.sections.length).toBe(9);

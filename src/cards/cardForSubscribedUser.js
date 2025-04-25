@@ -20,7 +20,7 @@ export const cardForSubscribedUser = async (
   domainNames,
   messageBodies,
   attachments,
-  fullMessageData,
+  fullMessageData
 ) => {
   const {
     senderDomain,
@@ -34,7 +34,8 @@ export const cardForSubscribedUser = async (
   const { sectionForBitlyFlagged, bitlySection } = sectionForBitly(domainNames);
   const { sectionForGCPFlagged, gcpSection } = sectionForGCP(fullLinkUrls);
   const { sectionForAWSFlagged, awsSection } = sectionForAWS(fullLinkUrls);
-  const { sectionForAzureFlagged, azureSection } = sectionForAzure(fullLinkUrls);
+  const { sectionForAzureFlagged, azureSection } =
+    sectionForAzure(fullLinkUrls);
   const wellKnownPhishingLinks = []
     .concat(sectionForBitlyFlagged ? BITLY_PHISHING_SITE_DOMAIN : [])
     .concat(sectionForGCPFlagged ? GCP_PHISHING_SITE_DOMAIN : [])
@@ -52,7 +53,7 @@ export const cardForSubscribedUser = async (
       ? sanitize(
           `Author data for ${attachments
             .map((a) => a.SourceFile.toString())
-            .join(", ")}`,
+            .join(", ")}`
         )
       : ``;
 
@@ -89,7 +90,7 @@ export const cardForSubscribedUser = async (
               },
             },
           }
-        : [],
+        : []
     )
     .concat({
       decoratedText: {
@@ -109,12 +110,11 @@ export const cardForSubscribedUser = async (
               }`,
               bottomLabel: `${topMillionDomainNames.join(", ")}`,
               startIcon: {
-                iconUrl:
-                  "https://toophishy.com/noun-link-5741519-007435.png",
+                iconUrl: "https://toophishy.com/noun-link-5741519-007435.png",
               },
             },
           }
-        : [],
+        : []
     )
     .concat(
       nonTopMillionDomainNames.length > 0
@@ -124,15 +124,14 @@ export const cardForSubscribedUser = async (
                 nonTopMillionDomainNames.length > 1 ? "links" : "link"
               }`,
               bottomLabel: `We've provided whois information below for: ${nonTopMillionDomainNames.join(
-                ", ",
+                ", "
               )}`,
               startIcon: {
-                iconUrl:
-                  "https://toophishy.com/noun-link-5741519-FF001C.png",
+                iconUrl: "https://toophishy.com/noun-link-5741519-FF001C.png",
               },
             },
           }
-        : [],
+        : []
     )
     .concat(
       wellKnownPhishingLinks.length > 0
@@ -148,7 +147,7 @@ export const cardForSubscribedUser = async (
               },
             },
           }
-        : [],
+        : []
     )
     .concat({
       decoratedText: {

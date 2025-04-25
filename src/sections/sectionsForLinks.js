@@ -62,7 +62,7 @@ export const sectionsForLinks = async (nonTopMillionDomainNames) => {
       return sectionForLink(
         domainName,
         formattedResultsPerDomain[domainName],
-        resultsPerDomain[domainName],
+        resultsPerDomain[domainName]
       );
     }),
   };
