@@ -18,6 +18,7 @@ import { cardForSubscribedUser } from "../src/cards/cardForSubscribedUser.js";
 import { sectionForGCP } from "../src/sections/sectionForGCP.js";
 import { email_with_s3_and_azure_phishing_links } from "./fixtures/email_with_s3_and_azure_phishing_links.js";
 import { sectionsForAttachments } from "../src/sections/sectionsForAttachments.js";
+import {email_with_unusual_attachments} from "./fixtures/email_with_unusual_attachments.js";
 
 describe("processMessage", () => {
   test("message has body but no attachment", async () => {
@@ -117,6 +118,17 @@ describe("processMessage", () => {
         await processMessage(forwarded_another_email_with_multiple_attachments);
 
       expect(messageBodies.length).toBe(1);
+      expect(attachments.length).toBe(0);
+    } catch (e) {
+      console.log(e);
+    }
+  });
+
+  test("an email with unusual attachments", async () => {
+    try {
+      const { headers, fullLinkUrls, domainNames, messageBodies, attachments } =
+          await processMessage(email_with_unusual_attachments);
+
       expect(attachments.length).toBe(0);
     } catch (e) {
       console.log(e);

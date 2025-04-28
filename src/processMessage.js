@@ -7,12 +7,13 @@ const LINK_ELEMENT_TYPES =
   "a[href^='https://']:not(a[href^='mailto']), " +
   "a[href^='/']:not(a[href^='mailto'])";
 
-export const isNotInlineAttachment = (part) => {
+export const isInlineAttachment = (part) => {
   for (const header of part.headers) {
     if (header.name.toLowerCase() === "content-disposition") {
-      return header.value.toLowerCase().startsWith("attachment");
+      return header.value.toLowerCase().startsWith("inline");
     }
   }
+  return false;
 };
 
 export const processPart = async (part, attachments, messageBodies) => {
@@ -20,7 +21,7 @@ export const processPart = async (part, attachments, messageBodies) => {
     messageBodies.push(Buffer.from(part.body.data, "base64").toString("utf-8"));
   }
   if (part.filename) {
-    if (part.body.attachmentId && isNotInlineAttachment(part)) {
+    if (part.body.attachmentId && !isInlineAttachment(part)) {
       const filePath = `${sanitize(part.filename)}`; // Provide a suitable file name and extension
       attachments.push(filePath);
     }
