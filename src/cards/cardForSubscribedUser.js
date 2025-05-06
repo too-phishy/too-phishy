@@ -197,6 +197,5 @@ export const cardForSubscribedUser = async (
     //     attachments,
     //   ),
     // ),
-    displayStyle: "PEEK",
   };
 };
