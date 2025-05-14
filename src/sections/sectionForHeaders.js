@@ -27,24 +27,19 @@ export const sectionForHeaders = async (headers) => {
   const senderDomainType = flagged ? "Reply-To" : "From";
   const senderDomain = flagged ? replyToDomain : fromDomain;
 
-  let results;
-  const formattedResults = {};
+  let whoisResults;
+  let fromDomainCountry;
   try {
-    results = await whois(senderDomain);
-    for (const key of Object.keys(results)) {
+    whoisResults = await whois(fromDomain);
+    for (const key of Object.keys(whoisResults)) {
       if (
         key === "registrantCountry" &&
-        !!COUNTRY_CODE_TO_COUNTRY_MAP[results[key]]
+        !!COUNTRY_CODE_TO_COUNTRY_MAP[whoisResults[key]]
       ) {
-        formattedResults[to.capital(key)] =
-          COUNTRY_CODE_TO_COUNTRY_MAP[results[key]];
-      } else {
-        formattedResults[to.capital(key)] = results[key];
+        fromDomainCountry = COUNTRY_CODE_TO_COUNTRY_MAP[whoisResults[key]];
       }
     }
-  } catch (e) {
-    results = {};
-  }
+  } catch (e) {}
 
   const bottomLabel = `'Reply-To' address '${replyToEmail}' doesn't match 'From' address '${fromEmail}'. Phishers occasionally spoof the From header but forget to spoof the corresponding Reply-To header.`;
   return {
@@ -78,27 +73,17 @@ export const sectionForHeaders = async (headers) => {
       ],
       collapsible: true,
     },
-    sectionForFromDomainFlagged: Object.keys(formattedResults).length > 0,
+    sectionForFromDomainFlagged: !!fromDomainCountry,
     fromDomainSection: {
       header: `What we know about sender ${senderDomain}:`,
-      widgets:
-        Object.keys(formattedResults).length > 0
-          ? Object.keys(formattedResults).map((key) => {
-              return {
-                decoratedText: {
-                  text: key,
-                  bottomLabel: formattedResults[key],
-                },
-              };
-            })
-          : [
-              {
-                decoratedText: {
-                  text: ``,
-                  bottomLabel: `No data available for ${senderDomain}`,
-                },
-              },
-            ],
+      widgets: [
+        {
+          decoratedText: {
+            text: "The sender's 'Reply-To' address ${fromDomain} is not in the top million most common websites in the world.`",
+            bottomLabel: `Our whois check shows that ${senderDomain} is hosted in ${fromDomainCountry}.`,
+          },
+        },
+      ],
       collapsible: true,
     },
   };

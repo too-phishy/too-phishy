@@ -72,11 +72,11 @@ export const cardForSubscribedUser = async (
         ? {
             decoratedText: {
               text: "Email headers don't match",
-              bottomLabel: `From address ${headers["From"]
-                .split("<")
-                .join("(")
-                .split(">")
-                .join(")")} could be spoofed`,
+              bottomLabel: `From address ${
+                headers["From"].split("<").length > 1
+                  ? headers["From"].split("<").join("(").split(">").join(")")
+                  : headers["From"]
+              } could be spoofed`,
               startIcon: {
                 iconUrl:
                   "https://toophishy.com/noun-outgoing-mail-367819-FF001C.png",
@@ -181,7 +181,7 @@ export const cardForSubscribedUser = async (
       },
     ]
       .concat(sectionForHeadersFlagged ? headersSection : [])
-      .concat(fromDomainSection)
+      .concat(sectionForFromDomainFlagged ? fromDomainSection: [])
       .concat(linksSections)
       .concat(sectionForBitlyFlagged ? bitlySection : [])
       .concat(sectionForGCPFlagged ? gcpSection : [])

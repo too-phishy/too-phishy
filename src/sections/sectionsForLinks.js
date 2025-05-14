@@ -26,29 +26,56 @@ const processDomainName = async (domainName) => {
 };
 
 const sectionForLink = (domainName, formattedResults, results) => {
-  return {
-    header: `What we know about link ${domainName}:`,
-    widgets:
-      Object.keys(formattedResults).length > 0
-        ? Object.keys(formattedResults).map((key) => {
-            return {
-              decoratedText: {
-                text: key,
-                bottomLabel: formattedResults[key],
-              },
-            };
-          })
-        : [
-            {
-              decoratedText: {
-                text: ``,
-                bottomLabel: `No data available for ${domainName}`,
+  const widgetsForLink =
+    Object.keys(formattedResults).length > 0
+      ? Object.keys(formattedResults).map((key) => {
+          return {
+            decoratedText: {
+              text: key,
+              bottomLabel: formattedResults[key],
+            },
+          };
+        })
+      : [
+          {
+            decoratedText: {
+              text: ``,
+              bottomLabel: `No data available for ${domainName}`,
+            },
+          },
+        ];
+  const explanationWidgets = [
+    {
+      decoratedText: {
+        text: "Rarely seen link",
+        bottomLabel: `${domainName} is not in the top million most common websites in the world.`,
+      },
+    },
+    {
+      horizontalAlignment: "CENTER",
+      buttonList: {
+        buttons: [
+          {
+            text: "Learn More",
+            onClick: {
+              openLink: {
+                url: "https://tranco-list.eu/list/K2XYW",
+                openAs: "OVERLAY",
               },
             },
-          ],
+          },
+        ],
+      },
+    },
+  ];
+  const widgets = explanationWidgets.concat(widgetsForLink);
+  return {
+    header: `What we know about link ${domainName}:`,
+    widgets: widgets,
     collapsible: true,
   };
 };
+
 export const sectionsForLinks = async (nonTopMillionDomainNames) => {
   const formattedResultsPerDomain = {};
   const resultsPerDomain = {};
