@@ -10,7 +10,7 @@ export const cardForInactiveUser = {
         {
           textParagraph: {
             // "text": "To get started sign up for a Too Phishy account!"
-            text: `You do not have a Too Phishy account. Please sign up for a 14-day free trial and then refresh to begin.`,
+            text: `You do not have a Too Phishy account. Please sign up for a one-month free trial and then refresh to begin.`,
           },
           horizontalAlignment: "CENTER",
         },
