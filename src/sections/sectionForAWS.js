@@ -12,7 +12,7 @@ export const sectionForAWS = (fullLinkUrls) => {
         {
           decoratedText: {
             text: "Don’t click.",
-            bottomLabel: `Using a common AWS storage url with root domain ${AWS_PHISHING_SITE_DOMAIN}, i.e. AWS s3 storage links which use the domain "s3.amazonaws.com", allows scammers to host malicious code on a website that gets past spam filters.`,
+            bottomLabel: `Using a common AWS storage url like s3.amazonaws.com allows scammers to host malicious code on a website that gets past spam filters.`,
             startIcon: {
               iconUrl: "https://toophishy.com/noun-hate-mail-124279-993AE0.png",
             },

@@ -58,8 +58,8 @@ export const cardForSubscribedUser = async (
   const overviewWidgets = []
     .concat({
       decoratedText: {
-        text: "Score",
-        bottomLabel: overallPhishy ? "Phishy" : "Not Phishy",
+        text: "Is it Phishy?",
+        bottomLabel: overallPhishy ? "Yes: Possibly Phishy" : "No: Not Phishy",
         startIcon: {
           iconUrl: overallPhishy
             ? "https://toophishy.com/red.png"
