@@ -47,14 +47,15 @@ export const cardForSubscribedUser = async (
     sectionsForAttachments(attachments);
   const { linksSections } = await sectionsForLinks(nonTopMillionDomainNames);
 
-  const attachmentsBottomLabel =
-    attachments.length > 0 ? `Author data for ${attachments.join(", ")}` : ``;
+  const attachmentsBottomLabel = sectionsForAttachmentsFlagged
+    ? `Author data for ${attachments.join(", ")}`
+    : ``;
 
   const overallPhishy =
     sectionForHeadersFlagged ||
     nonTopMillionDomainNames.length > 0 ||
     wellKnownPhishingLinks.length > 0 ||
-    attachments.length > 0;
+    sectionsForAttachmentsFlagged;
   const overviewWidgets = []
     .concat({
       decoratedText: {
@@ -144,16 +145,14 @@ export const cardForSubscribedUser = async (
     )
     .concat({
       decoratedText: {
-        text:
-          attachments.length > 0
-            ? `See author data for attachments`
-            : `No attachments`,
+        text: sectionsForAttachmentsFlagged
+          ? `See author data for attachments`
+          : `No attachments`,
         bottomLabel: attachmentsBottomLabel,
         startIcon: {
-          iconUrl:
-            attachments.length > 0
-              ? "https://toophishy.com/noun-attachment-2490420-FF001C.png"
-              : "https://toophishy.com/noun-attachment-2490420-007435.png",
+          iconUrl: sectionsForAttachmentsFlagged
+            ? "https://toophishy.com/noun-attachment-2490420-FF001C.png"
+            : "https://toophishy.com/noun-attachment-2490420-007435.png",
         },
       },
     });
