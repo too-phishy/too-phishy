@@ -57,7 +57,7 @@ export const cardForSubscribedUser = async (
         ? {
             decoratedText: {
               text: `${topMillionURIs.length} reputable ${
-                topMillionURIs.length > 1 ? "links" : "link"
+                  topMillionURIs.length > 1 ? "links" : "link"
               }`,
               bottomLabel: `${topMillionURIs
                 .map((URI) => URI.domain())
@@ -73,12 +73,14 @@ export const cardForSubscribedUser = async (
       nonTopMillionURIs.length > 0
         ? {
             decoratedText: {
-              text: `${nonTopMillionURIs.length} rarely seen ${
-                nonTopMillionURIs.length > 1 ? "links" : "link"
-              }`,
-              bottomLabel: `We've provided whois information below for: ${nonTopMillionURIs
+              text: `Hesitate before clicking`,
+              bottomLabel: `This email contains ${
+                nonTopMillionURIs.length > 1
+                  ? "links not"
+                  : "a link to a domain that is not"
+              } in the top million most common websites in the world: ${nonTopMillionURIs
                 .map((URI) => URI.domain())
-                .join(", ")}`,
+                .join(", ")}. Further details below.`,
               startIcon: {
                 iconUrl: "https://toophishy.com/noun-link-5741519-FF001C.png",
               },
@@ -90,13 +92,14 @@ export const cardForSubscribedUser = async (
       wellKnownPhishingLinks.length > 0
         ? {
             decoratedText: {
-              text: `${wellKnownPhishingLinks.length} potential phishing ${
+              text: `Hesitate before clicking`,
+              bottomLabel: `${
+                wellKnownPhishingLinks.length
+              } potential phishing ${
                 wellKnownPhishingLinks.length > 1 ? "links" : "link"
-              }`,
-              bottomLabel: `${wellKnownPhishingLinks.join(", ")}`,
+              }: ${wellKnownPhishingLinks.join(", ")}. Further details below.`,
               startIcon: {
-                iconUrl:
-                  "https://toophishy.com/noun-hate-mail-124279-993AE0.png",
+                iconUrl: "https://toophishy.com/noun-link-5741519-FF001C.png",
               },
             },
           }
@@ -108,8 +111,10 @@ export const cardForSubscribedUser = async (
           ? `Contains attachments`
           : `No attachments`,
         bottomLabel: sectionsForAttachmentsFlagged
-            ? `Only open attachments unless you are 100% sure that the sender is who they say they are: ${attachments.join(", ")}`
-            : ``,
+          ? `Only open attachments unless you are 100% sure that the sender is who they say they are: ${attachments.join(
+              ", "
+            )}`
+          : ``,
         startIcon: {
           iconUrl: sectionsForAttachmentsFlagged
             ? "https://toophishy.com/noun-attachment-2490420-FF001C.png"

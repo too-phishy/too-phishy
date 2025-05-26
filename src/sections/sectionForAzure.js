@@ -18,7 +18,12 @@ export const sectionForAzure = (fullLinkURIs) => {
       widgets: [
         {
           decoratedText: {
-            text: "Don’t click.",
+            text:
+              azurePhishingLinks.length > 1
+                ? `Links: ${azurePhishingLinks
+                    .map((link) => link.toString())
+                    .join(", ")}`
+                : `Link: ${azurePhishingLinks[0].toString()}`,
             bottomLabel: `Using a common Azure storage url like blob.core.windows.net allows scammers to host malicious code on a website that gets past spam filters.`,
             startIcon: {
               iconUrl: "https://toophishy.com/noun-hate-mail-124279-993AE0.png",

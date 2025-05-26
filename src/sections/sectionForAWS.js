@@ -15,7 +15,12 @@ export const sectionForAWS = (fullLinkURIs) => {
       widgets: [
         {
           decoratedText: {
-            text: "Don’t click.",
+            text:
+              awsPhishingLinks.length > 1
+                ? `Links: ${awsPhishingLinks
+                    .map((link) => link.toString())
+                    .join(", ")}`
+                : `Link: ${awsPhishingLinks[0].toString()}`,
             bottomLabel: `Using a common AWS storage url like s3.amazonaws.com allows scammers to host malicious code on a website that gets past spam filters.`,
             startIcon: {
               iconUrl: "https://toophishy.com/noun-hate-mail-124279-993AE0.png",

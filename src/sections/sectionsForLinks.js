@@ -25,7 +25,7 @@ const processDomainName = async (domainName) => {
   }
 };
 
-const sectionForLink = (domainName, formattedResults, results) => {
+const sectionForLink = (URI, formattedResults, results) => {
   const widgetsForLink =
     Object.keys(formattedResults).length > 0
       ? Object.keys(formattedResults).map((key) => {
@@ -40,15 +40,15 @@ const sectionForLink = (domainName, formattedResults, results) => {
           {
             decoratedText: {
               text: ``,
-              bottomLabel: `No data available for ${domainName}`,
+              bottomLabel: `No data available for ${URI.domain()}`,
             },
           },
         ];
   const explanationWidgets = [
     {
       decoratedText: {
-        text: "Rarely seen link",
-        bottomLabel: `${domainName} is not in the top million most common websites in the world.`,
+        text: ``,
+        bottomLabel: `Below is the available whois information for ${URI.domain()}.`,
       },
     },
     {
@@ -68,9 +68,9 @@ const sectionForLink = (domainName, formattedResults, results) => {
       },
     },
   ];
-  const widgets = explanationWidgets.concat(widgetsForLink);
+  const widgets = widgetsForLink.concat(explanationWidgets);
   return {
-    header: `What we know about link ${domainName}:`,
+    header: `Non-Top-Million Link: ${URI.toString()}`,
     widgets: widgets,
     collapsible: true,
   };
@@ -88,7 +88,7 @@ export const sectionsForLinks = async (nonTopMillionURIs) => {
   return {
     linksSections: nonTopMillionURIs.map((URI) => {
       return sectionForLink(
-        URI.domain(),
+        URI,
         formattedResultsPerDomain[URI.domain()],
         resultsPerDomain[URI.domain()]
       );
