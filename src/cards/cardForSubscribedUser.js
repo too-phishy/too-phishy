@@ -4,7 +4,6 @@ import { sectionForBitly } from "../sections/sectionForBitly.js";
 import { sectionForGCP } from "../sections/sectionForGCP.js";
 import { sectionForAWS } from "../sections/sectionForAWS.js";
 import { sectionForAzure } from "../sections/sectionForAzure.js";
-import { sectionForHeaders } from "../sections/sectionForHeaders.js";
 import { processNonTopMillion } from "../processNonTopMillion.js";
 import { sectionsForLinks } from "../sections/sectionsForLinks.js";
 
@@ -21,15 +20,6 @@ export const cardForSubscribedUser = async (
   attachments,
   fullMessageData
 ) => {
-  const {
-    senderDomain,
-    senderDomainType,
-    sectionForHeadersFlagged,
-    headersSection,
-    sectionForFromDomainFlagged,
-    fromDomainSection,
-  } = await sectionForHeaders(headers);
-
   const { sectionForBitlyFlagged, bitlySection } = sectionForBitly(domainNames);
   const { sectionForGCPFlagged, gcpSection } = sectionForGCP(fullLinkUrls);
   const { sectionForAWSFlagged, awsSection } = sectionForAWS(fullLinkUrls);
@@ -52,7 +42,6 @@ export const cardForSubscribedUser = async (
     : ``;
 
   const overallPhishy =
-    sectionForHeadersFlagged ||
     nonTopMillionDomainNames.length > 0 ||
     wellKnownPhishingLinks.length > 0 ||
     sectionsForAttachmentsFlagged;
@@ -65,33 +54,6 @@ export const cardForSubscribedUser = async (
           iconUrl: overallPhishy
             ? "https://toophishy.com/red.png"
             : "https://toophishy.com/green.png",
-        },
-      },
-    })
-    .concat(
-      sectionForHeadersFlagged
-        ? {
-            decoratedText: {
-              text: "Email headers don't match",
-              bottomLabel: `From address ${
-                headers["From"].split("<").length > 1
-                  ? headers["From"].split("<").join("(").split(">").join(")")
-                  : headers["From"]
-              } could be spoofed`,
-              startIcon: {
-                iconUrl:
-                  "https://toophishy.com/noun-outgoing-mail-367819-FF001C.png",
-              },
-            },
-          }
-        : []
-    )
-    .concat({
-      decoratedText: {
-        text: `Check out '${senderDomainType}' address info`,
-        bottomLabel: `See domain info for ${senderDomain} below`,
-        startIcon: {
-          iconUrl: "https://toophishy.com/noun-send-2845907-007435.png",
         },
       },
     })
@@ -179,8 +141,6 @@ export const cardForSubscribedUser = async (
         collapsible: false,
       },
     ]
-      .concat(sectionForHeadersFlagged ? headersSection : [])
-      .concat(sectionForFromDomainFlagged ? fromDomainSection: [])
       .concat(linksSections)
       .concat(sectionForBitlyFlagged ? bitlySection : [])
       .concat(sectionForGCPFlagged ? gcpSection : [])

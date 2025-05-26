@@ -9,7 +9,6 @@ import { forwarded_another_email_with_multiple_attachments } from "./fixtures/fo
 import { email_with_phishy_link_and_sender_domain } from "./fixtures/email_with_phishy_link_and_sender_domain.js";
 import { reply_to_and_from_dont_match } from "./fixtures/reply_to_and_from_dont_match.js";
 import { processMessage } from "../src/processMessage.js";
-import { sectionForHeaders } from "../src/sections/sectionForHeaders.js";
 import { empty_email_to_myself } from "./fixtures/empty_email_to_myself.js";
 import { sectionsForLinks } from "../src/sections/sectionsForLinks.js";
 import { processNonTopMillion } from "../src/processNonTopMillion.js";
@@ -173,65 +172,6 @@ describe("sectionForGCP", () => {
   }, 20000);
 });
 
-describe("sectionForSenderDomain", () => {
-  test("whois info available for lu.ma", async () => {
-    try {
-      const { headers, fullLinkUrls, domainNames, messageBodies, attachments } =
-        await processMessage(email_with_multiple_attachments);
-      const {
-        senderDomain,
-        senderDomainType,
-        sectionForHeadersFlagged,
-        headersSection,
-        sectionForFromDomainFlagged,
-        fromDomainSection,
-      } = await sectionForHeaders(headers);
-
-      expect(sectionForFromDomainFlagged).toBe(true);
-    } catch (e) {
-      console.log(e);
-    }
-  }, 20000);
-
-  test("whois info available", async () => {
-    try {
-      const { headers, fullLinkUrls, domainNames, messageBodies, attachments } =
-        await processMessage(email_with_phishy_link_and_sender_domain);
-      const {
-        senderDomain,
-        senderDomainType,
-        sectionForHeadersFlagged,
-        headersSection,
-        sectionForFromDomainFlagged,
-        fromDomainSection,
-      } = await sectionForHeaders(headers);
-
-      expect(sectionForFromDomainFlagged).toBe(true);
-    } catch (e) {
-      console.log(e);
-    }
-  });
-
-  test("whois info not showing up", async () => {
-    try {
-      const { headers, fullLinkUrls, domainNames, messageBodies, attachments } =
-        await processMessage(email_with_s3_and_azure_phishing_links);
-      const {
-        senderDomain,
-        senderDomainType,
-        sectionForHeadersFlagged,
-        headersSection,
-        sectionForFromDomainFlagged,
-        fromDomainSection,
-      } = await sectionForHeaders(headers);
-
-      expect(fromDomainSection.widgets.length).toBe(7);
-    } catch (e) {
-      console.log(e);
-    }
-  });
-});
-
 describe("sectionsForAttachments", () => {
   test("sees attachments", async () => {
     const { headers, fullLinkUrls, domainNames, messageBodies, attachments } =
@@ -239,77 +179,6 @@ describe("sectionsForAttachments", () => {
     const { sectionsForAttachmentsFlagged, attachmentsSections } =
       sectionsForAttachments(attachments);
     expect(sectionsForAttachmentsFlagged).toBe(true);
-  });
-});
-
-describe("sectionForHeaders", () => {
-  test("reply to and from match", async () => {
-    try {
-      [
-        another_email_with_multiple_attachments,
-        forwarded_another_email_with_multiple_attachments,
-        forwarded_message,
-        message_body_that_looks_like_css,
-        message_from_aws,
-        message_full,
-        message_with_attachment_but_no_text,
-      ].forEach(async (message) => {
-        const {
-          headers,
-          fullLinkUrls,
-          domainNames,
-          messageBodies,
-          attachments,
-        } = await processMessage(message);
-        const {
-          senderDomain,
-          senderDomainType,
-          sectionForHeadersFlagged,
-          headersSection,
-          sectionForFromDomainFlagged,
-          fromDomainSection,
-        } = await sectionForHeaders(headers);
-        expect(sectionForHeadersFlagged).toBe(false);
-      });
-    } catch (e) {
-      console.log(e);
-    }
-  });
-
-  test("legitimate reply to and from dont match", async () => {
-    try {
-      const { headers, fullLinkUrls, domainNames, messageBodies, attachments } =
-        await processMessage(email_with_multiple_attachments);
-      const {
-        senderDomain,
-        senderDomainType,
-        sectionForHeadersFlagged,
-        headersSection,
-        sectionForFromDomainFlagged,
-        fromDomainSection,
-      } = await sectionForHeaders(headers);
-      expect(sectionForHeadersFlagged).toBe(true);
-    } catch (e) {
-      console.log(e);
-    }
-  });
-
-  test("spammy reply to and from dont match", async () => {
-    try {
-      const { headers, fullLinkUrls, domainNames, messageBodies, attachments } =
-        await processMessage(reply_to_and_from_dont_match);
-      const {
-        senderDomain,
-        senderDomainType,
-        sectionForHeadersFlagged,
-        headersSection,
-        sectionForFromDomainFlagged,
-        fromDomainSection,
-      } = await sectionForHeaders(headers);
-      expect(sectionForHeadersFlagged).toBe(true);
-    } catch (e) {
-      console.log(e);
-    }
   });
 });
 
