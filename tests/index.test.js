@@ -16,7 +16,6 @@ import { john_podesta } from "./fixtures/john_podesta.js";
 import { cardForSubscribedUser } from "../src/cards/cardForSubscribedUser.js";
 import { sectionForGCP } from "../src/sections/sectionForGCP.js";
 import { email_with_s3_and_azure_phishing_links } from "./fixtures/email_with_s3_and_azure_phishing_links.js";
-import { sectionsForAttachments } from "../src/sections/sectionsForAttachments.js";
 
 describe("processMessage", () => {
   test("message has body but no attachment", async () => {
@@ -170,16 +169,6 @@ describe("sectionForGCP", () => {
       console.log(e);
     }
   }, 20000);
-});
-
-describe("sectionsForAttachments", () => {
-  test("sees attachments", async () => {
-    const { headers, fullLinkUrls, domainNames, messageBodies, attachments } =
-      await processMessage(another_email_with_multiple_attachments);
-    const { sectionsForAttachmentsFlagged, attachmentsSections } =
-      sectionsForAttachments(attachments);
-    expect(sectionsForAttachmentsFlagged).toBe(true);
-  });
 });
 
 describe("sectionsForLinks", () => {

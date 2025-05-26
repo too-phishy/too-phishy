@@ -1,5 +1,4 @@
 import { sectionForDebugging } from "../sections/sectionForDebugging.js";
-import { sectionsForAttachments } from "../sections/sectionsForAttachments.js";
 import { sectionForBitly } from "../sections/sectionForBitly.js";
 import { sectionForGCP } from "../sections/sectionForGCP.js";
 import { sectionForAWS } from "../sections/sectionForAWS.js";
@@ -33,13 +32,9 @@ export const cardForSubscribedUser = async (
 
   const { topMillionDomainNames, nonTopMillionDomainNames } =
     processNonTopMillion(domainNames);
-  const { sectionsForAttachmentsFlagged, attachmentsSections } =
-    sectionsForAttachments(attachments);
   const { linksSections } = await sectionsForLinks(nonTopMillionDomainNames);
 
-  const attachmentsBottomLabel = sectionsForAttachmentsFlagged
-    ? `Author data for ${attachments.join(", ")}`
-    : ``;
+  const sectionsForAttachmentsFlagged = attachments.length > 0;
 
   const overallPhishy =
     nonTopMillionDomainNames.length > 0 ||
@@ -108,9 +103,11 @@ export const cardForSubscribedUser = async (
     .concat({
       decoratedText: {
         text: sectionsForAttachmentsFlagged
-          ? `See author data for attachments`
+          ? `Contains attachments`
           : `No attachments`,
-        bottomLabel: attachmentsBottomLabel,
+        bottomLabel: sectionsForAttachmentsFlagged
+            ? `Only open attachments unless you are 100% sure that the sender is who they say they are: ${attachments.join(", ")}`
+            : ``,
         startIcon: {
           iconUrl: sectionsForAttachmentsFlagged
             ? "https://toophishy.com/noun-attachment-2490420-FF001C.png"
@@ -146,7 +143,6 @@ export const cardForSubscribedUser = async (
       .concat(sectionForGCPFlagged ? gcpSection : [])
       .concat(sectionForAWSFlagged ? awsSection : [])
       .concat(sectionForAzureFlagged ? azureSection : [])
-      .concat(sectionsForAttachmentsFlagged ? attachmentsSections : []),
     // .concat(
     //   sectionForDebugging(
     //     messageBodies,
