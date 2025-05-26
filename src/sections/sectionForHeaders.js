@@ -79,7 +79,7 @@ export const sectionForHeaders = async (headers) => {
       widgets: [
         {
           decoratedText: {
-            text: "The sender's 'Reply-To' address ${fromDomain} is not in the top million most common websites in the world.`",
+            text: `The sender's 'Reply-To' address ${fromDomain} is not in the top million most common websites in the world.`,
             bottomLabel: `Our whois check shows that ${senderDomain} is hosted in ${fromDomainCountry}.`,
           },
         },
