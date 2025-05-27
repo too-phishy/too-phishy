@@ -57,13 +57,30 @@ export const cardForSubscribedUser = async (
         ? {
             decoratedText: {
               text: `${topMillionURIs.length} reputable ${
-                  topMillionURIs.length > 1 ? "links" : "link"
+                topMillionURIs.length > 1 ? "links" : "link"
               }`,
               bottomLabel: `${topMillionURIs
                 .map((URI) => URI.domain())
                 .join(", ")}`,
               startIcon: {
                 iconUrl: "https://toophishy.com/noun-link-5741519-007435.png",
+              },
+            },
+          }
+        : []
+    )
+    .concat(
+      wellKnownPhishingLinks.length > 0
+        ? {
+            decoratedText: {
+              text: `Hesitate before clicking`,
+              bottomLabel: `${
+                wellKnownPhishingLinks.length
+              } potential phishing ${
+                wellKnownPhishingLinks.length > 1 ? "links" : "link"
+              }: ${wellKnownPhishingLinks.join(", ")}. Further details below.`,
+              startIcon: {
+                iconUrl: "https://toophishy.com/noun-link-5741519-FF001C.png",
               },
             },
           }
@@ -81,23 +98,6 @@ export const cardForSubscribedUser = async (
               } in the top million most common websites in the world: ${nonTopMillionURIs
                 .map((URI) => URI.domain())
                 .join(", ")}. Further details below.`,
-              startIcon: {
-                iconUrl: "https://toophishy.com/noun-link-5741519-FF001C.png",
-              },
-            },
-          }
-        : []
-    )
-    .concat(
-      wellKnownPhishingLinks.length > 0
-        ? {
-            decoratedText: {
-              text: `Hesitate before clicking`,
-              bottomLabel: `${
-                wellKnownPhishingLinks.length
-              } potential phishing ${
-                wellKnownPhishingLinks.length > 1 ? "links" : "link"
-              }: ${wellKnownPhishingLinks.join(", ")}. Further details below.`,
               startIcon: {
                 iconUrl: "https://toophishy.com/noun-link-5741519-FF001C.png",
               },
@@ -145,11 +145,11 @@ export const cardForSubscribedUser = async (
         collapsible: false,
       },
     ]
-      .concat(linksSections)
       .concat(sectionForBitlyFlagged ? bitlySection : [])
       .concat(sectionForGCPFlagged ? gcpSection : [])
       .concat(sectionForAWSFlagged ? awsSection : [])
       .concat(sectionForAzureFlagged ? azureSection : [])
+      .concat(linksSections),
     // .concat(
     //   sectionForDebugging(
     //     messageBodies,
