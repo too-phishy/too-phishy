@@ -1,12 +1,16 @@
 import { AWS_PHISHING_SITE_DOMAIN } from "../cards/cardForSubscribedUser.js";
 
-export const sectionForAWS = (fullLinkUrls) => {
-  const awsPhishingLinks = [...fullLinkUrls].filter(
-    (key) => key.toString().indexOf(AWS_PHISHING_SITE_DOMAIN) !== -1
+export const sectionForAWS = (fullLinkURIs) => {
+  const awsPhishingLinks = [...fullLinkURIs].filter(
+    (key) =>
+      key.normalizeHostname().toString().indexOf(AWS_PHISHING_SITE_DOMAIN) !==
+      -1
   );
+  const sectionForAWSFlagged =
+    !!awsPhishingLinks && awsPhishingLinks.length > 0;
   return {
-    sectionForAWSFlagged: !!awsPhishingLinks && awsPhishingLinks.length > 0,
-    awsSection: {
+    sectionForAWSFlagged,
+    awsSection: sectionForAWSFlagged && {
       header: `${AWS_PHISHING_SITE_DOMAIN} is a potential phishing link:`,
       widgets: [
         {

@@ -1,13 +1,16 @@
 import { BITLY_PHISHING_SITE_DOMAIN } from "../cards/cardForSubscribedUser.js";
 
-export const sectionForBitly = (domainNames) => {
-  const bitlyPhishingLinks = [...domainNames].filter(
-    (key) => key.toString().indexOf(BITLY_PHISHING_SITE_DOMAIN) !== -1
+export const sectionForBitly = (fullLinkURIs) => {
+  const bitlyPhishingLinks = [...fullLinkURIs].filter(
+    (key) =>
+      key.normalizeHostname().toString().indexOf(BITLY_PHISHING_SITE_DOMAIN) !==
+      -1
   );
+  const sectionForBitlyFlagged =
+    !!bitlyPhishingLinks && bitlyPhishingLinks.length > 0;
   return {
-    sectionForBitlyFlagged:
-      !!bitlyPhishingLinks && bitlyPhishingLinks.length > 0,
-    bitlySection: {
+    sectionForBitlyFlagged,
+    bitlySection: sectionForBitlyFlagged && {
       header: `${BITLY_PHISHING_SITE_DOMAIN} is a potential phishing link:`,
       widgets: [
         {

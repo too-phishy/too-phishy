@@ -106,14 +106,13 @@ app.post(
     });
     const messageData = gmailResponse.data;
 
-    const { headers, fullLinkUrls, domainNames, messageBodies, attachments } =
+    const { headers, fullLinkURIs, messageBodies, attachments } =
       await processMessage(messageData);
 
     const pushCard = activeSubscription
       ? await cardForSubscribedUser(
           headers,
-          fullLinkUrls,
-          domainNames,
+          fullLinkURIs,
           messageBodies,
           attachments,
           messageData

@@ -76,20 +76,21 @@ const sectionForLink = (domainName, formattedResults, results) => {
   };
 };
 
-export const sectionsForLinks = async (nonTopMillionDomainNames) => {
+export const sectionsForLinks = async (nonTopMillionURIs) => {
   const formattedResultsPerDomain = {};
   const resultsPerDomain = {};
-  for (const domainName of nonTopMillionDomainNames) {
+  for (const URI of nonTopMillionURIs) {
+    const domainName = URI.domain();
     const { results, formattedResults } = await processDomainName(domainName);
     formattedResultsPerDomain[domainName] = formattedResults;
     resultsPerDomain[domainName] = results;
   }
   return {
-    linksSections: nonTopMillionDomainNames.map((domainName) => {
+    linksSections: nonTopMillionURIs.map((URI) => {
       return sectionForLink(
-        domainName,
-        formattedResultsPerDomain[domainName],
-        resultsPerDomain[domainName]
+        URI.domain(),
+        formattedResultsPerDomain[URI.domain()],
+        resultsPerDomain[URI.domain()]
       );
     }),
   };

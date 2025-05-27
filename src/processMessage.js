@@ -52,17 +52,15 @@ export const processMessage = async (message) => {
     }))
   );
 
-  let domainNames = new Set();
-  let fullLinkUrls = new Set();
+  let fullLinkURIs = [];
   if (messageBodies[0]) {
     const $ = cheerio.load(messageBodies[0]);
     const relativeLinks = $(LINK_ELEMENT_TYPES);
     relativeLinks.each((index, value) => {
       const href = $(value).attr("href");
-      fullLinkUrls.add(new URI(href).normalizeHostname());
-      domainNames.add(new URI(href).domain());
+      fullLinkURIs.push(new URI(href));
     });
   }
 
-  return { headers, fullLinkUrls, domainNames, messageBodies, attachments };
+  return { headers, fullLinkURIs, messageBodies, attachments };
 };

@@ -13,31 +13,31 @@ export const AWS_PHISHING_SITE_DOMAIN = "s3.amazonaws.com";
 
 export const cardForSubscribedUser = async (
   headers,
-  fullLinkUrls,
-  domainNames,
+  fullLinkURIs,
   messageBodies,
   attachments,
   fullMessageData
 ) => {
-  const { sectionForBitlyFlagged, bitlySection } = sectionForBitly(domainNames);
-  const { sectionForGCPFlagged, gcpSection } = sectionForGCP(fullLinkUrls);
-  const { sectionForAWSFlagged, awsSection } = sectionForAWS(fullLinkUrls);
+  const { sectionForBitlyFlagged, bitlySection } =
+    sectionForBitly(fullLinkURIs);
+  const { sectionForGCPFlagged, gcpSection } = sectionForGCP(fullLinkURIs);
+  const { sectionForAWSFlagged, awsSection } = sectionForAWS(fullLinkURIs);
   const { sectionForAzureFlagged, azureSection } =
-    sectionForAzure(fullLinkUrls);
+    sectionForAzure(fullLinkURIs);
   const wellKnownPhishingLinks = []
     .concat(sectionForBitlyFlagged ? BITLY_PHISHING_SITE_DOMAIN : [])
     .concat(sectionForGCPFlagged ? GCP_PHISHING_SITE_DOMAIN : [])
     .concat(sectionForAWSFlagged ? AWS_PHISHING_SITE_DOMAIN : [])
     .concat(sectionForAzureFlagged ? AZURE_PHISHING_SITE_DOMAIN : []);
 
-  const { topMillionDomainNames, nonTopMillionDomainNames } =
-    processNonTopMillion(domainNames);
-  const { linksSections } = await sectionsForLinks(nonTopMillionDomainNames);
+  const { topMillionURIs, nonTopMillionURIs } =
+    processNonTopMillion(fullLinkURIs);
+  const { linksSections } = await sectionsForLinks(nonTopMillionURIs);
 
   const sectionsForAttachmentsFlagged = attachments.length > 0;
 
   const overallPhishy =
-    nonTopMillionDomainNames.length > 0 ||
+    nonTopMillionURIs.length > 0 ||
     wellKnownPhishingLinks.length > 0 ||
     sectionsForAttachmentsFlagged;
   const overviewWidgets = []
@@ -53,13 +53,15 @@ export const cardForSubscribedUser = async (
       },
     })
     .concat(
-      topMillionDomainNames.length > 0
+      topMillionURIs.length > 0
         ? {
             decoratedText: {
-              text: `${topMillionDomainNames.length} reputable ${
-                topMillionDomainNames.length > 1 ? "links" : "link"
+              text: `${topMillionURIs.length} reputable ${
+                topMillionURIs.length > 1 ? "links" : "link"
               }`,
-              bottomLabel: `${topMillionDomainNames.join(", ")}`,
+              bottomLabel: `${topMillionURIs
+                .map((URI) => URI.domain())
+                .join(", ")}`,
               startIcon: {
                 iconUrl: "https://toophishy.com/noun-link-5741519-007435.png",
               },
@@ -68,15 +70,15 @@ export const cardForSubscribedUser = async (
         : []
     )
     .concat(
-      nonTopMillionDomainNames.length > 0
+      nonTopMillionURIs.length > 0
         ? {
             decoratedText: {
-              text: `${nonTopMillionDomainNames.length} rarely seen ${
-                nonTopMillionDomainNames.length > 1 ? "links" : "link"
+              text: `${nonTopMillionURIs.length} rarely seen ${
+                nonTopMillionURIs.length > 1 ? "links" : "link"
               }`,
-              bottomLabel: `We've provided whois information below for: ${nonTopMillionDomainNames.join(
-                ", "
-              )}`,
+              bottomLabel: `We've provided whois information below for: ${nonTopMillionURIs
+                .map((URI) => URI.domain())
+                .join(", ")}`,
               startIcon: {
                 iconUrl: "https://toophishy.com/noun-link-5741519-FF001C.png",
               },
@@ -146,7 +148,6 @@ export const cardForSubscribedUser = async (
     // .concat(
     //   sectionForDebugging(
     //     messageBodies,
-    //     domainNames,
     //     headers,
     //     fullMessageData,
     //     attachments,

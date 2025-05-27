@@ -3,14 +3,17 @@ import {
   AZURE_PHISHING_SITE_DOMAIN,
 } from "../cards/cardForSubscribedUser.js";
 
-export const sectionForAzure = (fullLinkUrls) => {
-  const azurePhishingLinks = [...fullLinkUrls].filter(
-    (key) => key.toString().indexOf(AZURE_PHISHING_SITE_DOMAIN) !== -1
+export const sectionForAzure = (fullLinkURIs) => {
+  const azurePhishingLinks = [...fullLinkURIs].filter(
+    (key) =>
+      key.normalizeHostname().toString().indexOf(AZURE_PHISHING_SITE_DOMAIN) !==
+      -1
   );
+  const sectionForAzureFlagged =
+    !!azurePhishingLinks && azurePhishingLinks.length > 0;
   return {
-    sectionForAzureFlagged:
-      !!azurePhishingLinks && azurePhishingLinks.length > 0,
-    azureSection: {
+    sectionForAzureFlagged,
+    azureSection: sectionForAzureFlagged && {
       header: `${AZURE_PHISHING_SITE_DOMAIN} is a potential phishing link:`,
       widgets: [
         {

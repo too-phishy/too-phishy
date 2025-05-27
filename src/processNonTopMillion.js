@@ -6,25 +6,46 @@ import {
   GCP_PHISHING_SITE_DOMAIN,
 } from "./cards/cardForSubscribedUser.js";
 
-export const processNonTopMillion = (domainNames) => {
-  const topMillionDomainNames = [];
-  const nonTopMillionDomainNames = [];
-  [...domainNames].forEach((domain) => {
-    if (!TOP_MILLION_DOMAINS.has(domain)) {
-      nonTopMillionDomainNames.push(domain);
+export const processNonTopMillion = (fullLinkURIs) => {
+  const uniqueTopMillionURIs = new Set();
+  const uniqueNonTopMillionURIs = new Set();
+  const topMillionURIs = [];
+  const nonTopMillionURIs = [];
+  [...fullLinkURIs].forEach((link) => {
+    if (!TOP_MILLION_DOMAINS.has(link.domain())) {
+      if (!uniqueNonTopMillionURIs.has(link.domain())) {
+        nonTopMillionURIs.push(link);
+        uniqueNonTopMillionURIs.add(link.domain());
+      }
     } else {
       if (
-        domain !== BITLY_PHISHING_SITE_DOMAIN &&
-        domain !== GCP_PHISHING_SITE_DOMAIN &&
-        domain !== "amazonaws.com" &&
-        domain !== "windows.net"
+        !uniqueTopMillionURIs.has(link.domain()) &&
+        link
+          .normalizeHostname()
+          .toString()
+          .indexOf(BITLY_PHISHING_SITE_DOMAIN) === -1 &&
+        link
+          .normalizeHostname()
+          .toString()
+          .indexOf(GCP_PHISHING_SITE_DOMAIN) === -1 &&
+        link
+          .normalizeHostname()
+          .toString()
+          .indexOf(AZURE_PHISHING_SITE_DOMAIN) === -1 &&
+        link
+          .normalizeHostname()
+          .toString()
+          .indexOf(AWS_PHISHING_SITE_DOMAIN) === -1 &&
+        link.domain() !== "amazonaws.com" &&
+        link.domain() !== "windows.net"
       ) {
-        topMillionDomainNames.push(domain);
+        topMillionURIs.push(link);
+        uniqueTopMillionURIs.add(link.domain());
       }
     }
   });
   return {
-    topMillionDomainNames,
-    nonTopMillionDomainNames,
+    topMillionURIs,
+    nonTopMillionURIs,
   };
 };
