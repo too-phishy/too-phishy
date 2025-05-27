@@ -22,9 +22,6 @@ export const sectionForAWS = (fullLinkURIs) => {
                     .join(", ")}`
                 : `Link: ${awsPhishingLinks[0].toString()}`,
             bottomLabel: `Using a common AWS storage url like s3.amazonaws.com allows scammers to host malicious code on a website that gets past spam filters.`,
-            startIcon: {
-              iconUrl: "https://toophishy.com/noun-hate-mail-124279-993AE0.png",
-            },
           },
         },
         {
