@@ -10,13 +10,16 @@ import { email_with_phishy_link_and_sender_domain } from "./fixtures/email_with_
 import { reply_to_and_from_dont_match } from "./fixtures/reply_to_and_from_dont_match.js";
 import { processMessage } from "../src/processMessage.js";
 import { empty_email_to_myself } from "./fixtures/empty_email_to_myself.js";
-import { sectionsForLinks } from "../src/sections/sectionsForLinks.js";
+import { sectionsForNonTopMillionLinks } from "../src/sections/sectionsForNonTopMillionLinks.js";
 import { processNonTopMillion } from "../src/processNonTopMillion.js";
 import { john_podesta } from "./fixtures/john_podesta.js";
-import { cardForSubscribedUser } from "../src/cards/cardForSubscribedUser.js";
-import { sectionForGCP } from "../src/sections/sectionForGCP.js";
+import {
+  cardForSubscribedUser,
+  GCP_PHISHING_SITE_DOMAIN,
+} from "../src/cards/cardForSubscribedUser.js";
 import { email_with_s3_and_azure_phishing_links } from "./fixtures/email_with_s3_and_azure_phishing_links.js";
 import { email_with_link_that_doesnt_get_categorized_correctly } from "./fixtures/email_with_link_that_doesnt_get_categorized_correctly.js";
+import { sectionForPhishingLink } from "../src/sections/sectionForPhishingLink.js";
 
 describe("processMessage", () => {
   test("message has body but no attachment", async () => {
@@ -163,7 +166,12 @@ describe("sectionForGCP", () => {
     try {
       const { headers, fullLinkURIs, messageBodies, attachments } =
         await processMessage(empty_email_to_myself);
-      const { sectionForGCPFlagged, gcpSection } = sectionForGCP(fullLinkURIs);
+      const { phishingLinkFlagged: sectionForGCPFlagged, section: gcpSection } =
+        sectionForPhishingLink(
+          fullLinkURIs,
+          GCP_PHISHING_SITE_DOMAIN,
+          "https://www.bleepingcomputer.com/news/security/phishing-attack-uses-azure-blob-storage-to-impersonate-microsoft"
+        );
 
       expect(sectionForGCPFlagged).toBe(false);
     } catch (e) {
@@ -179,7 +187,9 @@ describe("processNonTopMillion", () => {
         await processMessage(email_with_phishy_link_and_sender_domain);
       const { topMillionURIs, nonTopMillionURIs, nonTopMillionSection } =
         processNonTopMillion(fullLinkURIs);
-      const { linksSections } = await sectionsForLinks(nonTopMillionURIs);
+      const { linksSections } = await sectionsForNonTopMillionLinks(
+        nonTopMillionURIs
+      );
 
       expect(linksSections.length).toBe(1);
     } catch (e) {

@@ -1,10 +1,7 @@
 import { sectionForDebugging } from "../sections/sectionForDebugging.js";
-import { sectionForBitly } from "../sections/sectionForBitly.js";
-import { sectionForGCP } from "../sections/sectionForGCP.js";
-import { sectionForAWS } from "../sections/sectionForAWS.js";
-import { sectionForAzure } from "../sections/sectionForAzure.js";
+import { sectionForPhishingLink } from "../sections/sectionForPhishingLink.js";
 import { processNonTopMillion } from "../processNonTopMillion.js";
-import { sectionsForLinks } from "../sections/sectionsForLinks.js";
+import { sectionsForNonTopMillionLinks } from "../sections/sectionsForNonTopMillionLinks.js";
 
 export const BITLY_PHISHING_SITE_DOMAIN = "bit.ly";
 export const GCP_PHISHING_SITE_DOMAIN = "storage.googleapis.com";
@@ -18,12 +15,30 @@ export const cardForSubscribedUser = async (
   attachments,
   fullMessageData
 ) => {
-  const { sectionForBitlyFlagged, bitlySection } =
-    sectionForBitly(fullLinkURIs);
-  const { sectionForGCPFlagged, gcpSection } = sectionForGCP(fullLinkURIs);
-  const { sectionForAWSFlagged, awsSection } = sectionForAWS(fullLinkURIs);
-  const { sectionForAzureFlagged, azureSection } =
-    sectionForAzure(fullLinkURIs);
+  const { phishingLinkFlagged: sectionForAWSFlagged, section: awsSection } =
+    sectionForPhishingLink(
+      fullLinkURIs,
+      AWS_PHISHING_SITE_DOMAIN,
+      "https://cybersecuritynews.com/hackers-leverage-websites-hosted-aws"
+    );
+  const { phishingLinkFlagged: sectionForBitlyFlagged, section: bitlySection } =
+    sectionForPhishingLink(
+      fullLinkURIs,
+      BITLY_PHISHING_SITE_DOMAIN,
+      "https://www.bleepingcomputer.com/news/security/phishing-attack-uses-bitly-blob-storage-to-impersonate-microsoft"
+    );
+  const { phishingLinkFlagged: sectionForGCPFlagged, section: gcpSection } =
+    sectionForPhishingLink(
+      fullLinkURIs,
+      GCP_PHISHING_SITE_DOMAIN,
+      "https://www.bleepingcomputer.com/news/security/phishing-attack-uses-azure-blob-storage-to-impersonate-microsoft"
+    );
+  const { phishingLinkFlagged: sectionForAzureFlagged, section: azureSection } =
+    sectionForPhishingLink(
+      fullLinkURIs,
+      AZURE_PHISHING_SITE_DOMAIN,
+      "https://www.bleepingcomputer.com/news/security/phishing-attack-uses-azure-blob-storage-to-impersonate-microsoft"
+    );
   const wellKnownPhishingLinks = []
     .concat(sectionForBitlyFlagged ? BITLY_PHISHING_SITE_DOMAIN : [])
     .concat(sectionForGCPFlagged ? GCP_PHISHING_SITE_DOMAIN : [])
@@ -32,7 +47,9 @@ export const cardForSubscribedUser = async (
 
   const { topMillionURIs, nonTopMillionURIs } =
     processNonTopMillion(fullLinkURIs);
-  const { linksSections } = await sectionsForLinks(nonTopMillionURIs);
+  const { linksSections } = await sectionsForNonTopMillionLinks(
+    nonTopMillionURIs
+  );
 
   const sectionsForAttachmentsFlagged = attachments.length > 0;
 

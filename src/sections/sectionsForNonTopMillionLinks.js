@@ -76,7 +76,7 @@ const sectionForLink = (URI, formattedResults, results) => {
   };
 };
 
-export const sectionsForLinks = async (nonTopMillionURIs) => {
+export const sectionsForNonTopMillionLinks = async (nonTopMillionURIs) => {
   const formattedResultsPerDomain = {};
   const resultsPerDomain = {};
   for (const URI of nonTopMillionURIs) {
