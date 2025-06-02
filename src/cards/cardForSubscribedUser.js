@@ -23,23 +23,25 @@ export const cardForSubscribedUser = async (
       "https://cybersecuritynews.com/hackers-leverage-websites-hosted-aws"
     );
   const { phishingLinkFlagged: sectionForAzureFlagged, section: azureSection } =
-      sectionForPhishingLink(
-          fullLinkURIs,
-          AZURE_PHISHING_SITE_DOMAIN,
-          "https://www.bleepingcomputer.com/news/security/phishing-attack-uses-azure-blob-storage-to-impersonate-microsoft"
-      );
+    sectionForPhishingLink(
+      fullLinkURIs,
+      AZURE_PHISHING_SITE_DOMAIN,
+      "https://www.bleepingcomputer.com/news/security/phishing-attack-uses-azure-blob-storage-to-impersonate-microsoft"
+    );
   const { phishingLinkFlagged: sectionForBitlyFlagged, section: bitlySection } =
     sectionForPhishingLink(
       fullLinkURIs,
       BITLY_PHISHING_SITE_DOMAIN,
       "https://www.bleepingcomputer.com/news/security/phishing-attack-uses-bitly-blob-storage-to-impersonate-microsoft"
     );
-  const { phishingLinkFlagged: sectionForGoogleSitesFlagged, section: googleSitesSection } =
-      sectionForPhishingLink(
-          fullLinkURIs,
-          GOOGLE_PHISHING_SITE_DOMAIN,
-          "https://www.bleepingcomputer.com/news/security/phishers-abuse-google-oauth-to-spoof-google-in-dkim-replay-attack/"
-      );
+  const {
+    phishingLinkFlagged: sectionForGoogleSitesFlagged,
+    section: googleSitesSection,
+  } = sectionForPhishingLink(
+    fullLinkURIs,
+    GOOGLE_PHISHING_SITE_DOMAIN,
+    "https://www.bleepingcomputer.com/news/security/phishers-abuse-google-oauth-to-spoof-google-in-dkim-replay-attack/"
+  );
   const { phishingLinkFlagged: sectionForGCPFlagged, section: gcpSection } =
     sectionForPhishingLink(
       fullLinkURIs,
@@ -51,7 +53,7 @@ export const cardForSubscribedUser = async (
     .concat(sectionForAzureFlagged ? AZURE_PHISHING_SITE_DOMAIN : [])
     .concat(sectionForBitlyFlagged ? BITLY_PHISHING_SITE_DOMAIN : [])
     .concat(sectionForGoogleSitesFlagged ? GOOGLE_PHISHING_SITE_DOMAIN : [])
-      .concat(sectionForGCPFlagged ? GCP_PHISHING_SITE_DOMAIN : [])
+    .concat(sectionForGCPFlagged ? GCP_PHISHING_SITE_DOMAIN : []);
 
   const { topMillionURIs, nonTopMillionURIs } =
     processNonTopMillion(fullLinkURIs);
@@ -116,13 +118,13 @@ export const cardForSubscribedUser = async (
         ? {
             decoratedText: {
               text: `Hesitate before clicking`,
-              bottomLabel: `This email contains ${
-                nonTopMillionURIs.length > 1
-                  ? "links not"
-                  : "a link to a domain that is not"
-              } in the top million most common websites in the world: ${nonTopMillionURIs
-                .map((URI) => URI.domain())
-                .join(", ")}. Further details below.`,
+              bottomLabel: `${
+                  nonTopMillionURIs.length
+              } non-top-million ${
+                  nonTopMillionURIs.length > 1 ? "links" : "link"
+              }: ${nonTopMillionURIs
+                  .map((URI) => URI.domain())
+                  .join(", ")}. Further details below.`,
               startIcon: {
                 iconUrl: "https://toophishy.com/noun-link-5741519-FF001C.png",
               },
@@ -174,7 +176,7 @@ export const cardForSubscribedUser = async (
       .concat(sectionForAzureFlagged ? azureSection : [])
       .concat(sectionForBitlyFlagged ? bitlySection : [])
       .concat(sectionForGoogleSitesFlagged ? googleSitesSection : [])
-        .concat(sectionForGCPFlagged ? gcpSection : [])
+      .concat(sectionForGCPFlagged ? gcpSection : [])
       .concat(linksSections),
     // .concat(
     //   sectionForDebugging(

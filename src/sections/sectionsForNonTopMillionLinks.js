@@ -26,6 +26,20 @@ const processDomainName = async (domainName) => {
 };
 
 const sectionForLink = (URI, formattedResults, results) => {
+  const explanationWidgets = [
+    {
+      decoratedText: {
+        text: ``,
+        bottomLabel: `This link is not in the top one million most popular domains on the internet, as defined by the Tranco Top 1 Million list. Domains not on this list may lead somewhere untrustworthy.`,
+      },
+    },
+    {
+      decoratedText: {
+        text: ``,
+        bottomLabel: `Below is the available whois information for ${URI.domain()}.`,
+      },
+    },
+  ];
   const widgetsForLink =
     Object.keys(formattedResults).length > 0
       ? Object.keys(formattedResults).map((key) => {
@@ -44,13 +58,7 @@ const sectionForLink = (URI, formattedResults, results) => {
             },
           },
         ];
-  const explanationWidgets = [
-    {
-      decoratedText: {
-        text: ``,
-        bottomLabel: `Below is the available whois information for ${URI.domain()}.`,
-      },
-    },
+  const learnMoreWidget = [
     {
       horizontalAlignment: "CENTER",
       buttonList: {
@@ -68,7 +76,7 @@ const sectionForLink = (URI, formattedResults, results) => {
       },
     },
   ];
-  const widgets = widgetsForLink.concat(explanationWidgets);
+  const widgets = explanationWidgets.concat(widgetsForLink).concat(learnMoreWidget);
   return {
     header: `Non-Top-Million Link: ${URI.toString()}`,
     widgets: widgets,
