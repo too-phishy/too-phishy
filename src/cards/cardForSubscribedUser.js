@@ -3,10 +3,11 @@ import { sectionForPhishingLink } from "../sections/sectionForPhishingLink.js";
 import { processNonTopMillion } from "../processNonTopMillion.js";
 import { sectionsForNonTopMillionLinks } from "../sections/sectionsForNonTopMillionLinks.js";
 
-export const BITLY_PHISHING_SITE_DOMAIN = "bit.ly";
-export const GCP_PHISHING_SITE_DOMAIN = "storage.googleapis.com";
-export const AZURE_PHISHING_SITE_DOMAIN = "blob.core.windows.net";
 export const AWS_PHISHING_SITE_DOMAIN = "s3.amazonaws.com";
+export const AZURE_PHISHING_SITE_DOMAIN = "blob.core.windows.net";
+export const BITLY_PHISHING_SITE_DOMAIN = "bit.ly";
+export const GOOGLE_SITES_PHISHING_SITE_DOMAIN = "storage.googleapis.com";
+export const GCP_PHISHING_SITE_DOMAIN = "storage.googleapis.com";
 
 export const cardForSubscribedUser = async (
   headers,

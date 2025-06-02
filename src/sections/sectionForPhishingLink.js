@@ -21,7 +21,7 @@ export const sectionForPhishingLink = (
         {
           decoratedText: {
             text: ``,
-            bottomLabel: `Using a free web hosting tool like ${knownPhishingDomain} allows scammers to host malicious code on a website that gets past spam filters.`,
+            bottomLabel: `Hosting code on a popular web hosting site like ${knownPhishingDomain} allows scammers to get links to their code past spam filters.`,
           },
         },
         {
