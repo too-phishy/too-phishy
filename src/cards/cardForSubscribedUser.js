@@ -31,7 +31,7 @@ export const cardForSubscribedUser = async (
     sectionForPhishingLink(
       fullLinkURIs,
       GCP_PHISHING_SITE_DOMAIN,
-      "https://www.bleepingcomputer.com/news/security/phishing-attack-uses-azure-blob-storage-to-impersonate-microsoft"
+      "https://www.bleepingcomputer.com/news/security/phishing-campaign-uses-google-cloud-services-to-steal-office-365-logins/"
     );
   const { phishingLinkFlagged: sectionForAzureFlagged, section: azureSection } =
     sectionForPhishingLink(
