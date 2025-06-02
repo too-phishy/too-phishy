@@ -6,7 +6,7 @@ import { sectionsForNonTopMillionLinks } from "../sections/sectionsForNonTopMill
 export const AWS_PHISHING_SITE_DOMAIN = "s3.amazonaws.com";
 export const AZURE_PHISHING_SITE_DOMAIN = "blob.core.windows.net";
 export const BITLY_PHISHING_SITE_DOMAIN = "bit.ly";
-export const GOOGLE_SITES_PHISHING_SITE_DOMAIN = "storage.googleapis.com";
+export const GOOGLE_PHISHING_SITE_DOMAIN = "sites.google.com";
 export const GCP_PHISHING_SITE_DOMAIN = "storage.googleapis.com";
 
 export const cardForSubscribedUser = async (
@@ -22,29 +22,36 @@ export const cardForSubscribedUser = async (
       AWS_PHISHING_SITE_DOMAIN,
       "https://cybersecuritynews.com/hackers-leverage-websites-hosted-aws"
     );
+  const { phishingLinkFlagged: sectionForAzureFlagged, section: azureSection } =
+      sectionForPhishingLink(
+          fullLinkURIs,
+          AZURE_PHISHING_SITE_DOMAIN,
+          "https://www.bleepingcomputer.com/news/security/phishing-attack-uses-azure-blob-storage-to-impersonate-microsoft"
+      );
   const { phishingLinkFlagged: sectionForBitlyFlagged, section: bitlySection } =
     sectionForPhishingLink(
       fullLinkURIs,
       BITLY_PHISHING_SITE_DOMAIN,
       "https://www.bleepingcomputer.com/news/security/phishing-attack-uses-bitly-blob-storage-to-impersonate-microsoft"
     );
+  const { phishingLinkFlagged: sectionForGoogleSitesFlagged, section: googleSitesSection } =
+      sectionForPhishingLink(
+          fullLinkURIs,
+          GOOGLE_PHISHING_SITE_DOMAIN,
+          "https://www.bleepingcomputer.com/news/security/phishers-abuse-google-oauth-to-spoof-google-in-dkim-replay-attack/"
+      );
   const { phishingLinkFlagged: sectionForGCPFlagged, section: gcpSection } =
     sectionForPhishingLink(
       fullLinkURIs,
       GCP_PHISHING_SITE_DOMAIN,
       "https://www.bleepingcomputer.com/news/security/phishing-campaign-uses-google-cloud-services-to-steal-office-365-logins/"
     );
-  const { phishingLinkFlagged: sectionForAzureFlagged, section: azureSection } =
-    sectionForPhishingLink(
-      fullLinkURIs,
-      AZURE_PHISHING_SITE_DOMAIN,
-      "https://www.bleepingcomputer.com/news/security/phishing-attack-uses-azure-blob-storage-to-impersonate-microsoft"
-    );
   const wellKnownPhishingLinks = []
-    .concat(sectionForBitlyFlagged ? BITLY_PHISHING_SITE_DOMAIN : [])
-    .concat(sectionForGCPFlagged ? GCP_PHISHING_SITE_DOMAIN : [])
     .concat(sectionForAWSFlagged ? AWS_PHISHING_SITE_DOMAIN : [])
-    .concat(sectionForAzureFlagged ? AZURE_PHISHING_SITE_DOMAIN : []);
+    .concat(sectionForAzureFlagged ? AZURE_PHISHING_SITE_DOMAIN : [])
+    .concat(sectionForBitlyFlagged ? BITLY_PHISHING_SITE_DOMAIN : [])
+    .concat(sectionForGoogleSitesFlagged ? GOOGLE_PHISHING_SITE_DOMAIN : [])
+      .concat(sectionForGCPFlagged ? GCP_PHISHING_SITE_DOMAIN : [])
 
   const { topMillionURIs, nonTopMillionURIs } =
     processNonTopMillion(fullLinkURIs);
@@ -163,10 +170,11 @@ export const cardForSubscribedUser = async (
         collapsible: false,
       },
     ]
-      .concat(sectionForBitlyFlagged ? bitlySection : [])
-      .concat(sectionForGCPFlagged ? gcpSection : [])
       .concat(sectionForAWSFlagged ? awsSection : [])
       .concat(sectionForAzureFlagged ? azureSection : [])
+      .concat(sectionForBitlyFlagged ? bitlySection : [])
+      .concat(sectionForGoogleSitesFlagged ? googleSitesSection : [])
+        .concat(sectionForGCPFlagged ? gcpSection : [])
       .concat(linksSections),
     // .concat(
     //   sectionForDebugging(
