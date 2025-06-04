@@ -26,7 +26,7 @@ export const cardForInactiveUser = {
                 },
                 onClick: {
                   openLink: {
-                    url: "https://toophishy.com",
+                    url: "https://toophishy.com/account",
                     openAs: "OVERLAY",
                     onClose: "RELOAD",
                   },
