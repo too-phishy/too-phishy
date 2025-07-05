@@ -1,6 +1,7 @@
 import { sectionForDebugging } from "../sections/sectionForDebugging.js";
-import { sectionForPhishingLink } from "../sections/sectionForPhishingLink.js";
-import { processNonTopMillion } from "../processNonTopMillion.js";
+import { sectionForCodeHostingSiteLink } from "../sections/sectionForCodeHostingSiteLink.js";
+import { processSuspiciousLinks } from "../processSuspiciousLinks.js";
+import { sectionsForLikelyPhishingLinks } from "../sections/sectionsForLikelyPhishingLinks.js";
 import { sectionsForNonTopMillionLinks } from "../sections/sectionsForNonTopMillionLinks.js";
 
 export const AWS_PHISHING_SITE_DOMAIN = "s3.amazonaws.com";
@@ -17,19 +18,19 @@ export const cardForSubscribedUser = async (
   fullMessageData
 ) => {
   const { phishingLinkFlagged: sectionForAWSFlagged, section: awsSection } =
-    sectionForPhishingLink(
+    sectionForCodeHostingSiteLink(
       fullLinkURIs,
       AWS_PHISHING_SITE_DOMAIN,
       "https://cybersecuritynews.com/hackers-leverage-websites-hosted-aws"
     );
   const { phishingLinkFlagged: sectionForAzureFlagged, section: azureSection } =
-    sectionForPhishingLink(
+    sectionForCodeHostingSiteLink(
       fullLinkURIs,
       AZURE_PHISHING_SITE_DOMAIN,
       "https://www.bleepingcomputer.com/news/security/phishing-attack-uses-azure-blob-storage-to-impersonate-microsoft"
     );
   const { phishingLinkFlagged: sectionForBitlyFlagged, section: bitlySection } =
-    sectionForPhishingLink(
+    sectionForCodeHostingSiteLink(
       fullLinkURIs,
       BITLY_PHISHING_SITE_DOMAIN,
       "https://www.bleepingcomputer.com/news/security/phishing-attack-uses-bitly-blob-storage-to-impersonate-microsoft"
@@ -37,36 +38,42 @@ export const cardForSubscribedUser = async (
   const {
     phishingLinkFlagged: sectionForGoogleSitesFlagged,
     section: googleSitesSection,
-  } = sectionForPhishingLink(
+  } = sectionForCodeHostingSiteLink(
     fullLinkURIs,
     GOOGLE_PHISHING_SITE_DOMAIN,
     "https://www.bleepingcomputer.com/news/security/phishers-abuse-google-oauth-to-spoof-google-in-dkim-replay-attack/"
   );
   const { phishingLinkFlagged: sectionForGCPFlagged, section: gcpSection } =
-    sectionForPhishingLink(
+    sectionForCodeHostingSiteLink(
       fullLinkURIs,
       GCP_PHISHING_SITE_DOMAIN,
       "https://www.bleepingcomputer.com/news/security/phishing-campaign-uses-google-cloud-services-to-steal-office-365-logins/"
     );
-  const wellKnownPhishingLinks = []
-    .concat(sectionForAWSFlagged ? AWS_PHISHING_SITE_DOMAIN : [])
-    .concat(sectionForAzureFlagged ? AZURE_PHISHING_SITE_DOMAIN : [])
-    .concat(sectionForBitlyFlagged ? BITLY_PHISHING_SITE_DOMAIN : [])
-    .concat(sectionForGoogleSitesFlagged ? GOOGLE_PHISHING_SITE_DOMAIN : [])
-    .concat(sectionForGCPFlagged ? GCP_PHISHING_SITE_DOMAIN : []);
 
-  const { topMillionURIs, nonTopMillionURIs } =
-    processNonTopMillion(fullLinkURIs);
-  const { linksSections } = await sectionsForNonTopMillionLinks(
-    nonTopMillionURIs
+  const { reputableURIs, potentialPhishingURIs, likelyPhishingURIs } =
+    await processSuspiciousLinks(fullLinkURIs);
+  const { nonTopMillionLinksSections } = await sectionsForNonTopMillionLinks(
+    potentialPhishingURIs
+  );
+  const { likelyPhishingLinksSections } = await sectionsForLikelyPhishingLinks(
+    likelyPhishingURIs
   );
 
   const sectionsForAttachmentsFlagged = attachments.length > 0;
 
+  const potentialPhishingLinks = []
+    .concat(sectionForAWSFlagged ? AWS_PHISHING_SITE_DOMAIN : [])
+    .concat(sectionForAzureFlagged ? AZURE_PHISHING_SITE_DOMAIN : [])
+    .concat(sectionForBitlyFlagged ? BITLY_PHISHING_SITE_DOMAIN : [])
+    .concat(sectionForGoogleSitesFlagged ? GOOGLE_PHISHING_SITE_DOMAIN : [])
+    .concat(sectionForGCPFlagged ? GCP_PHISHING_SITE_DOMAIN : [])
+    .concat(potentialPhishingURIs);
+
   const overallPhishy =
-    nonTopMillionURIs.length > 0 ||
-    wellKnownPhishingLinks.length > 0 ||
+    likelyPhishingURIs.length > 0 ||
+    potentialPhishingLinks.length > 0 ||
     sectionsForAttachmentsFlagged;
+
   const overviewWidgets = []
     .concat({
       decoratedText: {
@@ -80,53 +87,51 @@ export const cardForSubscribedUser = async (
       },
     })
     .concat(
-      topMillionURIs.length > 0
+      likelyPhishingURIs.length > 0
         ? {
             decoratedText: {
-              text: `${topMillionURIs.length} reputable ${
-                topMillionURIs.length > 1 ? "links" : "link"
+              text: `Don't click`,
+              bottomLabel: `${likelyPhishingURIs.length} likely phishing ${
+                likelyPhishingURIs.length > 1 ? "links" : "link"
+              }: ${likelyPhishingURIs
+                .map((URIData) => URIData.URI.domain())
+                .join(", ")}. Further details below.`,
+              startIcon: {
+                iconUrl: "https://toophishy.com/noun-link-5741519-FF001C.png",
+              },
+            },
+          }
+        : []
+    )
+    .concat(
+      potentialPhishingLinks.length > 0
+        ? {
+            decoratedText: {
+              text: `Hesitate before clicking`,
+              bottomLabel: `${
+                potentialPhishingLinks.length
+              } potential phishing ${
+                potentialPhishingLinks.length > 1 ? "links" : "link"
+              }: ${potentialPhishingLinks.join(", ")}. Further details below.`,
+              startIcon: {
+                iconUrl: "https://toophishy.com/noun-link-5741519-FF001C.png",
+              },
+            },
+          }
+        : []
+    )
+    .concat(
+      reputableURIs.length > 0
+        ? {
+            decoratedText: {
+              text: `${reputableURIs.length} reputable ${
+                reputableURIs.length > 1 ? "links" : "link"
               }`,
-              bottomLabel: `${topMillionURIs
+              bottomLabel: `${reputableURIs
                 .map((URI) => URI.domain())
                 .join(", ")}`,
               startIcon: {
                 iconUrl: "https://toophishy.com/noun-link-5741519-007435.png",
-              },
-            },
-          }
-        : []
-    )
-    .concat(
-      wellKnownPhishingLinks.length > 0
-        ? {
-            decoratedText: {
-              text: `Hesitate before clicking`,
-              bottomLabel: `${
-                wellKnownPhishingLinks.length
-              } potential phishing ${
-                wellKnownPhishingLinks.length > 1 ? "links" : "link"
-              }: ${wellKnownPhishingLinks.join(", ")}. Further details below.`,
-              startIcon: {
-                iconUrl: "https://toophishy.com/noun-link-5741519-FF001C.png",
-              },
-            },
-          }
-        : []
-    )
-    .concat(
-      nonTopMillionURIs.length > 0
-        ? {
-            decoratedText: {
-              text: `Hesitate before clicking`,
-              bottomLabel: `${
-                  nonTopMillionURIs.length
-              } non-top-million ${
-                  nonTopMillionURIs.length > 1 ? "links" : "link"
-              }: ${nonTopMillionURIs
-                  .map((URI) => URI.domain())
-                  .join(", ")}. Further details below.`,
-              startIcon: {
-                iconUrl: "https://toophishy.com/noun-link-5741519-FF001C.png",
               },
             },
           }
@@ -172,19 +177,13 @@ export const cardForSubscribedUser = async (
         collapsible: false,
       },
     ]
+      .concat(likelyPhishingLinksSections)
       .concat(sectionForAWSFlagged ? awsSection : [])
       .concat(sectionForAzureFlagged ? azureSection : [])
       .concat(sectionForBitlyFlagged ? bitlySection : [])
       .concat(sectionForGoogleSitesFlagged ? googleSitesSection : [])
       .concat(sectionForGCPFlagged ? gcpSection : [])
-      .concat(linksSections),
-    // .concat(
-    //   sectionForDebugging(
-    //     messageBodies,
-    //     headers,
-    //     fullMessageData,
-    //     attachments,
-    //   ),
-    // ),
+      .concat(nonTopMillionLinksSections),
+    // .concat(sectionForDebugging(potentialPhishingURIs, likelyPhishingURIs)),
   };
 };
