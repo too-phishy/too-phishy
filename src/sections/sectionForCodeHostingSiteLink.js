@@ -1,4 +1,4 @@
-export const sectionForPhishingLink = (
+export const sectionForCodeHostingSiteLink = (
   fullLinkURIs,
   knownPhishingDomain,
   learnMoreUrl
