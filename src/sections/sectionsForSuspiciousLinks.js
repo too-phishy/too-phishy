@@ -1,6 +1,7 @@
 const sectionForLink = (URIData) => {
   const now = new Date();
-  const diffDays = (now - URIData.domainRegistrationDate) / (1000 * 60 * 60 * 24);
+  const diffDays =
+    (now - URIData.domainRegistrationDate) / (1000 * 60 * 60 * 24);
   const widgets = [
     {
       decoratedText: {

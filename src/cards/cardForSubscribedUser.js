@@ -56,11 +56,10 @@ export const cardForSubscribedUser = async (
     .concat(sectionForGoogleSitesFlagged ? GOOGLE_PHISHING_SITE_DOMAIN : [])
     .concat(sectionForGCPFlagged ? GCP_PHISHING_SITE_DOMAIN : []);
 
-  const { reputableURIs, suspiciousURIs } =
-    await processSuspiciousLinks(fullLinkURIs);
-  const { linksSections } = await sectionsForSuspiciousLinks(
-    suspiciousURIs
+  const { reputableURIs, suspiciousURIs } = await processSuspiciousLinks(
+    fullLinkURIs
   );
+  const { linksSections } = await sectionsForSuspiciousLinks(suspiciousURIs);
 
   const sectionsForAttachmentsFlagged = attachments.length > 0;
 
