@@ -22,12 +22,11 @@
     "express-async-handler": "^1.2.0",
     "googleapis": "^125.0.0",
     "pre-commit": "^1.0.10",
+    "rdap-client": "1.0.5",
     "sanitize-filename": "^1.6.3",
     "stripe": "^13.3.0",
-    "to-case": "^2.0.0",
     "ts-jest": "^29.1.0",
-    "urijs": "^1.19.11",
-    "whois-json": "^2.0.4"
+    "urijs": "^1.19.11"
   },
   "devDependencies": {
     "@babel/preset-env": "^7.21.4",

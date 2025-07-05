@@ -1,7 +1,7 @@
 import { sectionForDebugging } from "../sections/sectionForDebugging.js";
 import { sectionForPhishingLink } from "../sections/sectionForPhishingLink.js";
-import { processNonTopMillion } from "../processNonTopMillion.js";
-import { sectionsForNonTopMillionLinks } from "../sections/sectionsForNonTopMillionLinks.js";
+import { processSuspiciousLinks } from "../processSuspiciousLinks.js";
+import { sectionsForSuspiciousLinks } from "../sections/sectionsForSuspiciousLinks.js";
 
 export const AWS_PHISHING_SITE_DOMAIN = "s3.amazonaws.com";
 export const AZURE_PHISHING_SITE_DOMAIN = "blob.core.windows.net";
@@ -56,16 +56,16 @@ export const cardForSubscribedUser = async (
     .concat(sectionForGoogleSitesFlagged ? GOOGLE_PHISHING_SITE_DOMAIN : [])
     .concat(sectionForGCPFlagged ? GCP_PHISHING_SITE_DOMAIN : []);
 
-  const { topMillionURIs, nonTopMillionURIs } =
-    processNonTopMillion(fullLinkURIs);
-  const { linksSections } = await sectionsForNonTopMillionLinks(
-    nonTopMillionURIs
+  const { reputableURIs, suspiciousURIs } =
+    await processSuspiciousLinks(fullLinkURIs);
+  const { linksSections } = await sectionsForSuspiciousLinks(
+    suspiciousURIs
   );
 
   const sectionsForAttachmentsFlagged = attachments.length > 0;
 
   const overallPhishy =
-    nonTopMillionURIs.length > 0 ||
+    suspiciousURIs.length > 0 ||
     wellKnownPhishingLinks.length > 0 ||
     sectionsForAttachmentsFlagged;
   const overviewWidgets = []
@@ -81,13 +81,13 @@ export const cardForSubscribedUser = async (
       },
     })
     .concat(
-      topMillionURIs.length > 0
+      reputableURIs.length > 0
         ? {
             decoratedText: {
-              text: `${topMillionURIs.length} reputable ${
-                topMillionURIs.length > 1 ? "links" : "link"
+              text: `${reputableURIs.length} reputable ${
+                reputableURIs.length > 1 ? "links" : "link"
               }`,
-              bottomLabel: `${topMillionURIs
+              bottomLabel: `${reputableURIs
                 .map((URI) => URI.domain())
                 .join(", ")}`,
               startIcon: {
@@ -115,14 +115,14 @@ export const cardForSubscribedUser = async (
         : []
     )
     .concat(
-      nonTopMillionURIs.length > 0
+      suspiciousURIs.length > 0
         ? {
             decoratedText: {
               text: `Hesitate before clicking`,
-              bottomLabel: `${nonTopMillionURIs.length} non-top-million ${
-                nonTopMillionURIs.length > 1 ? "links" : "link"
-              }: ${nonTopMillionURIs
-                .map((URI) => URI.domain())
+              bottomLabel: `${suspiciousURIs.length} suspicious ${
+                suspiciousURIs.length > 1 ? "links" : "link"
+              }: ${suspiciousURIs
+                .map((URIData) => URIData.URI.domain())
                 .join(", ")}. Further details below.`,
               startIcon: {
                 iconUrl: "https://toophishy.com/noun-link-5741519-FF001C.png",
