@@ -1,27 +1,35 @@
 import * as util from "util";
 
 export const sectionForDebugging = (
-  potentialPhishingURIs,
-  likelyPhishingURIs
+  headers,
+  senderDomain,
+  senderDomainRegistrationDate
 ) => {
   return {
     header: "Debugging",
     widgets: [
       {
         textParagraph: {
-          text: `potentialPhishingURIs is ${util.inspect(
-            potentialPhishingURIs,
-            {
-              depth: null,
-            }
-          )}`,
+          text: `headers is ${util.inspect(headers, {
+            depth: null,
+          })}`,
         },
       },
       {
         textParagraph: {
-          text: `likelyPhishingURIs is ${util.inspect(likelyPhishingURIs, {
+          text: `senderDomain is ${util.inspect(senderDomain, {
             depth: null,
           })}`,
+        },
+      },
+      {
+        textParagraph: {
+          text: `senderDomainRegistrationDate is ${util.inspect(
+            senderDomainRegistrationDate,
+            {
+              depth: null,
+            }
+          )}`,
         },
       },
     ],

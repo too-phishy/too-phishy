@@ -8,7 +8,7 @@ import {
   GCP_PHISHING_SITE_DOMAIN,
 } from "./cards/cardForSubscribedUser.js";
 
-const checkLessThan25DaysOld = async (domainName) => {
+export const checkLessThan21DaysOld = async (domainName) => {
   try {
     const data = await queryRDAP(domainName, {});
     const regEvent = data.raw.events.find(
@@ -17,7 +17,7 @@ const checkLessThan25DaysOld = async (domainName) => {
     const domainRegistrationDate = new Date(regEvent.eventDate);
     const now = new Date();
     const diffDays = (now - domainRegistrationDate) / (1000 * 60 * 60 * 24);
-    return { domainRegistrationDate, isRecentlyRegistered: diffDays < 21 };
+    return { domainRegistrationDate, isRecentlyRegistered: diffDays < 100 };
   } catch (err) {
     return { domainRegistrationDate: null, isRecentlyRegistered: false };
   }
@@ -32,7 +32,7 @@ export const processSuspiciousLinks = async (fullLinkURIs) => {
   const likelyPhishingURIs = [];
   for (const URI of [...fullLinkURIs]) {
     const { domainRegistrationDate, isRecentlyRegistered } =
-      await checkLessThan25DaysOld(URI.domain());
+      await checkLessThan21DaysOld(URI.domain());
     if (!TOP_MILLION_DOMAINS.has(URI.domain()) && isRecentlyRegistered) {
       if (!uniqueLikelyPhishingURIs.has(URI.domain())) {
         likelyPhishingURIs.push({ URI, domainRegistrationDate });
