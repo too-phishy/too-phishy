@@ -7,7 +7,7 @@
   "scripts": {
     "test": "jest",
     "precommit-msg": "echo 'Pre-commit checks...' && exit 0",
-    "prettier": "prettier --write . src/ tests/",
+    "prettier": "prettier --write . src/",
     "git add": "git add ."
   },
   "pre-commit": [
@@ -27,12 +27,10 @@
     "pre-commit": "^1.0.10",
     "sanitize-filename": "^1.6.3",
     "stripe": "^13.3.0",
-    "ts-jest": "^29.1.0",
     "urijs": "^1.19.11"
   },
   "devDependencies": {
     "@babel/preset-env": "^7.21.4",
-    "jest": "^29.7.0",
     "prettier": "2.8.8"
   }
 }
