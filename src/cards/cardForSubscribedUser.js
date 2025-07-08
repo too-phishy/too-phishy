@@ -1,8 +1,10 @@
 import { sectionForDebugging } from "../sections/sectionForDebugging.js";
 import { sectionForCodeHostingSiteLink } from "../sections/sectionForCodeHostingSiteLink.js";
 import { processSuspiciousLinks } from "../processSuspiciousLinks.js";
+import { sectionForSenderDomain } from "../sections/sectionForSenderDomain.js";
 import { sectionsForLikelyPhishingLinks } from "../sections/sectionsForLikelyPhishingLinks.js";
 import { sectionsForNonTopMillionLinks } from "../sections/sectionsForNonTopMillionLinks.js";
+import { processSenderDomain } from "../processSenderDomain.js";
 
 export const AWS_PHISHING_SITE_DOMAIN = "s3.amazonaws.com";
 export const AZURE_PHISHING_SITE_DOMAIN = "blob.core.windows.net";
@@ -50,6 +52,12 @@ export const cardForSubscribedUser = async (
       "https://www.bleepingcomputer.com/news/security/phishing-campaign-uses-google-cloud-services-to-steal-office-365-logins/"
     );
 
+  const {
+    senderDomain,
+    senderDomainRegistrationDate,
+    isSenderDomainLikelyPhishingLink,
+  } = processSenderDomain(headers);
+
   const { reputableURIs, potentialPhishingURIs, likelyPhishingURIs } =
     await processSuspiciousLinks(fullLinkURIs);
   const { nonTopMillionLinksSections } = await sectionsForNonTopMillionLinks(
@@ -57,6 +65,11 @@ export const cardForSubscribedUser = async (
   );
   const { likelyPhishingLinksSections } = await sectionsForLikelyPhishingLinks(
     likelyPhishingURIs
+  );
+
+  const senderDomainSection = sectionForSenderDomain(
+    senderDomain,
+    senderDomainRegistrationDate
   );
 
   const sectionsForAttachmentsFlagged = attachments.length > 0;
@@ -70,6 +83,7 @@ export const cardForSubscribedUser = async (
     .concat(potentialPhishingURIs);
 
   const overallPhishy =
+    isSenderDomainLikelyPhishingLink ||
     likelyPhishingURIs.length > 0 ||
     potentialPhishingLinks.length > 0 ||
     sectionsForAttachmentsFlagged;
@@ -86,6 +100,20 @@ export const cardForSubscribedUser = async (
         },
       },
     })
+    .concat(
+      isSenderDomainLikelyPhishingLink
+        ? {
+            decoratedText: {
+              text: "Don't trust this sender",
+              bottomLabel: `Sender ${senderEmail} is emailing you from a likely phishing address. Further details below.`,
+              startIcon: {
+                iconUrl:
+                  "https://toophishy.com/noun-outgoing-mail-367819-FF001C.png",
+              },
+            },
+          }
+        : []
+    )
     .concat(
       likelyPhishingURIs.length > 0
         ? {
@@ -177,13 +205,16 @@ export const cardForSubscribedUser = async (
         collapsible: false,
       },
     ]
+      .concat(isSenderDomainLikelyPhishingLink ? senderDomainSection : [])
       .concat(likelyPhishingLinksSections)
       .concat(sectionForAWSFlagged ? awsSection : [])
       .concat(sectionForAzureFlagged ? azureSection : [])
       .concat(sectionForBitlyFlagged ? bitlySection : [])
       .concat(sectionForGoogleSitesFlagged ? googleSitesSection : [])
       .concat(sectionForGCPFlagged ? gcpSection : [])
-      .concat(nonTopMillionLinksSections),
-    // .concat(sectionForDebugging(potentialPhishingURIs, likelyPhishingURIs)),
+      .concat(nonTopMillionLinksSections)
+      .concat(
+        sectionForDebugging(headers, senderDomain, senderDomainRegistrationDate)
+      ),
   };
 };
