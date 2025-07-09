@@ -9,7 +9,10 @@ import {
 } from "./cards/cardForSubscribedUser.js";
 
 const checkLessThan25DaysOld = async (domainName) => {
-  const data = await queryRDAP(domainName, {});
+  const data = await queryRDAP(domainName, {
+    timeout: 5000,
+    headers: { "User-Agent": "too-phishy/1.0" },
+  });
   const regEvent = data.raw.events.find(
     (e) => e.eventAction === "registration"
   );
