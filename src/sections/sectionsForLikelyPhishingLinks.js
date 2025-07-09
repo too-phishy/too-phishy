@@ -34,7 +34,7 @@ const sectionForLikelyPhishingLink = (URIData) => {
     },
   ];
   return {
-    header: `Likely Phishing Link: ${URIData.URI.toString()}`,
+    header: `Very Likely Phishing Link: ${URIData.URI.toString()}`,
     widgets: widgets,
     collapsible: true,
   };

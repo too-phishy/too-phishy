@@ -91,7 +91,7 @@ export const cardForSubscribedUser = async (
         ? {
             decoratedText: {
               text: `Don't click`,
-              bottomLabel: `${likelyPhishingURIs.length} likely phishing ${
+              bottomLabel: `${likelyPhishingURIs.length} very likely phishing ${
                 likelyPhishingURIs.length > 1 ? "links" : "link"
               }: ${likelyPhishingURIs
                 .map((URIData) => URIData.URI.domain())
