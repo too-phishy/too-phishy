@@ -1,4 +1,5 @@
-import { queryRDAP } from "@iocium/rdap-lite";
+import { domain } from "node-rdap";
+import error from "express/lib/router/route.js";
 
 import { TOP_MILLION_DOMAINS } from "./topDomains/topDomains.js";
 import {
@@ -10,15 +11,14 @@ import {
 
 const checkLessThan25DaysOld = async (domainName) => {
   try {
-    const data = await queryRDAP(domainName, {});
-    const regEvent = data.raw.events.find(
-      (e) => e.eventAction === "registration"
-    );
+    const data = await domain(domainName);
+    const regEvent = data.events.find((e) => e.eventAction === "registration");
     const domainRegistrationDate = new Date(regEvent.eventDate);
     const now = new Date();
     const diffDays = (now - domainRegistrationDate) / (1000 * 60 * 60 * 24);
     return { domainRegistrationDate, isRecentlyRegistered: diffDays < 21 };
   } catch (err) {
+    console.error(`Error fetching RDAP data for ${domainName}: ${error}`);
     return { domainRegistrationDate: null, isRecentlyRegistered: false };
   }
 };
