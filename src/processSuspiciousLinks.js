@@ -40,7 +40,7 @@ export const processSuspiciousLinks = async (fullLinkURIs) => {
       }
     } else if (!TOP_MILLION_DOMAINS.has(URI.domain())) {
       if (!uniquePotentialPhishingURIs.has(URI.domain())) {
-        potentialPhishingURIs.push(URI);
+        potentialPhishingURIs.push({ URI, domainRegistrationDate });
         uniquePotentialPhishingURIs.add(URI.domain());
       }
     } else {
