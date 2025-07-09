@@ -183,7 +183,7 @@ export const cardForSubscribedUser = async (
       .concat(sectionForBitlyFlagged ? bitlySection : [])
       .concat(sectionForGoogleSitesFlagged ? googleSitesSection : [])
       .concat(sectionForGCPFlagged ? gcpSection : [])
-      .concat(nonTopMillionLinksSections),
-    // .concat(sectionForDebugging(potentialPhishingURIs, likelyPhishingURIs)),
+      .concat(nonTopMillionLinksSections)
+      .concat(sectionForDebugging(potentialPhishingURIs, likelyPhishingURIs)),
   };
 };
