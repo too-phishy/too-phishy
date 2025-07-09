@@ -9,18 +9,14 @@ import {
 } from "./cards/cardForSubscribedUser.js";
 
 const checkLessThan25DaysOld = async (domainName) => {
-  try {
-    const data = await queryRDAP(domainName, {});
-    const regEvent = data.raw.events.find(
-      (e) => e.eventAction === "registration"
-    );
-    const domainRegistrationDate = new Date(regEvent.eventDate);
-    const now = new Date();
-    const diffDays = (now - domainRegistrationDate) / (1000 * 60 * 60 * 24);
-    return { domainRegistrationDate, isRecentlyRegistered: diffDays < 21 };
-  } catch (err) {
-    return { domainRegistrationDate: null, isRecentlyRegistered: false };
-  }
+  const data = await queryRDAP(domainName, {});
+  const regEvent = data.raw.events.find(
+    (e) => e.eventAction === "registration"
+  );
+  const domainRegistrationDate = new Date(regEvent.eventDate);
+  const now = new Date();
+  const diffDays = (now - domainRegistrationDate) / (1000 * 60 * 60 * 24);
+  return { domainRegistrationDate, isRecentlyRegistered: diffDays < 21 };
 };
 
 export const processSuspiciousLinks = async (fullLinkURIs) => {
