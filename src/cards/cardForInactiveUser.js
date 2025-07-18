@@ -9,8 +9,7 @@ export const cardForInactiveUser = {
         },
         {
           textParagraph: {
-            // "text": "To get started sign up for a Too Phishy account!"
-            text: `You do not have a Too Phishy account. Please sign up for a one-month free trial and then refresh to begin.`,
+            text: "To get started sign up for a Too Phishy account!",
           },
           horizontalAlignment: "CENTER",
         },
@@ -26,7 +25,7 @@ export const cardForInactiveUser = {
                 },
                 onClick: {
                   openLink: {
-                    url: "https://toophishy.com/account",
+                    url: "https://toophishy.com",
                     openAs: "OVERLAY",
                     onClose: "RELOAD",
                   },

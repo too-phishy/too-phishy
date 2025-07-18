@@ -10,7 +10,7 @@ export const BITLY_PHISHING_SITE_DOMAIN = "bit.ly";
 export const GOOGLE_PHISHING_SITE_DOMAIN = "sites.google.com";
 export const GCP_PHISHING_SITE_DOMAIN = "storage.googleapis.com";
 
-export const cardForSubscribedUser = async (
+export const cardForActiveUser = async (
   headers,
   fullLinkURIs,
   messageBodies,

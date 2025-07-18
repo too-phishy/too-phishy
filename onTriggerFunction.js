@@ -5,7 +5,7 @@ import Stripe from "stripe";
 import asyncHandler from "express-async-handler";
 import { OAuth2Client } from "google-auth-library";
 import { processMessage } from "./src/processMessage.js";
-import { cardForSubscribedUser } from "./src/cards/cardForSubscribedUser.js";
+import { cardForActiveUser } from "./src/cards/cardForActiveUser.js";
 import { cardForInactiveUser } from "./src/cards/cardForInactiveUser.js";
 
 const gmail = google.gmail({ version: "v1" });
@@ -25,7 +25,7 @@ const stripe = new Stripe(process.env.STRIPE_SECRET_KEY, {
   },
 });
 
-const getPrice = async () => {
+const getSubscriptionPrice = async () => {
   const prices = await stripe.prices.list({
     active: "true",
     lookup_keys: ["too-phishy-monthly"],
@@ -35,20 +35,20 @@ const getPrice = async () => {
 };
 
 export const hasActiveSubscription = async (email) => {
-  const price = getPrice();
+  const subscriptionPrice = getSubscriptionPrice();
   const customers = await stripe.customers.list({
     email: email,
   });
   for await (const customer of customers.data) {
     const activeSubscriptionsForCustomer = await stripe.subscriptions.list({
       customer: customer.id,
-      price: price.id,
+      price: subscriptionPrice.id,
       status: "active",
       limit: 1,
     });
     const trialingSubscriptionsForCustomer = await stripe.subscriptions.list({
       customer: customer.id,
-      price: price.id,
+      price: subscriptionPrice.id,
       status: "trialing",
       limit: 1,
     });
@@ -56,6 +56,21 @@ export const hasActiveSubscription = async (email) => {
       activeSubscriptionsForCustomer.data.length > 0 ||
       trialingSubscriptionsForCustomer.data.length > 0
     ) {
+      return true;
+    }
+  }
+  return false;
+};
+
+export const hasActivePayment = async (email) => {
+  const customers = await stripe.customers.list({
+    email: email,
+  });
+  for await (const customer of customers.data) {
+    const paymentsForCustomer = await stripe.paymentIntents.search({
+      query: `customer:'${customer.id}' AND status:'succeeded'`,
+    });
+    if (paymentsForCustomer.data.length > 0) {
       return true;
     }
   }
@@ -74,6 +89,8 @@ app.post(
     const email = tokenInfo.email;
 
     const activeSubscription = await hasActiveSubscription(email);
+    const activePayment = await hasActivePayment(email);
+    const activeCustomer = activeSubscription || activePayment;
 
     axios
       .post(process.env.DATASTORE_ENDPOINT, {
@@ -109,8 +126,8 @@ app.post(
     const { headers, fullLinkURIs, messageBodies, attachments } =
       await processMessage(messageData);
 
-    const pushCard = activeSubscription
-      ? await cardForSubscribedUser(
+    const pushCard = activeCustomer
+      ? await cardForActiveUser(
           headers,
           fullLinkURIs,
           messageBodies,

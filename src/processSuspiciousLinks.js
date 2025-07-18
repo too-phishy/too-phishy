@@ -7,7 +7,7 @@ import {
   AZURE_PHISHING_SITE_DOMAIN,
   BITLY_PHISHING_SITE_DOMAIN,
   GCP_PHISHING_SITE_DOMAIN,
-} from "./cards/cardForSubscribedUser.js";
+} from "./cards/cardForActiveUser.js";
 
 const checkLessThan25DaysOld = async (domainName) => {
   try {
