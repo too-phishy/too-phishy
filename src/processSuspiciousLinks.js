@@ -31,19 +31,7 @@ export const processSuspiciousLinks = async (fullLinkURIs) => {
   const potentialPhishingURIs = [];
   const likelyPhishingURIs = [];
   for (const URI of [...fullLinkURIs]) {
-    const { domainRegistrationDate, isRecentlyRegistered } =
-      await checkLessThan25DaysOld(URI.domain());
-    if (!TOP_MILLION_DOMAINS.has(URI.domain()) && isRecentlyRegistered) {
-      if (!uniqueLikelyPhishingURIs.has(URI.domain())) {
-        likelyPhishingURIs.push({ URI, domainRegistrationDate });
-        uniqueLikelyPhishingURIs.add(URI.domain());
-      }
-    } else if (!TOP_MILLION_DOMAINS.has(URI.domain())) {
-      if (!uniquePotentialPhishingURIs.has(URI.domain())) {
-        potentialPhishingURIs.push(URI);
-        uniquePotentialPhishingURIs.add(URI.domain());
-      }
-    } else {
+    if (TOP_MILLION_DOMAINS.has(URI.domain())) {
       if (
         !uniqueTopMillionURIs.has(URI.domain()) &&
         URI.normalizeHostname()
@@ -61,6 +49,21 @@ export const processSuspiciousLinks = async (fullLinkURIs) => {
       ) {
         reputableURIs.push(URI);
         uniqueTopMillionURIs.add(URI.domain());
+      }
+    }
+    if (!TOP_MILLION_DOMAINS.has(URI.domain())) {
+      const { domainRegistrationDate, isRecentlyRegistered } =
+        await checkLessThan25DaysOld(URI.domain());
+      if (isRecentlyRegistered) {
+        if (!uniqueLikelyPhishingURIs.has(URI.domain())) {
+          likelyPhishingURIs.push({ URI, domainRegistrationDate });
+          uniqueLikelyPhishingURIs.add(URI.domain());
+        }
+      } else {
+        if (!uniquePotentialPhishingURIs.has(URI.domain())) {
+          potentialPhishingURIs.push(URI);
+          uniquePotentialPhishingURIs.add(URI.domain());
+        }
       }
     }
   }
