@@ -14,7 +14,6 @@ export const cardForActiveUser = async (
   headers,
   fullLinkURIs,
   messageBodies,
-  attachments,
   fullMessageData
 ) => {
   const { phishingLinkFlagged: sectionForAWSFlagged, section: awsSection } =
@@ -59,8 +58,6 @@ export const cardForActiveUser = async (
     likelyPhishingURIs
   );
 
-  const sectionsForAttachmentsFlagged = attachments.length > 0;
-
   const potentialPhishingLinks = []
     .concat(sectionForAWSFlagged ? AWS_PHISHING_SITE_DOMAIN : [])
     .concat(sectionForAzureFlagged ? AZURE_PHISHING_SITE_DOMAIN : [])
@@ -70,9 +67,7 @@ export const cardForActiveUser = async (
     .concat(potentialPhishingURIs);
 
   const overallPhishy =
-    likelyPhishingURIs.length > 0 ||
-    potentialPhishingLinks.length > 0 ||
-    sectionsForAttachmentsFlagged;
+    likelyPhishingURIs.length > 0 || potentialPhishingLinks.length > 0;
 
   const overviewWidgets = []
     .concat({
@@ -136,24 +131,7 @@ export const cardForActiveUser = async (
             },
           }
         : []
-    )
-    .concat({
-      decoratedText: {
-        text: sectionsForAttachmentsFlagged
-          ? `Contains attachments`
-          : `No attachments`,
-        bottomLabel: sectionsForAttachmentsFlagged
-          ? `Only open attachments unless you are 100% sure that the sender is who they say they are: ${attachments.join(
-              ", "
-            )}`
-          : ``,
-        startIcon: {
-          iconUrl: sectionsForAttachmentsFlagged
-            ? "https://toophishy.com/noun-attachment-2490420-FF001C.png"
-            : "https://toophishy.com/noun-attachment-2490420-007435.png",
-        },
-      },
-    });
+    );
   return {
     sections: [
       {

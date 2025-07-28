@@ -1,40 +1,24 @@
 import URI from "urijs";
 import cheerio from "cheerio";
-import sanitize from "sanitize-filename";
 
 const LINK_ELEMENT_TYPES =
   "a[href^='http://']:not(a[href^='mailto']), " +
   "a[href^='https://']:not(a[href^='mailto']), " +
   "a[href^='/']:not(a[href^='mailto'])";
 
-export const isNotInlineAttachment = (part) => {
-  for (const header of part.headers) {
-    if (header.name.toLowerCase() === "content-disposition") {
-      return header.value.toLowerCase().startsWith("attachment");
-    }
-  }
-};
-
-export const processPart = async (part, attachments, messageBodies) => {
+export const processPart = async (part, messageBodies) => {
   if (part.mimeType === "text/html" && part.body.size > 0) {
     messageBodies.push(Buffer.from(part.body.data, "base64").toString("utf-8"));
   }
-  if (part.filename) {
-    if (part.body.attachmentId && isNotInlineAttachment(part)) {
-      const filePath = `${sanitize(part.filename)}`; // Provide a suitable file name and extension
-      attachments.push(filePath);
-    }
-  }
   if (part.parts) {
     for (const innerPart of part.parts) {
-      await processPart(innerPart, attachments, messageBodies);
+      await processPart(innerPart, messageBodies);
     }
   }
 };
 
 export const processMessage = async (message) => {
   const messageBodies = [];
-  const attachments = [];
   if (message.payload.body.size > 0) {
     messageBodies.push(
       Buffer.from(message.payload.body.data, "base64").toString("utf-8")
@@ -42,7 +26,7 @@ export const processMessage = async (message) => {
   }
   if (message.payload && message.payload.parts) {
     for (const part of message.payload.parts) {
-      await processPart(part, attachments, messageBodies);
+      await processPart(part, messageBodies);
     }
   }
   let headers = Object.assign(
@@ -62,5 +46,5 @@ export const processMessage = async (message) => {
     });
   }
 
-  return { headers, fullLinkURIs, messageBodies, attachments };
+  return { headers, fullLinkURIs, messageBodies };
 };

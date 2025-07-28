@@ -123,15 +123,15 @@ app.post(
     });
     const messageData = gmailResponse.data;
 
-    const { headers, fullLinkURIs, messageBodies, attachments } =
-      await processMessage(messageData);
+    const { headers, fullLinkURIs, messageBodies } = await processMessage(
+      messageData
+    );
 
     const pushCard = activeCustomer
       ? await cardForActiveUser(
           headers,
           fullLinkURIs,
           messageBodies,
-          attachments,
           messageData
         )
       : cardForInactiveUser;
