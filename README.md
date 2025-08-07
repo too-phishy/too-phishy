@@ -13,7 +13,7 @@ I've open sourced this repo so that anyone can contribute.
 ## To install dependencies:
 
 ```
-nvm use 18
+nvm use 21
 npm install
 ```
 
