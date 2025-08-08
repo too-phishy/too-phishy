@@ -79,6 +79,7 @@ export const cardForActiveUser = async (
             ? "https://toophishy.com/red.png"
             : "https://toophishy.com/green.png",
         },
+        wrapText: true,
       },
     })
     .concat(
@@ -94,6 +95,7 @@ export const cardForActiveUser = async (
               startIcon: {
                 iconUrl: "https://toophishy.com/noun-link-5741519-FF001C.png",
               },
+              wrapText: true,
             },
           }
         : []
@@ -111,6 +113,7 @@ export const cardForActiveUser = async (
               startIcon: {
                 iconUrl: "https://toophishy.com/noun-link-5741519-FF001C.png",
               },
+              wrapText: true,
             },
           }
         : []
@@ -128,6 +131,7 @@ export const cardForActiveUser = async (
               startIcon: {
                 iconUrl: "https://toophishy.com/noun-link-5741519-007435.png",
               },
+              wrapText: true,
             },
           }
         : []

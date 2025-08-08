@@ -22,6 +22,7 @@ export const sectionForCodeHostingSiteLink = (
           decoratedText: {
             text: ``,
             bottomLabel: `Hosting code on a popular web hosting site like ${knownPhishingDomain} allows scammers to get links to their code past spam filters.`,
+            wrapText: true,
           },
         },
         {

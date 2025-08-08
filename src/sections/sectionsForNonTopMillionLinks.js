@@ -4,6 +4,7 @@ const sectionForLink = (URI) => {
       decoratedText: {
         text: ``,
         bottomLabel: `This link is not in the top one million most popular domains on the internet, as defined by the Tranco Top 1 Million list. Domains not on this list may lead somewhere untrustworthy.`,
+        wrapText: true,
       },
     },
     {

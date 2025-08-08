@@ -9,6 +9,7 @@ const sectionForLikelyPhishingLink = (URIData) => {
         bottomLabel: `This link is ${Math.floor(
           diffDays
         )} days old. One of the best ways to identify a phishing site is if its domain was registered in the past 21 days.`,
+        wrapText: true,
       },
     },
     {
@@ -30,6 +31,7 @@ const sectionForLikelyPhishingLink = (URIData) => {
       decoratedText: {
         text: `Domain registration date:`,
         bottomLabel: URIData.domainRegistrationDate,
+        wrapText: true,
       },
     },
   ];
