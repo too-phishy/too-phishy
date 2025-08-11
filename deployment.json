@@ -10,6 +10,9 @@
       "logoUrl": "https://toophishy.com/logo.png"
     },
     "gmail": {
+      "homepageTrigger": {
+        "runFunction": "https://us-central1-too-phishy.cloudfunctions.net/loadHomePage"
+      },
       "contextualTriggers": [
         {
           "unconditional": {},

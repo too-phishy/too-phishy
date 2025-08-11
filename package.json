@@ -7,7 +7,7 @@
   "scripts": {
     "test": "jest",
     "precommit-msg": "echo 'Pre-commit checks...' && exit 0",
-    "prettier": "prettier --write . onTriggerFunction/src/",
+    "prettier": "prettier --write . onTriggerFunction/src/ runFunction/function.js",
     "git add": "git add ."
   },
   "pre-commit": [

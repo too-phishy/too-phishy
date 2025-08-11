@@ -13,8 +13,8 @@ build
 **/obj/**
 
 # Dependencies
-node_modules
-yarn.lock
+**/node_modules/**
+**/package-lock.json/**
 !/yarn.lock
 composer.lock
 

@@ -20,6 +20,8 @@ npm install
 ## To run the entire test suite:
 
 ```
+cd onTriggerFunction
+npm install
 npm test
 ```
 
