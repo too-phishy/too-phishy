@@ -6,7 +6,7 @@ steps: # Build the container image
         "-t",
         "gcr.io/$PROJECT_ID/$_SERVICE_NAME",
         "-f",
-        "Dockerfile-onTriggerFunction",
+        "Dockerfile",
         ".",
       ]
   # Push the container image to Container Registry
