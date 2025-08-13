@@ -99,7 +99,7 @@ export const cardForActiveUser = async (
                 .map((URIHash) => URIHash.URI.domain())
                 .join(", ")}. Further details below.`,
               startIcon: {
-                iconUrl: "https://toophishy.com/clock.png",
+                iconUrl: "https://toophishy.com/noun-link-red.png",
               },
               wrapText: true,
             },
@@ -117,7 +117,7 @@ export const cardForActiveUser = async (
                 potentialPhishingLinks.length > 1 ? "links" : "link"
               }: ${potentialPhishingLinks.join(", ")}. Further details below.`,
               startIcon: {
-                iconUrl: "https://toophishy.com/noun-link-5741519-FF001C.png",
+                iconUrl: "https://toophishy.com/noun-link-orange.png",
               },
               wrapText: true,
             },
@@ -135,7 +135,7 @@ export const cardForActiveUser = async (
                 .map((URI) => URI.domain())
                 .join(", ")}`,
               startIcon: {
-                iconUrl: "https://toophishy.com/noun-link-5741519-007435.png",
+                iconUrl: "https://toophishy.com/noun-link-green.png",
               },
               wrapText: true,
             },

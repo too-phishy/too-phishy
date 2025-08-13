@@ -13,7 +13,7 @@ const sectionForLink = (URI) => {
         bottomLabel: URI.toString(),
         wrapText: true,
         startIcon: {
-          iconUrl: "https://toophishy.com/noun-link-5741519-FF001C.png",
+          iconUrl: "https://toophishy.com/noun-link-orange.png",
         },
       },
     },
