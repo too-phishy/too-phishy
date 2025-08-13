@@ -1,8 +1,8 @@
 import { sectionForDebugging } from "../sections/sectionForDebugging.js";
-import { sectionForCodeHostingSiteLink } from "../sections/sectionForCodeHostingSiteLink.js";
 import { processSuspiciousLinks } from "../processSuspiciousLinks.js";
 import { sectionsForLikelyPhishingLinks } from "../sections/sectionsForLikelyPhishingLinks.js";
 import { sectionsForNonTopMillionLinks } from "../sections/sectionsForNonTopMillionLinks.js";
+import { sectionsForCodeHostingSiteLink } from "../sections/sectionsForCodeHostingSiteLink.js";
 
 export const AWS_PHISHING_SITE_DOMAIN = "s3.amazonaws.com";
 export const AZURE_PHISHING_SITE_DOMAIN = "blob.core.windows.net";
@@ -16,42 +16,46 @@ export const cardForActiveUser = async (
   messageBodies,
   fullMessageData
 ) => {
-  const { codeHostingSiteFlagged: sectionForAWSFlagged, section: awsSection } =
-    sectionForCodeHostingSiteLink(
-      fullLinkURIs,
-      AWS_PHISHING_SITE_DOMAIN,
-      "https://cybersecuritynews.com/hackers-leverage-websites-hosted-aws"
-    );
+  const {
+    codeHostingSiteFlagged: sectionForAWSFlagged,
+    sections: awsSections,
+  } = sectionsForCodeHostingSiteLink(
+    fullLinkURIs,
+    AWS_PHISHING_SITE_DOMAIN,
+    "https://cybersecuritynews.com/hackers-leverage-websites-hosted-aws"
+  );
   const {
     codeHostingSiteFlagged: sectionForAzureFlagged,
-    section: azureSection,
-  } = sectionForCodeHostingSiteLink(
+    sections: azureSections,
+  } = sectionsForCodeHostingSiteLink(
     fullLinkURIs,
     AZURE_PHISHING_SITE_DOMAIN,
     "https://www.bleepingcomputer.com/news/security/phishing-attack-uses-azure-blob-storage-to-impersonate-microsoft"
   );
   const {
     codeHostingSiteFlagged: sectionForBitlyFlagged,
-    section: bitlySection,
-  } = sectionForCodeHostingSiteLink(
+    sections: bitlySections,
+  } = sectionsForCodeHostingSiteLink(
     fullLinkURIs,
     BITLY_PHISHING_SITE_DOMAIN,
     "https://www.bleepingcomputer.com/news/security/phishing-attack-uses-bitly-blob-storage-to-impersonate-microsoft"
   );
   const {
     codeHostingSiteFlagged: sectionForGoogleSitesFlagged,
-    section: googleSitesSection,
-  } = sectionForCodeHostingSiteLink(
+    sections: googleSitesSections,
+  } = sectionsForCodeHostingSiteLink(
     fullLinkURIs,
     GOOGLE_PHISHING_SITE_DOMAIN,
     "https://www.bleepingcomputer.com/news/security/phishers-abuse-google-oauth-to-spoof-google-in-dkim-replay-attack/"
   );
-  const { codeHostingSiteFlagged: sectionForGCPFlagged, section: gcpSection } =
-    sectionForCodeHostingSiteLink(
-      fullLinkURIs,
-      GCP_PHISHING_SITE_DOMAIN,
-      "https://www.bleepingcomputer.com/news/security/phishing-campaign-uses-google-cloud-services-to-steal-office-365-logins/"
-    );
+  const {
+    codeHostingSiteFlagged: sectionForGCPFlagged,
+    sections: gcpSections,
+  } = sectionsForCodeHostingSiteLink(
+    fullLinkURIs,
+    GCP_PHISHING_SITE_DOMAIN,
+    "https://www.bleepingcomputer.com/news/security/phishing-campaign-uses-google-cloud-services-to-steal-office-365-logins/"
+  );
 
   const { reputableURIs, potentialPhishingURIs, likelyPhishingURIHashes } =
     await processSuspiciousLinks(fullLinkURIs);
@@ -166,11 +170,11 @@ export const cardForActiveUser = async (
       },
     ]
       .concat(likelyPhishingLinksSections)
-      .concat(sectionForAWSFlagged ? awsSection : [])
-      .concat(sectionForAzureFlagged ? azureSection : [])
-      .concat(sectionForBitlyFlagged ? bitlySection : [])
-      .concat(sectionForGoogleSitesFlagged ? googleSitesSection : [])
-      .concat(sectionForGCPFlagged ? gcpSection : [])
+      .concat(sectionForAWSFlagged ? awsSections : [])
+      .concat(sectionForAzureFlagged ? azureSections : [])
+      .concat(sectionForBitlyFlagged ? bitlySections : [])
+      .concat(sectionForGoogleSitesFlagged ? googleSitesSections : [])
+      .concat(sectionForGCPFlagged ? gcpSections : [])
       .concat(nonTopMillionLinksSections),
     // .concat(sectionForDebugging(potentialPhishingURIs, likelyPhishingURIHashes)),
   };
