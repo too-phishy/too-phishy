@@ -2,7 +2,7 @@ import * as util from "util";
 
 export const sectionForDebugging = (
   potentialPhishingURIs,
-  likelyPhishingURIs
+  likelyPhishingURIHashes
 ) => {
   return {
     header: "Debugging",
@@ -19,9 +19,12 @@ export const sectionForDebugging = (
       },
       {
         textParagraph: {
-          text: `likelyPhishingURIs is ${util.inspect(likelyPhishingURIs, {
-            depth: null,
-          })}`,
+          text: `likelyPhishingURIHashes is ${util.inspect(
+            likelyPhishingURIHashes,
+            {
+              depth: null,
+            }
+          )}`,
         },
       },
     ],

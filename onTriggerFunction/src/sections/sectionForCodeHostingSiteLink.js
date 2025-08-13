@@ -1,28 +1,39 @@
 export const sectionForCodeHostingSiteLink = (
   fullLinkURIs,
-  knownPhishingDomain,
+  knownCodeHostingSiteDomain,
   learnMoreUrl
 ) => {
-  const phishingLinks = [...fullLinkURIs].filter(
+  const codeHostingSiteLinks = [...fullLinkURIs].filter(
     (key) =>
-      key.normalizeHostname().toString().indexOf(knownPhishingDomain) !== -1
+      key.normalizeHostname().toString().indexOf(knownCodeHostingSiteDomain) !==
+      -1
   );
-  const phishingLinkFlagged = !!phishingLinks && phishingLinks.length > 0;
+  const codeHostingSiteFlagged = codeHostingSiteLinks.length > 0;
   return {
-    phishingLinkFlagged,
-    section: phishingLinkFlagged && {
+    codeHostingSiteFlagged: codeHostingSiteFlagged,
+    section: codeHostingSiteFlagged && {
       header:
-        phishingLinks.length > 1
-          ? `Potential Phishing Links: ${phishingLinks
-              .map((link) => link.toString())
+        codeHostingSiteLinks.length > 1
+          ? `Potential Phishing Links: ${codeHostingSiteLinks
+              .map((link) => link.domain())
               .join(", ")}`
-          : `Potential Phishing Link: ${phishingLinks[0].toString()}`,
+          : `Potential Phishing Link: ${codeHostingSiteLinks[0].domain()}`,
       widgets: [
         {
           decoratedText: {
             text: ``,
-            bottomLabel: `Hosting code on a popular web hosting site like ${knownPhishingDomain} allows scammers to get links to their code past spam filters.`,
+            bottomLabel: `Hosting code on a popular web hosting site like ${knownCodeHostingSiteDomain} allows scammers to get links to their code past spam filters.`,
             wrapText: true,
+          },
+        },
+        {
+          decoratedText: {
+            text: `Full link`,
+            bottomLabel: codeHostingSiteLinks[0].toString(),
+            wrapText: true,
+            startIcon: {
+              iconUrl: "https://toophishy.com/noun-link-5741519-FF001C.png",
+            },
           },
         },
         {

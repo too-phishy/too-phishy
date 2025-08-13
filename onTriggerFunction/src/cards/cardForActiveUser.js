@@ -16,46 +16,50 @@ export const cardForActiveUser = async (
   messageBodies,
   fullMessageData
 ) => {
-  const { phishingLinkFlagged: sectionForAWSFlagged, section: awsSection } =
+  const { codeHostingSiteFlagged: sectionForAWSFlagged, section: awsSection } =
     sectionForCodeHostingSiteLink(
       fullLinkURIs,
       AWS_PHISHING_SITE_DOMAIN,
       "https://cybersecuritynews.com/hackers-leverage-websites-hosted-aws"
     );
-  const { phishingLinkFlagged: sectionForAzureFlagged, section: azureSection } =
-    sectionForCodeHostingSiteLink(
-      fullLinkURIs,
-      AZURE_PHISHING_SITE_DOMAIN,
-      "https://www.bleepingcomputer.com/news/security/phishing-attack-uses-azure-blob-storage-to-impersonate-microsoft"
-    );
-  const { phishingLinkFlagged: sectionForBitlyFlagged, section: bitlySection } =
-    sectionForCodeHostingSiteLink(
-      fullLinkURIs,
-      BITLY_PHISHING_SITE_DOMAIN,
-      "https://www.bleepingcomputer.com/news/security/phishing-attack-uses-bitly-blob-storage-to-impersonate-microsoft"
-    );
   const {
-    phishingLinkFlagged: sectionForGoogleSitesFlagged,
+    codeHostingSiteFlagged: sectionForAzureFlagged,
+    section: azureSection,
+  } = sectionForCodeHostingSiteLink(
+    fullLinkURIs,
+    AZURE_PHISHING_SITE_DOMAIN,
+    "https://www.bleepingcomputer.com/news/security/phishing-attack-uses-azure-blob-storage-to-impersonate-microsoft"
+  );
+  const {
+    codeHostingSiteFlagged: sectionForBitlyFlagged,
+    section: bitlySection,
+  } = sectionForCodeHostingSiteLink(
+    fullLinkURIs,
+    BITLY_PHISHING_SITE_DOMAIN,
+    "https://www.bleepingcomputer.com/news/security/phishing-attack-uses-bitly-blob-storage-to-impersonate-microsoft"
+  );
+  const {
+    codeHostingSiteFlagged: sectionForGoogleSitesFlagged,
     section: googleSitesSection,
   } = sectionForCodeHostingSiteLink(
     fullLinkURIs,
     GOOGLE_PHISHING_SITE_DOMAIN,
     "https://www.bleepingcomputer.com/news/security/phishers-abuse-google-oauth-to-spoof-google-in-dkim-replay-attack/"
   );
-  const { phishingLinkFlagged: sectionForGCPFlagged, section: gcpSection } =
+  const { codeHostingSiteFlagged: sectionForGCPFlagged, section: gcpSection } =
     sectionForCodeHostingSiteLink(
       fullLinkURIs,
       GCP_PHISHING_SITE_DOMAIN,
       "https://www.bleepingcomputer.com/news/security/phishing-campaign-uses-google-cloud-services-to-steal-office-365-logins/"
     );
 
-  const { reputableURIs, potentialPhishingURIs, likelyPhishingURIs } =
+  const { reputableURIs, potentialPhishingURIs, likelyPhishingURIHashes } =
     await processSuspiciousLinks(fullLinkURIs);
   const { nonTopMillionLinksSections } = await sectionsForNonTopMillionLinks(
     potentialPhishingURIs
   );
   const { likelyPhishingLinksSections } = await sectionsForLikelyPhishingLinks(
-    likelyPhishingURIs
+    likelyPhishingURIHashes
   );
 
   const potentialPhishingLinks = []
@@ -64,10 +68,10 @@ export const cardForActiveUser = async (
     .concat(sectionForBitlyFlagged ? BITLY_PHISHING_SITE_DOMAIN : [])
     .concat(sectionForGoogleSitesFlagged ? GOOGLE_PHISHING_SITE_DOMAIN : [])
     .concat(sectionForGCPFlagged ? GCP_PHISHING_SITE_DOMAIN : [])
-    .concat(potentialPhishingURIs);
+    .concat(potentialPhishingURIs.map((URIData) => URIData.domain()));
 
   const overallPhishy =
-    likelyPhishingURIs.length > 0 || potentialPhishingLinks.length > 0;
+    likelyPhishingURIHashes.length > 0 || potentialPhishingLinks.length > 0;
 
   const overviewWidgets = []
     .concat({
@@ -83,17 +87,19 @@ export const cardForActiveUser = async (
       },
     })
     .concat(
-      likelyPhishingURIs.length > 0
+      likelyPhishingURIHashes.length > 0
         ? {
             decoratedText: {
               text: `Don't click`,
-              bottomLabel: `${likelyPhishingURIs.length} very likely phishing ${
-                likelyPhishingURIs.length > 1 ? "links" : "link"
-              }: ${likelyPhishingURIs
-                .map((URIData) => URIData.URI.domain())
+              bottomLabel: `${
+                likelyPhishingURIHashes.length
+              } very likely phishing ${
+                likelyPhishingURIHashes.length > 1 ? "links" : "link"
+              }: ${likelyPhishingURIHashes
+                .map((URIHash) => URIHash.URI.domain())
                 .join(", ")}. Further details below.`,
               startIcon: {
-                iconUrl: "https://toophishy.com/noun-link-5741519-FF001C.png",
+                iconUrl: "https://toophishy.com/clock.png",
               },
               wrapText: true,
             },
@@ -166,6 +172,6 @@ export const cardForActiveUser = async (
       .concat(sectionForGoogleSitesFlagged ? googleSitesSection : [])
       .concat(sectionForGCPFlagged ? gcpSection : [])
       .concat(nonTopMillionLinksSections),
-    // .concat(sectionForDebugging(potentialPhishingURIs, likelyPhishingURIs)),
+    // .concat(sectionForDebugging(potentialPhishingURIs, likelyPhishingURIHashes)),
   };
 };

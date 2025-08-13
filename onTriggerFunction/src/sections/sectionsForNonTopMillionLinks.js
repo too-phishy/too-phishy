@@ -8,6 +8,16 @@ const sectionForLink = (URI) => {
       },
     },
     {
+      decoratedText: {
+        text: `Full link`,
+        bottomLabel: URI.toString(),
+        wrapText: true,
+        startIcon: {
+          iconUrl: "https://toophishy.com/noun-link-5741519-FF001C.png",
+        },
+      },
+    },
+    {
       horizontalAlignment: "CENTER",
       buttonList: {
         buttons: [
@@ -24,7 +34,7 @@ const sectionForLink = (URI) => {
     },
   ];
   return {
-    header: `Potential Phishing Link: ${URI.toString()}`,
+    header: `Potential Phishing Link: ${URI.domain()}`,
     widgets: widgets,
     collapsible: true,
   };

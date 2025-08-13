@@ -1,7 +1,7 @@
-const sectionForLikelyPhishingLink = (URIData) => {
+const sectionForLikelyPhishingLink = (URIHash) => {
   const now = new Date();
   const diffDays =
-    (now - URIData.domainRegistrationDate) / (1000 * 60 * 60 * 24);
+    (now - URIHash.domainRegistrationDate) / (1000 * 60 * 60 * 24);
   const widgets = [
     {
       decoratedText: {
@@ -10,6 +10,26 @@ const sectionForLikelyPhishingLink = (URIData) => {
           diffDays
         )} days old. One of the best ways to identify a phishing site is if its domain was registered in the past 21 days.`,
         wrapText: true,
+      },
+    },
+    {
+      decoratedText: {
+        text: `Full link`,
+        bottomLabel: URIHash.URI.toString(),
+        wrapText: true,
+        startIcon: {
+          iconUrl: "https://toophishy.com/noun-link-5741519-FF001C.png",
+        },
+      },
+    },
+    {
+      decoratedText: {
+        text: `Domain registration date`,
+        bottomLabel: URIHash.domainRegistrationDate,
+        wrapText: true,
+        startIcon: {
+          iconUrl: "https://toophishy.com/clock.png",
+        },
       },
     },
     {
@@ -27,25 +47,18 @@ const sectionForLikelyPhishingLink = (URIData) => {
         ],
       },
     },
-    {
-      decoratedText: {
-        text: `Domain registration date:`,
-        bottomLabel: URIData.domainRegistrationDate,
-        wrapText: true,
-      },
-    },
   ];
   return {
-    header: `Very Likely Phishing Link: ${URIData.URI.toString()}`,
+    header: `Very Likely Phishing Link: ${URIHash.URI.domain()}`,
     widgets: widgets,
     collapsible: true,
   };
 };
 
-export const sectionsForLikelyPhishingLinks = async (suspiciousURIs) => {
+export const sectionsForLikelyPhishingLinks = async (URIHashes) => {
   return {
-    likelyPhishingLinksSections: suspiciousURIs.map((URIData) => {
-      return sectionForLikelyPhishingLink(URIData);
+    likelyPhishingLinksSections: URIHashes.map((URIHash) => {
+      return sectionForLikelyPhishingLink(URIHash);
     }),
   };
 };

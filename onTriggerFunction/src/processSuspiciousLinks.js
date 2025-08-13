@@ -29,7 +29,7 @@ export const processSuspiciousLinks = async (fullLinkURIs) => {
   const uniqueLikelyPhishingURIs = new Set();
   const reputableURIs = [];
   const potentialPhishingURIs = [];
-  const likelyPhishingURIs = [];
+  const likelyPhishingURIHashes = [];
   for (const URI of [...fullLinkURIs]) {
     if (TOP_MILLION_DOMAINS.has(URI.domain())) {
       if (
@@ -56,7 +56,7 @@ export const processSuspiciousLinks = async (fullLinkURIs) => {
         await checkLessThan25DaysOld(URI.domain());
       if (isRecentlyRegistered) {
         if (!uniqueLikelyPhishingURIs.has(URI.domain())) {
-          likelyPhishingURIs.push({ URI, domainRegistrationDate });
+          likelyPhishingURIHashes.push({ URI, domainRegistrationDate });
           uniqueLikelyPhishingURIs.add(URI.domain());
         }
       } else {
@@ -70,6 +70,6 @@ export const processSuspiciousLinks = async (fullLinkURIs) => {
   return {
     reputableURIs,
     potentialPhishingURIs,
-    likelyPhishingURIs,
+    likelyPhishingURIHashes,
   };
 };
