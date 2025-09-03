@@ -1,5 +1,6 @@
 import URI from "urijs";
 import cheerio from "cheerio";
+import error from "express/lib/router/route.js";
 
 const LINK_ELEMENT_TYPES =
   "a[href^='http://']:not(a[href^='mailto']), " +
@@ -7,7 +8,7 @@ const LINK_ELEMENT_TYPES =
   "a[href^='/']:not(a[href^='mailto'])";
 
 export const processPart = async (part, messageBodies) => {
-  if (part.mimeType === "text/html" && part.body.size > 0) {
+  if (part.mimeType === "text/html" && part.body.size > 0 && !part.filename) {
     messageBodies.push(Buffer.from(part.body.data, "base64").toString("utf-8"));
   }
   if (part.parts) {

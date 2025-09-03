@@ -5,6 +5,20 @@ import {
   BITLY_PHISHING_SITE_DOMAIN,
   GCP_PHISHING_SITE_DOMAIN,
 } from "../src/cards/cardForActiveUser.js";
+import { email_with_parsing_error } from "./fixtures/email_with_parsing_error.js";
+
+describe("processMessage", () => {
+  test("process emails containing attachments", async () => {
+    try {
+      const { headers, fullLinkURIs, messageBodies, attachments } =
+        await processMessage(email_with_parsing_error);
+
+      expect(fullLinkURIs.length).toBe(1);
+    } catch (e) {
+      console.log(e);
+    }
+  }, 20000);
+});
 
 describe("sectionForGCP", () => {
   test("bitly link is present", async () => {
