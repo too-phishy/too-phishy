@@ -43,6 +43,7 @@ export const processMessage = async (message) => {
     const relativeLinks = $(LINK_ELEMENT_TYPES);
     relativeLinks.each((index, value) => {
       const href = $(value).attr("href");
+      const linkText = $(value).text();
       fullLinkURIs.push(new URI(href));
     });
   }
