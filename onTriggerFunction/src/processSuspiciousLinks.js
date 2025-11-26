@@ -18,7 +18,7 @@ const checkLessThan25DaysOld = async (domainName) => {
     const diffDays = (now - domainRegistrationDate) / (1000 * 60 * 60 * 24);
     return { domainRegistrationDate, isRecentlyRegistered: diffDays < 21 };
   } catch (err) {
-    console.error(`Error fetching RDAP data for ${domainName}: ${error}`);
+    console.error(`Error fetching RDAP data for ${domainName}: ${err}`);
     return { domainRegistrationDate: null, isRecentlyRegistered: false };
   }
 };
