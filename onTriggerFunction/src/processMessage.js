@@ -1,6 +1,5 @@
 import URI from "urijs";
-import cheerio from "cheerio";
-import error from "express/lib/router/route.js";
+import * as cheerio from "cheerio";
 
 const LINK_ELEMENT_TYPES =
   "a[href^='http://']:not(a[href^='mailto']), " +
