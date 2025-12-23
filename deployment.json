@@ -6,7 +6,7 @@
   ],
   "addOns": {
     "common": {
-      "name": "Too Phishy",
+      "name": "ADDON_DISPLAY_NAME",
       "logoUrl": "https://toophishy.com/logo.png"
     },
     "gmail": {
@@ -16,7 +16,7 @@
       "contextualTriggers": [
         {
           "unconditional": {},
-          "onTriggerFunction": "https://too-phishy-802749066565.us-central1.run.app"
+          "onTriggerFunction": "ADDON_SERVICE_URL"
         }
       ]
     }
