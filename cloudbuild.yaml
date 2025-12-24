@@ -1,5 +1,5 @@
 steps:
-  # 0. Build the container image
+  # 0. onTriggerFunction: Build the container image
   - name: "gcr.io/cloud-builders/docker"
     args:
       [
@@ -11,11 +11,11 @@ steps:
         ".",
       ]
 
-  # 1. Push the container image to Container Registry
+  # 1. onTriggerFunction: Push the container image to Container Registry
   - name: "gcr.io/cloud-builders/docker"
     args: ["push", "gcr.io/$PROJECT_ID/$_SERVICE_NAME"]
 
-  # 2. Deploy container image to Cloud Run
+  # 2. onTriggerFunction: Deploy container image to Cloud Run
   - name: "gcr.io/google.com/cloudsdktool/cloud-sdk"
     entrypoint: gcloud
     args:
@@ -36,7 +36,20 @@ steps:
       - "--max-instances"
       - "10"
 
-  # 3. Update deployment.json with the actual Cloud Run URL
+  # 3. runFunction: Deploy function
+  - name: "gcr.io/google.com/cloudsdktool/cloud-sdk"
+    args:
+      - gcloud
+      - functions
+      - deploy
+      - loadHomePage
+      - --runtime=nodejs20
+      - --trigger-http
+      - --entry-point=loadHomePage
+      - --region=us-central1
+      - --source=runFunction
+
+  # 4. Update deployment.json with the actual Cloud Run URL
   - name: "gcr.io/google.com/cloudsdktool/cloud-sdk"
     id: "prepare-json"
     entrypoint: "bash"
@@ -45,15 +58,17 @@ steps:
       - |
         # Fetch the URL of the service we just deployed
         SERVICE_URL=$(gcloud run services describe $_SERVICE_NAME --platform managed --region $_REGION --format 'value(status.url)')
+        ADDON_HOMEPAGE_SERVICE_URL=$(gcloud functions describe loadHomePage --region=us-central1 --format='value(serviceConfig.uri)')
 
         # Replace the placeholder in deployment.json
         sed -i "s|ADDON_SERVICE_URL|$$SERVICE_URL|g" deployment.json
         sed -i "s|ADDON_DISPLAY_NAME|$_DISPLAY_NAME|g" deployment.json
+        sed -i "s|ADDON_HOMEPAGE_SERVICE_URL|$$ADDON_HOMEPAGE_SERVICE_URL|g" deployment.json
 
         echo "Prepared manifest for $_DISPLAY_NAME"
         echo "Updated deployment.json to point to $$SERVICE_URL"
 
-  # 4. Push the updated manifest to Google Workspace Add-ons
+  # 5. Push the updated manifest to Google Workspace Add-ons
   - name: "gcr.io/google.com/cloudsdktool/cloud-sdk"
     entrypoint: gcloud
     args:
