@@ -1,0 +1,43 @@
+steps:
+  # 0. Deploy function
+  - name: "gcr.io/google.com/cloudsdktool/cloud-sdk"
+    args:
+      - gcloud
+      - functions
+      - deploy
+      - loadHomePage
+      - --runtime=nodejs20
+      - --trigger-http
+      - --entry-point=loadHomePage
+      - --region=us-central1
+      - --source=runFunction
+
+  # 1. Fetch the URL and update deployment.json
+  - name: "gcr.io/google.com/cloudsdktool/cloud-sdk"
+    id: "update-json"
+    entrypoint: "bash"
+    args:
+      - "-c"
+      - |
+        # Get the URL of the function
+        ADDON_HOMEPAGE_SERVICE_URL=$(gcloud functions describe loadHomePage --region=us-central1 --format='value(serviceConfig.uri)')
+          
+        echo "Updating deployment.json..."
+
+        # Replace the URL placeholder
+        # We use | as a delimiter because the URL contains forward slashes /
+        sed -i "s|ADDON_HOMEPAGE_SERVICE_URL|$$ADDON_HOMEPAGE_SERVICE_URL|g" deployment.json
+          
+        cat deployment.json
+
+  # 2. Push the updated manifest to Google Workspace Add-ons
+  - name: "gcr.io/google.com/cloudsdktool/cloud-sdk"
+    entrypoint: gcloud
+    args:
+      - "workspace-add-ons"
+      - "deployments"
+      - "replace"
+      - "$_SERVICE_NAME"
+      - "--deployment-file=deployment.json"
+substitutions:
+  _SERVICE_NAME: too-phishy
