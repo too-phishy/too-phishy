@@ -11,7 +11,7 @@
     },
     "gmail": {
       "homepageTrigger": {
-        "runFunction": "https://us-central1-too-phishy.cloudfunctions.net/loadHomePage"
+        "runFunction": "ADDON_HOMEPAGE_SERVICE_URL"
       },
       "contextualTriggers": [
         {
