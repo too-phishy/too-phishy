@@ -1,5 +1,4 @@
-import { domain } from "node-rdap";
-import error from "express/lib/router/route.js";
+import { lookup } from "rdapper";
 
 import { TOP_MILLION_DOMAINS } from "./topDomains/topDomains.js";
 import {
@@ -11,14 +10,18 @@ import {
 
 const checkLessThan25DaysOld = async (domainName) => {
   try {
-    const data = await domain(domainName);
-    const regEvent = data.events.find((e) => e.eventAction === "registration");
-    const domainRegistrationDate = new Date(regEvent.eventDate);
+    const data = await lookup(domainName);
+    const domainRegistrationDate = new Date(data.record.creationDate);
     const now = new Date();
     const diffDays = (now - domainRegistrationDate) / (1000 * 60 * 60 * 24);
+    console.log(
+      `Successfully fetched domainRegistrationDate data for ${domainName}: ${domainRegistrationDate}`
+    );
     return { domainRegistrationDate, isRecentlyRegistered: diffDays < 21 };
   } catch (err) {
-    console.error(`Error fetching RDAP data for ${domainName}: ${err}`);
+    console.error(
+      `Error fetching domainRegistrationDate data for ${domainName}: ${err}`
+    );
     return { domainRegistrationDate: null, isRecentlyRegistered: false };
   }
 };
