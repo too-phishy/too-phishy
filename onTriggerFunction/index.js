@@ -92,11 +92,12 @@ app.post(
     const activePayment = await hasActivePayment(email);
     const activeCustomer = activeSubscription || activePayment;
 
+    const timestamp = new Date().toISOString();
     axios
       .post(process.env.DATASTORE_ENDPOINT, {
         operation: "create",
         payload: {
-          Item: { id: email },
+          Item: { id: email, createdAt: timestamp },
           TableName: "too-phishy-active-users",
         },
       })
