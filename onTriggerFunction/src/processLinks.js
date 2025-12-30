@@ -26,14 +26,14 @@ const checkLessThan25DaysOld = async (domainName) => {
   }
 };
 
-export const processSuspiciousLinks = async (fullLinkURIs) => {
+export const processLinks = async (fullLinkURIs, messageBodies) => {
   const uniqueTopMillionURIs = new Set();
   const uniqueNonTopMillionURIs = new Set();
   const uniqueLikelyPhishingURIs = new Set();
-  const reputableURIs = [];
+  const topMillionURIs = [];
   const nonTopMillionURIs = [];
   const likelyPhishingURIDicts = [];
-  for (const URI of [...fullLinkURIs]) {
+  for (const URI of fullLinkURIs) {
     if (TOP_MILLION_DOMAINS.has(URI.domain())) {
       if (
         !uniqueTopMillionURIs.has(URI.domain()) &&
@@ -50,7 +50,7 @@ export const processSuspiciousLinks = async (fullLinkURIs) => {
         URI.domain() !== "amazonaws.com" &&
         URI.domain() !== "windows.net"
       ) {
-        reputableURIs.push(URI);
+        topMillionURIs.push(URI);
         uniqueTopMillionURIs.add(URI.domain());
       }
     }
@@ -71,7 +71,7 @@ export const processSuspiciousLinks = async (fullLinkURIs) => {
     }
   }
   return {
-    reputableURIs,
+    topMillionURIs,
     nonTopMillionURIs,
     likelyPhishingURIDicts,
   };

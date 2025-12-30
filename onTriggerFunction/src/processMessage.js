@@ -6,18 +6,18 @@ const LINK_ELEMENT_TYPES =
   "a[href^='https://']:not(a[href^='mailto']), " +
   "a[href^='/']:not(a[href^='mailto'])";
 
-export const processPart = async (part, messageBodies) => {
+export const processPart = (part, messageBodies) => {
   if (part.mimeType === "text/html" && part.body.size > 0 && !part.filename) {
     messageBodies.push(Buffer.from(part.body.data, "base64").toString("utf-8"));
   }
   if (part.parts) {
     for (const innerPart of part.parts) {
-      await processPart(innerPart, messageBodies);
+      processPart(innerPart, messageBodies);
     }
   }
 };
 
-export const processMessage = async (message) => {
+export const processMessage = (message) => {
   const messageBodies = [];
   if (message.payload.body.size > 0) {
     messageBodies.push(
@@ -26,7 +26,7 @@ export const processMessage = async (message) => {
   }
   if (message.payload && message.payload.parts) {
     for (const part of message.payload.parts) {
-      await processPart(part, messageBodies);
+      processPart(part, messageBodies);
     }
   }
   let headers = Object.assign(
@@ -42,7 +42,6 @@ export const processMessage = async (message) => {
     const relativeLinks = $(LINK_ELEMENT_TYPES);
     relativeLinks.each((index, value) => {
       const href = $(value).attr("href");
-      const linkText = $(value).text();
       fullLinkURIs.push(new URI(href));
     });
   }

@@ -1,8 +1,8 @@
 import { sectionForDebugging } from "../sections/sectionForDebugging.js";
-import { processSuspiciousLinks } from "../processSuspiciousLinks.js";
+import { processLinks } from "../processLinks.js";
 import { sectionsForLikelyPhishingLinks } from "../sections/sectionsForLikelyPhishingLinks.js";
-import { sectionsForNonTopMillionLinks } from "../sections/sectionsForNonTopMillionLinks.js";
 import { sectionsForCodeHostingSiteLink } from "../sections/sectionsForCodeHostingSiteLink.js";
+import { performAIAnalysis } from "../performAIAnalysis.js";
 
 export const AWS_PHISHING_SITE_DOMAIN = "s3.amazonaws.com";
 export const AZURE_PHISHING_SITE_DOMAIN = "blob.core.windows.net";
@@ -57,12 +57,21 @@ export const cardForActiveUser = async (
     "https://www.bleepingcomputer.com/news/security/phishing-campaign-uses-google-cloud-services-to-steal-office-365-logins/"
   );
 
-  const { reputableURIs, nonTopMillionURIs, likelyPhishingURIDicts } =
-    await processSuspiciousLinks(fullLinkURIs);
-  const { nonTopMillionLinksSections } = await sectionsForNonTopMillionLinks(
-    nonTopMillionURIs
+  const { topMillionURIs, nonTopMillionURIs, likelyPhishingURIDicts } =
+    await processLinks(fullLinkURIs, messageBodies);
+
+  const {
+    deceptiveLinksFlagged,
+    deceptiveLinksSection,
+    socialEngineeringFlagged,
+    socialEngineeringSection,
+  } = await performAIAnalysis(
+    fullLinkURIs,
+    likelyPhishingURIDicts,
+    messageBodies
   );
-  const { likelyPhishingLinksSections } = await sectionsForLikelyPhishingLinks(
+
+  const { likelyPhishingLinksSections } = sectionsForLikelyPhishingLinks(
     likelyPhishingURIDicts
   );
 
@@ -71,11 +80,13 @@ export const cardForActiveUser = async (
     .concat(sectionForAzureFlagged ? AZURE_PHISHING_SITE_DOMAIN : [])
     .concat(sectionForBitlyFlagged ? BITLY_PHISHING_SITE_DOMAIN : [])
     .concat(sectionForGoogleSitesFlagged ? GOOGLE_PHISHING_SITE_DOMAIN : [])
-    .concat(sectionForGCPFlagged ? GCP_PHISHING_SITE_DOMAIN : [])
-    .concat(nonTopMillionURIs.map((URI) => URI.domain()));
+    .concat(sectionForGCPFlagged ? GCP_PHISHING_SITE_DOMAIN : []);
 
   const overallPhishy =
-    likelyPhishingURIDicts.length > 0 || potentialPhishingLinks.length > 0;
+    deceptiveLinksFlagged ||
+    socialEngineeringFlagged ||
+    likelyPhishingURIDicts.length > 0 ||
+    potentialPhishingLinks.length > 0;
 
   const overviewWidgets = []
     .concat({
@@ -90,6 +101,20 @@ export const cardForActiveUser = async (
         wrapText: true,
       },
     })
+    .concat(
+      deceptiveLinksFlagged || socialEngineeringFlagged
+        ? {
+            decoratedText: {
+              text: `This email was identified as malicious.`,
+              bottomLabel: `More details below.`,
+              startIcon: {
+                iconUrl: "https://toophishy.com/noun-link-red.png",
+              },
+              wrapText: true,
+            },
+          }
+        : []
+    )
     .concat(
       likelyPhishingURIDicts.length > 0
         ? {
@@ -129,13 +154,13 @@ export const cardForActiveUser = async (
         : []
     )
     .concat(
-      reputableURIs.length > 0
+      topMillionURIs.length > 0
         ? {
             decoratedText: {
-              text: `${reputableURIs.length} reputable ${
-                reputableURIs.length > 1 ? "links" : "link"
+              text: `${topMillionURIs.length} reputable ${
+                topMillionURIs.length > 1 ? "links" : "link"
               }`,
-              bottomLabel: `${reputableURIs
+              bottomLabel: `${topMillionURIs
                 .map((URI) => URI.domain())
                 .join(", ")}`,
               startIcon: {
@@ -170,12 +195,13 @@ export const cardForActiveUser = async (
       },
     ]
       .concat(likelyPhishingLinksSections)
+      .concat(deceptiveLinksFlagged ? deceptiveLinksSection : [])
+      .concat(socialEngineeringFlagged ? socialEngineeringSection : [])
       .concat(sectionForAWSFlagged ? awsSections : [])
       .concat(sectionForAzureFlagged ? azureSections : [])
       .concat(sectionForBitlyFlagged ? bitlySections : [])
       .concat(sectionForGoogleSitesFlagged ? googleSitesSections : [])
-      .concat(sectionForGCPFlagged ? gcpSections : [])
-      .concat(nonTopMillionLinksSections),
-    // .concat(sectionForDebugging(nonTopMillionURIs, likelyPhishingURIDicts)),
+      .concat(sectionForGCPFlagged ? gcpSections : []),
+    // .concat(sectionForDebugging(nonTopMillionURIs, likelyPhishingURIs)),
   };
 };

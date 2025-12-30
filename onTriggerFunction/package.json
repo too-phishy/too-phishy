@@ -15,10 +15,12 @@
     "express": "^4.18.2",
     "express-async-handler": "^1.2.0",
     "googleapis": "^125.0.0",
+    "openai": "6.15.0",
     "rdapper": "0.11.0",
     "stripe": "^13.3.0",
     "ts-jest": "^29.1.0",
-    "urijs": "^1.19.11"
+    "urijs": "^1.19.11",
+    "zod": "4.2.1"
   },
   "devDependencies": {
     "@babel/preset-env": "^7.21.4",
