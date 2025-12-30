@@ -1,7 +1,7 @@
-const sectionForLikelyPhishingLink = (URIHash) => {
+const sectionForLikelyPhishingLink = (URIDict) => {
   const now = new Date();
   const diffDays =
-    (now - URIHash.domainRegistrationDate) / (1000 * 60 * 60 * 24);
+    (now - URIDict.domainRegistrationDate) / (1000 * 60 * 60 * 24);
   const widgets = [
     {
       decoratedText: {
@@ -15,7 +15,7 @@ const sectionForLikelyPhishingLink = (URIHash) => {
     {
       decoratedText: {
         text: `Full link`,
-        bottomLabel: URIHash.URI.toString(),
+        bottomLabel: URIDict.URI.toString(),
         wrapText: true,
         startIcon: {
           iconUrl: "https://toophishy.com/noun-link-red.png",
@@ -25,7 +25,7 @@ const sectionForLikelyPhishingLink = (URIHash) => {
     {
       decoratedText: {
         text: `Domain registration date`,
-        bottomLabel: URIHash.domainRegistrationDate,
+        bottomLabel: URIDict.domainRegistrationDate,
         wrapText: true,
         startIcon: {
           iconUrl: "https://toophishy.com/clock.png",
@@ -49,16 +49,16 @@ const sectionForLikelyPhishingLink = (URIHash) => {
     },
   ];
   return {
-    header: `Very Likely Phishing Link: ${URIHash.URI.domain()}`,
+    header: `Very Likely Phishing Link: ${URIDict.URI.domain()}`,
     widgets: widgets,
     collapsible: true,
   };
 };
 
-export const sectionsForLikelyPhishingLinks = async (URIHashes) => {
+export const sectionsForLikelyPhishingLinks = async (URIDicts) => {
   return {
-    likelyPhishingLinksSections: URIHashes.map((URIHash) => {
-      return sectionForLikelyPhishingLink(URIHash);
+    likelyPhishingLinksSections: URIDicts.map((URIDict) => {
+      return sectionForLikelyPhishingLink(URIDict);
     }),
   };
 };
