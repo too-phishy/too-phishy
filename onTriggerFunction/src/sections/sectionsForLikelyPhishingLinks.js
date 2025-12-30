@@ -55,7 +55,7 @@ const sectionForLikelyPhishingLink = (URIDict) => {
   };
 };
 
-export const sectionsForLikelyPhishingLinks = async (URIDicts) => {
+export const sectionsForLikelyPhishingLinks = (URIDicts) => {
   return {
     likelyPhishingLinksSections: URIDicts.map((URIDict) => {
       return sectionForLikelyPhishingLink(URIDict);

@@ -124,9 +124,8 @@ app.post(
     });
     const messageData = gmailResponse.data;
 
-    const { headers, fullLinkURIs, messageBodies } = await processMessage(
-      messageData
-    );
+    const { headers, fullLinkURIs, messageBodies } =
+      processMessage(messageData);
 
     const pushCard = activeCustomer
       ? await cardForActiveUser(

@@ -24,7 +24,7 @@ steps:
       - "$_SERVICE_NAME"
       - "--image"
       - "gcr.io/$PROJECT_ID/$_SERVICE_NAME"
-      - "--update-secrets=DATASTORE_ENDPOINT=DATASTORE_ENDPOINT:latest,STRIPE_SECRET_KEY=STRIPE_SECRET_KEY:latest"
+      - "--update-secrets=DATASTORE_ENDPOINT=DATASTORE_ENDPOINT:latest,STRIPE_SECRET_KEY=STRIPE_SECRET_KEY:latest,OPENAI_API_KEY=OPENAI_API_KEY:latest"
       - "--region"
       - "$_REGION"
       - "--platform"
