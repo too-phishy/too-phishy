@@ -57,13 +57,13 @@ export const cardForActiveUser = async (
     "https://www.bleepingcomputer.com/news/security/phishing-campaign-uses-google-cloud-services-to-steal-office-365-logins/"
   );
 
-  const { reputableURIs, potentialPhishingURIs, likelyPhishingURIHashes } =
+  const { reputableURIs, nonTopMillionURIs, likelyPhishingURIDicts } =
     await processSuspiciousLinks(fullLinkURIs);
   const { nonTopMillionLinksSections } = await sectionsForNonTopMillionLinks(
-    potentialPhishingURIs
+    nonTopMillionURIs
   );
   const { likelyPhishingLinksSections } = await sectionsForLikelyPhishingLinks(
-    likelyPhishingURIHashes
+    likelyPhishingURIDicts
   );
 
   const potentialPhishingLinks = []
@@ -72,10 +72,10 @@ export const cardForActiveUser = async (
     .concat(sectionForBitlyFlagged ? BITLY_PHISHING_SITE_DOMAIN : [])
     .concat(sectionForGoogleSitesFlagged ? GOOGLE_PHISHING_SITE_DOMAIN : [])
     .concat(sectionForGCPFlagged ? GCP_PHISHING_SITE_DOMAIN : [])
-    .concat(potentialPhishingURIs.map((URIData) => URIData.domain()));
+    .concat(nonTopMillionURIs.map((URI) => URI.domain()));
 
   const overallPhishy =
-    likelyPhishingURIHashes.length > 0 || potentialPhishingLinks.length > 0;
+    likelyPhishingURIDicts.length > 0 || potentialPhishingLinks.length > 0;
 
   const overviewWidgets = []
     .concat({
@@ -91,16 +91,16 @@ export const cardForActiveUser = async (
       },
     })
     .concat(
-      likelyPhishingURIHashes.length > 0
+      likelyPhishingURIDicts.length > 0
         ? {
             decoratedText: {
               text: `Don't click`,
               bottomLabel: `${
-                likelyPhishingURIHashes.length
+                likelyPhishingURIDicts.length
               } very likely phishing ${
-                likelyPhishingURIHashes.length > 1 ? "links" : "link"
-              }: ${likelyPhishingURIHashes
-                .map((URIHash) => URIHash.URI.domain())
+                likelyPhishingURIDicts.length > 1 ? "links" : "link"
+              }: ${likelyPhishingURIDicts
+                .map((URIDict) => URIDict.URI.domain())
                 .join(", ")}. Further details below.`,
               startIcon: {
                 iconUrl: "https://toophishy.com/noun-link-red.png",
@@ -176,6 +176,6 @@ export const cardForActiveUser = async (
       .concat(sectionForGoogleSitesFlagged ? googleSitesSections : [])
       .concat(sectionForGCPFlagged ? gcpSections : [])
       .concat(nonTopMillionLinksSections),
-    // .concat(sectionForDebugging(potentialPhishingURIs, likelyPhishingURIHashes)),
+    // .concat(sectionForDebugging(nonTopMillionURIs, likelyPhishingURIDicts)),
   };
 };

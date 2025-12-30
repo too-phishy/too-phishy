@@ -1,26 +1,23 @@
 import * as util from "util";
 
 export const sectionForDebugging = (
-  potentialPhishingURIs,
-  likelyPhishingURIHashes
+  nonTopMillionURIs,
+  likelyPhishingURIDicts
 ) => {
   return {
     header: "Debugging",
     widgets: [
       {
         textParagraph: {
-          text: `potentialPhishingURIs is ${util.inspect(
-            potentialPhishingURIs,
-            {
-              depth: null,
-            }
-          )}`,
+          text: `nonTopMillionURIs is ${util.inspect(nonTopMillionURIs, {
+            depth: null,
+          })}`,
         },
       },
       {
         textParagraph: {
-          text: `likelyPhishingURIHashes is ${util.inspect(
-            likelyPhishingURIHashes,
+          text: `likelyPhishingURIDicts is ${util.inspect(
+            likelyPhishingURIDicts,
             {
               depth: null,
             }
