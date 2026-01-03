@@ -6,3 +6,9 @@ with open('topDomains.js', 'w') as f2:
         for row in reader:  # content is all the other lines
             line = row[-1]
             f2.write(f"'{row[1]}', \n")
+
+# ls topDomains.js | xargs sed -i "" "s/\'google.com\'\, /export const
+# TOP_MILLION_DOMAINS = new Set(['google.com',/g"
+# ls topDomains.js | xargs sed -i "" "s/'ecuadoralmundo.com',/'ecuadoralmundo
+# .com']);/g"
+
