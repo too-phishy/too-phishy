@@ -113,6 +113,7 @@ describe("processLinks", () => {
         socialEngineeringSection,
       } = await performAIAnalysis(
         fullLinkURIs,
+        topMillionURIs,
         likelyPhishingURIDicts,
         messageBodies
       );
@@ -137,6 +138,7 @@ describe("processLinks", () => {
         socialEngineeringSection,
       } = await performAIAnalysis(
         fullLinkURIs,
+        topMillionURIs,
         likelyPhishingURIDicts,
         messageBodies
       );
@@ -161,6 +163,7 @@ describe("processLinks", () => {
         socialEngineeringSection,
       } = await performAIAnalysis(
         fullLinkURIs,
+        topMillionURIs,
         likelyPhishingURIDicts,
         messageBodies
       );
@@ -185,6 +188,7 @@ describe("processLinks", () => {
         socialEngineeringSection,
       } = await performAIAnalysis(
         fullLinkURIs,
+        topMillionURIs,
         likelyPhishingURIDicts,
         messageBodies
       );

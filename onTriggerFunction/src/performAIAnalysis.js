@@ -22,6 +22,7 @@ const EmailAnalysis = z.object({
 
 export const performAIAnalysis = async (
   fullLinkURIs,
+  topMillionURIs,
   likelyPhishingURIDicts,
   messageBodies
 ) => {
@@ -38,7 +39,9 @@ Here is a list of all the links in the email to consider for question 1: ${fullL
 
 I have already analyzed these links to see which were registered in the past 29 days: ${likelyPhishingURIDicts}
 
-I have already analyzed these links to see if they link to subdomain and hosting services that have been known to host phishing sites. Therefore please do not consider domain registration date because I am already doing that analysis elsewhere.
+I have also already analyzed these links to see which are in the top million most popular domains in the world. The following links are indeed top million links and are therefore likely to be safe: ${topMillionURIs} 
+
+I have also already analyzed these links to see if they link to subdomain and hosting services that have been known to host phishing sites. Therefore please do not consider sites that are known to host phishing sites because I am already doing that analysis elsewhere.
 
 Here is the email body:
 

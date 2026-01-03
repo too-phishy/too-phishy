@@ -67,6 +67,7 @@ export const cardForActiveUser = async (
     socialEngineeringSection,
   } = await performAIAnalysis(
     fullLinkURIs,
+    topMillionURIs,
     likelyPhishingURIDicts,
     messageBodies
   );
