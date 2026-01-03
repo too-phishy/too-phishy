@@ -12,6 +12,7 @@ import { sony } from "./fixtures/sony.js";
 import { id_badge_update_needed } from "./fixtures/id_badge_update_needed.js";
 import { irs } from "./fixtures/irs.js";
 import { performAIAnalysis } from "../src/performAIAnalysis.js";
+import { deceptive_link_false_positive } from "./fixtures/deceptive_link_false_positive.js";
 
 describe("processMessage", () => {
   test("process email with multiple attachments", async () => {
@@ -100,7 +101,7 @@ describe("sectionsForCodeHostingSiteLink", () => {
 });
 
 describe("processLinks", () => {
-  test("catches deceptive links in sony email", async () => {
+  test("catches deceptive links and social engineering in sony email", async () => {
     try {
       const { headers, fullLinkURIs, messageBodies, attachments } =
         processMessage(sony);
@@ -113,6 +114,7 @@ describe("processLinks", () => {
         socialEngineeringSection,
       } = await performAIAnalysis(
         fullLinkURIs,
+        topMillionURIs,
         likelyPhishingURIDicts,
         messageBodies
       );
@@ -124,7 +126,7 @@ describe("processLinks", () => {
     }
   }, 100000);
 
-  test("catches deceptive links in john_podesta email", async () => {
+  test("catches deceptive links and social engineering in john_podesta email", async () => {
     try {
       const { headers, fullLinkURIs, messageBodies, attachments } =
         processMessage(john_podesta);
@@ -137,6 +139,7 @@ describe("processLinks", () => {
         socialEngineeringSection,
       } = await performAIAnalysis(
         fullLinkURIs,
+        topMillionURIs,
         likelyPhishingURIDicts,
         messageBodies
       );
@@ -148,7 +151,7 @@ describe("processLinks", () => {
     }
   }, 100000);
 
-  test("catches deceptive links in irs email", async () => {
+  test("catches social engineering in irs email", async () => {
     try {
       const { headers, fullLinkURIs, messageBodies, attachments } =
         processMessage(irs);
@@ -161,18 +164,19 @@ describe("processLinks", () => {
         socialEngineeringSection,
       } = await performAIAnalysis(
         fullLinkURIs,
+        topMillionURIs,
         likelyPhishingURIDicts,
         messageBodies
       );
 
-      expect(deceptiveLinksFlagged).toBe(true);
+      expect(deceptiveLinksFlagged).toBe(false);
       expect(socialEngineeringFlagged).toBe(true);
     } catch (e) {
       console.log(e);
     }
   }, 100000);
 
-  test("catches deceptive links in id_badge_update_needed email", async () => {
+  test("catches deceptive links and social engineering in id_badge_update_needed email", async () => {
     try {
       const { headers, fullLinkURIs, messageBodies, attachments } =
         processMessage(id_badge_update_needed);
@@ -185,11 +189,37 @@ describe("processLinks", () => {
         socialEngineeringSection,
       } = await performAIAnalysis(
         fullLinkURIs,
+        topMillionURIs,
         likelyPhishingURIDicts,
         messageBodies
       );
 
       expect(deceptiveLinksFlagged).toBe(true);
+      expect(socialEngineeringFlagged).toBe(true);
+    } catch (e) {
+      console.log(e);
+    }
+  }, 100000);
+
+  test("doesn't find deceptive links in an email with only top million links", async () => {
+    try {
+      const { headers, fullLinkURIs, messageBodies, attachments } =
+        processMessage(deceptive_link_false_positive);
+      const { topMillionURIs, nonTopMillionURIs, likelyPhishingURIDicts } =
+        await processLinks(fullLinkURIs, messageBodies);
+      const {
+        deceptiveLinksFlagged,
+        deceptiveLinksSection,
+        socialEngineeringFlagged,
+        socialEngineeringSection,
+      } = await performAIAnalysis(
+        fullLinkURIs,
+        topMillionURIs,
+        likelyPhishingURIDicts,
+        messageBodies
+      );
+
+      expect(deceptiveLinksFlagged).toBe(false);
       expect(socialEngineeringFlagged).toBe(true);
     } catch (e) {
       console.log(e);

@@ -8,7 +8,7 @@ import {
   GCP_PHISHING_SITE_DOMAIN,
 } from "./cards/cardForActiveUser.js";
 
-const checkLessThan25DaysOld = async (domainName) => {
+const checkLessThan21DaysOld = async (domainName) => {
   try {
     const data = await lookup(domainName);
     const domainRegistrationDate = new Date(data.record.creationDate);
@@ -56,7 +56,7 @@ export const processLinks = async (fullLinkURIs, messageBodies) => {
     }
     if (!TOP_MILLION_DOMAINS.has(URI.domain())) {
       const { domainRegistrationDate, isRecentlyRegistered } =
-        await checkLessThan25DaysOld(URI.domain());
+        await checkLessThan21DaysOld(URI.domain());
       if (isRecentlyRegistered) {
         if (!uniqueLikelyPhishingURIs.has(URI.domain())) {
           likelyPhishingURIDicts.push({ URI, domainRegistrationDate });
