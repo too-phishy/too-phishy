@@ -2,8 +2,8 @@ import { processMessage } from "../src/processMessage.js";
 import { message_body_with_two_bitly_links } from "./fixtures/message_body_with_two_bitly_links.js";
 import { sectionsForCodeHostingSiteLink } from "../src/sections/sectionsForCodeHostingSiteLink.js";
 import {
-  BITLY_PHISHING_SITE_DOMAIN,
-  GCP_PHISHING_SITE_DOMAIN,
+  BITLY_PHISHING_DOMAIN,
+  GCP_PHISHING_DOMAIN,
 } from "../src/cards/cardForActiveUser.js";
 import { email_with_parsing_error } from "./fixtures/email_with_parsing_error.js";
 import { john_podesta } from "./fixtures/john_podesta.js";
@@ -70,7 +70,7 @@ describe("sectionsForCodeHostingSiteLink", () => {
         sections: bitlySections,
       } = sectionsForCodeHostingSiteLink(
         fullLinkURIs,
-        BITLY_PHISHING_SITE_DOMAIN,
+        BITLY_PHISHING_DOMAIN,
         "https://www.bleepingcomputer.com/news/security/phishing-attack-uses-bitly-blob-storage-to-impersonate-microsoft"
       );
 
@@ -89,7 +89,7 @@ describe("sectionsForCodeHostingSiteLink", () => {
         sections: gcpSections,
       } = sectionsForCodeHostingSiteLink(
         fullLinkURIs,
-        GCP_PHISHING_SITE_DOMAIN,
+        GCP_PHISHING_DOMAIN,
         "https://www.bleepingcomputer.com/news/security/phishing-campaign-uses-google-cloud-services-to-steal-office-365-logins/"
       );
 
@@ -220,6 +220,38 @@ describe("processLinks", () => {
       );
 
       expect(deceptiveLinksFlagged).toBe(false);
+      expect(socialEngineeringFlagged).toBe(true);
+    } catch (e) {
+      console.log(e);
+    }
+  }, 100000);
+
+  test("finds that link registered in past 21 days is also deceptive", async () => {
+    try {
+      const { headers, fullLinkURIs, messageBodies, attachments } =
+        processMessage(sony);
+      const topMillionURIs = [];
+      const nonTopMillionURIs = [];
+      const likelyPhishingURIDicts = [
+        {
+          URI: fullLinkURIs[0],
+          domainRegistrationDate: new Date(),
+          diffDays: 0,
+        },
+      ];
+      const {
+        deceptiveLinksFlagged,
+        deceptiveLinksSection,
+        socialEngineeringFlagged,
+        socialEngineeringSection,
+      } = await performAIAnalysis(
+        fullLinkURIs,
+        topMillionURIs,
+        likelyPhishingURIDicts,
+        messageBodies
+      );
+
+      expect(deceptiveLinksFlagged).toBe(true);
       expect(socialEngineeringFlagged).toBe(true);
     } catch (e) {
       console.log(e);

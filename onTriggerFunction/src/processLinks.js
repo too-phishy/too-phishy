@@ -2,10 +2,10 @@ import { lookup } from "rdapper";
 
 import { TOP_MILLION_DOMAINS } from "./topDomains/topDomains.js";
 import {
-  AWS_PHISHING_SITE_DOMAIN,
-  AZURE_PHISHING_SITE_DOMAIN,
-  BITLY_PHISHING_SITE_DOMAIN,
-  GCP_PHISHING_SITE_DOMAIN,
+  AWS_PHISHING_DOMAIN,
+  AZURE_PHISHING_DOMAIN,
+  BITLY_PHISHING_DOMAIN,
+  GCP_PHISHING_DOMAIN,
 } from "./cards/cardForActiveUser.js";
 
 const checkLessThan21DaysOld = async (domainName) => {
@@ -17,12 +17,20 @@ const checkLessThan21DaysOld = async (domainName) => {
     console.log(
       `Successfully fetched domainRegistrationDate data for ${domainName}: ${domainRegistrationDate}`
     );
-    return { domainRegistrationDate, isRecentlyRegistered: diffDays < 21 };
+    return {
+      domainRegistrationDate,
+      isRecentlyRegistered: diffDays < 22,
+      diffDays,
+    };
   } catch (err) {
     console.error(
       `Error fetching domainRegistrationDate data for ${domainName}: ${err}`
     );
-    return { domainRegistrationDate: null, isRecentlyRegistered: false };
+    return {
+      domainRegistrationDate: null,
+      isRecentlyRegistered: false,
+      diffDays: null,
+    };
   }
 };
 
@@ -37,15 +45,13 @@ export const processLinks = async (fullLinkURIs, messageBodies) => {
     if (TOP_MILLION_DOMAINS.has(URI.domain())) {
       if (
         !uniqueTopMillionURIs.has(URI.domain()) &&
-        URI.normalizeHostname()
-          .toString()
-          .indexOf(BITLY_PHISHING_SITE_DOMAIN) === -1 &&
-        URI.normalizeHostname().toString().indexOf(GCP_PHISHING_SITE_DOMAIN) ===
+        URI.normalizeHostname().toString().indexOf(BITLY_PHISHING_DOMAIN) ===
           -1 &&
-        URI.normalizeHostname()
-          .toString()
-          .indexOf(AZURE_PHISHING_SITE_DOMAIN) === -1 &&
-        URI.normalizeHostname().toString().indexOf(AWS_PHISHING_SITE_DOMAIN) ===
+        URI.normalizeHostname().toString().indexOf(GCP_PHISHING_DOMAIN) ===
+          -1 &&
+        URI.normalizeHostname().toString().indexOf(AZURE_PHISHING_DOMAIN) ===
+          -1 &&
+        URI.normalizeHostname().toString().indexOf(AWS_PHISHING_DOMAIN) ===
           -1 &&
         URI.domain() !== "amazonaws.com" &&
         URI.domain() !== "windows.net"
@@ -53,13 +59,16 @@ export const processLinks = async (fullLinkURIs, messageBodies) => {
         topMillionURIs.push(URI);
         uniqueTopMillionURIs.add(URI.domain());
       }
-    }
-    if (!TOP_MILLION_DOMAINS.has(URI.domain())) {
-      const { domainRegistrationDate, isRecentlyRegistered } =
+    } else {
+      const { domainRegistrationDate, isRecentlyRegistered, diffDays } =
         await checkLessThan21DaysOld(URI.domain());
       if (isRecentlyRegistered) {
         if (!uniqueLikelyPhishingURIs.has(URI.domain())) {
-          likelyPhishingURIDicts.push({ URI, domainRegistrationDate });
+          likelyPhishingURIDicts.push({
+            URI,
+            domainRegistrationDate,
+            diffDays,
+          });
           uniqueLikelyPhishingURIs.add(URI.domain());
         }
       } else {

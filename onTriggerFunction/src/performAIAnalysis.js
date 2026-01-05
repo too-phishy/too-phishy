@@ -33,20 +33,24 @@ export const performAIAnalysis = async (
 
 2. Does the email body contain text which prompts user action in line with social engineering techniques? Please explain why in two sentences or less.
 
-As you can see, the email contains links to the following links: fullLinkURIs
-
 Here is a list of all the links in the email to consider for question 1: ${
-    fullLinkURIs.length === 0 ? "[None]" : fullLinkURIs
+    fullLinkURIs.length === 0 ? "[None]" : fullLinkURIs.join(", ")
   }
 
-I have already analyzed these links to see which were registered in the past 29 days:  ${
+I have already analyzed these links to see which were registered in the past 21 days. Here is a list of all the links registered in the past 21 days:  ${
     Object.keys(likelyPhishingURIDicts).length === 0
       ? "[None]"
       : likelyPhishingURIDicts
+          .map((URIDict) => {
+            return `\n * Registered ${
+              URIDict.diffDays
+            } days ago: ${URIDict.URI.toString()}`;
+          })
+          .join("")
   }
 
 I have also already analyzed these links to see which are in the top million most popular domains in the world. The following links are indeed top million links and are therefore likely to be safe: ${
-    topMillionURIs.length === 0 ? "[None]" : topMillionURIs
+    topMillionURIs.length === 0 ? "[None]" : topMillionURIs.join(", ")
   }
  
 

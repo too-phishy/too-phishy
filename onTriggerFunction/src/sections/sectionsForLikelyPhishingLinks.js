@@ -1,13 +1,10 @@
 const sectionForLikelyPhishingLink = (URIDict) => {
-  const now = new Date();
-  const diffDays =
-    (now - URIDict.domainRegistrationDate) / (1000 * 60 * 60 * 24);
   const widgets = [
     {
       decoratedText: {
         text: ``,
         bottomLabel: `This link is ${Math.floor(
-          diffDays
+          URIDict.diffDays
         )} days old. One of the best ways to identify a phishing site is if its domain was registered in the past 21 days.`,
         wrapText: true,
       },
