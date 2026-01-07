@@ -107,7 +107,6 @@ app.post(
         console.log(res);
       })
       .catch((e) => {
-        this.error = "Error";
         console.error(e);
       });
 
