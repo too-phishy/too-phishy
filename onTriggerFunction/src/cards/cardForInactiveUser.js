@@ -9,7 +9,7 @@ export const cardForInactiveUser = {
         },
         {
           textParagraph: {
-            text: "To get started sign up for a Too Phishy account!",
+            text: "To get started, sign up for a Too Phishy account:",
           },
           horizontalAlignment: "CENTER",
         },
