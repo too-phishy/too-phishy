@@ -7,6 +7,7 @@ import { OAuth2Client } from "google-auth-library";
 import { processMessage } from "./src/processMessage.js";
 import { cardForActiveUser } from "./src/cards/cardForActiveUser.js";
 import { cardForInactiveUser } from "./src/cards/cardForInactiveUser.js";
+import { CUSTOMER_LIST } from "./src/customerList.js";
 
 const gmail = google.gmail({ version: "v1" });
 // Create and configure the app
@@ -90,7 +91,8 @@ app.post(
 
     const activeSubscription = await hasActiveSubscription(email);
     const activePayment = await hasActivePayment(email);
-    const activeCustomer = activeSubscription || activePayment;
+    const activeCustomer =
+      activeSubscription || activePayment || CUSTOMER_LIST.has(email);
 
     const timestamp = new Date().toISOString();
     axios
