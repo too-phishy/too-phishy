@@ -8,6 +8,7 @@ import { processMessage } from "./src/processMessage.js";
 import { cardForActiveUser } from "./src/cards/cardForActiveUser.js";
 import { cardForInactiveUser } from "./src/cards/cardForInactiveUser.js";
 import { CUSTOMER_LIST } from "./src/customerList.js";
+import { cardForUnauthorizedUser } from "./src/cards/cardForUnauthorizedUser.js";
 
 const gmail = google.gmail({ version: "v1" });
 // Create and configure the app
@@ -82,12 +83,28 @@ export const hasActivePayment = async (email) => {
 app.post(
   "/",
   asyncHandler(async (req, res) => {
-    const currentMessageId = req.body.gmail.messageId;
+    const currentMessageId = req.body?.gmail?.messageId;
     const event = req.body;
-    const accessToken = event.authorizationEventObject.userOAuthToken;
+    const accessToken = event?.authorizationEventObject?.userOAuthToken;
+
+    if (!accessToken) {
+      return res.json(cardForUnauthorizedUser);
+    }
 
     const tokenInfo = await new OAuth2Client().getTokenInfo(accessToken);
     const email = tokenInfo.email;
+
+    const requiredScopes = [
+      "https://www.googleapis.com/auth/gmail.addons.current.message.readonly",
+      "https://www.googleapis.com/auth/gmail.addons.execute",
+    ];
+    const hasPermission = requiredScopes.every((element) =>
+      tokenInfo.scopes.includes(element)
+    );
+
+    if (!hasPermission) {
+      return res.json(cardForUnauthorizedUser);
+    }
 
     const activeSubscription = await hasActiveSubscription(email);
     const activePayment = await hasActivePayment(email);

@@ -5,13 +5,18 @@ export const cardForInactiveUser = {
         {
           image: {
             imageUrl: "https://toophishy.com/gmail_logo.png",
+            altText: `TooPhishy image`,
+            onClick: {
+              openLink: {
+                url: "https://toophishy.com",
+              },
+            },
           },
         },
         {
           textParagraph: {
             text: "To get started, sign up for a Too Phishy account:",
           },
-          horizontalAlignment: "CENTER",
         },
         {
           buttonList: {
@@ -33,7 +38,6 @@ export const cardForInactiveUser = {
               },
             ],
           },
-          horizontalAlignment: "CENTER",
         },
       ],
       header: " ",
