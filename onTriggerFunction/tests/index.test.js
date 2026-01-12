@@ -1,6 +1,6 @@
 import { processMessage } from "../src/processMessage.js";
 import { message_body_with_two_bitly_links } from "./fixtures/message_body_with_two_bitly_links.js";
-import { sectionsForCodeHostingSiteLink } from "../src/sections/sectionsForCodeHostingSiteLink.js";
+import { sectionForCodeHostingSiteLink } from "../src/sections/sectionForCodeHostingSiteLink.js";
 import {
   BITLY_PHISHING_DOMAIN,
   GCP_PHISHING_DOMAIN,
@@ -62,7 +62,7 @@ describe("processMessage", () => {
   }, 20000);
 });
 
-describe("sectionsForCodeHostingSiteLink", () => {
+describe("sectionForCodeHostingSiteLink", () => {
   test("bitly link is present", async () => {
     try {
       const { headers, fullLinkURIs, messageBodies, attachments } =
@@ -70,7 +70,7 @@ describe("sectionsForCodeHostingSiteLink", () => {
       const {
         codeHostingSiteFlagged: sectionForBitlyFlagged,
         sections: bitlySections,
-      } = sectionsForCodeHostingSiteLink(
+      } = sectionForCodeHostingSiteLink(
         fullLinkURIs,
         BITLY_PHISHING_DOMAIN,
         "https://www.bleepingcomputer.com/news/security/phishing-attack-uses-bitly-blob-storage-to-impersonate-microsoft"
@@ -89,7 +89,7 @@ describe("sectionsForCodeHostingSiteLink", () => {
       const {
         codeHostingSiteFlagged: sectionForGCPFlagged,
         sections: gcpSections,
-      } = sectionsForCodeHostingSiteLink(
+      } = sectionForCodeHostingSiteLink(
         fullLinkURIs,
         GCP_PHISHING_DOMAIN,
         "https://www.bleepingcomputer.com/news/security/phishing-campaign-uses-google-cloud-services-to-steal-office-365-logins/"
