@@ -13,6 +13,8 @@ import { id_badge_update_needed } from "./fixtures/id_badge_update_needed.js";
 import { irs } from "./fixtures/irs.js";
 import { performAIAnalysis } from "../src/performAIAnalysis.js";
 import { deceptive_link_false_positive } from "./fixtures/deceptive_link_false_positive.js";
+import { HOSTING_DOMAINS } from "../src/subdomains/hostingDomains.js";
+import { TOP_MILLION_DOMAINS } from "../src/topDomains/topDomains.js";
 
 describe("processMessage", () => {
   test("process email with multiple attachments", async () => {

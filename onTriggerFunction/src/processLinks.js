@@ -1,12 +1,6 @@
 import { lookup } from "rdapper";
 
 import { TOP_MILLION_DOMAINS } from "./topDomains/topDomains.js";
-import {
-  AWS_PHISHING_DOMAIN,
-  AZURE_PHISHING_DOMAIN,
-  BITLY_PHISHING_DOMAIN,
-  GCP_PHISHING_DOMAIN,
-} from "./cards/cardForActiveUser.js";
 
 const checkLessThan21DaysOld = async (domainName) => {
   try {
@@ -43,19 +37,7 @@ export const processLinks = async (fullLinkURIs, messageBodies) => {
   const likelyPhishingURIDicts = [];
   for (const URI of fullLinkURIs) {
     if (TOP_MILLION_DOMAINS.has(URI.domain())) {
-      if (
-        !uniqueTopMillionURIs.has(URI.domain()) &&
-        URI.normalizeHostname().toString().indexOf(BITLY_PHISHING_DOMAIN) ===
-          -1 &&
-        URI.normalizeHostname().toString().indexOf(GCP_PHISHING_DOMAIN) ===
-          -1 &&
-        URI.normalizeHostname().toString().indexOf(AZURE_PHISHING_DOMAIN) ===
-          -1 &&
-        URI.normalizeHostname().toString().indexOf(AWS_PHISHING_DOMAIN) ===
-          -1 &&
-        URI.domain() !== "amazonaws.com" &&
-        URI.domain() !== "windows.net"
-      ) {
+      if (!uniqueTopMillionURIs.has(URI.domain())) {
         topMillionURIs.push(URI);
         uniqueTopMillionURIs.add(URI.domain());
       }

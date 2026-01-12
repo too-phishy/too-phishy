@@ -4,12 +4,6 @@ import { sectionsForLikelyPhishingLinks } from "../sections/sectionsForLikelyPhi
 import { sectionsForCodeHostingSiteLink } from "../sections/sectionsForCodeHostingSiteLink.js";
 import { performAIAnalysis } from "../performAIAnalysis.js";
 
-export const AWS_PHISHING_DOMAIN = "s3.amazonaws.com";
-export const AZURE_PHISHING_DOMAIN = "blob.core.windows.net";
-export const BITLY_PHISHING_DOMAIN = "bit.ly";
-export const GOOGLE_SITES_PHISHING_DOMAIN = "sites.google.com";
-export const GCP_PHISHING_DOMAIN = "storage.googleapis.com";
-
 export const cardForActiveUser = async (
   headers,
   fullLinkURIs,
@@ -17,45 +11,10 @@ export const cardForActiveUser = async (
   fullMessageData
 ) => {
   const {
-    codeHostingSiteFlagged: sectionForAWSFlagged,
-    sections: awsSections,
-  } = sectionsForCodeHostingSiteLink(
-    fullLinkURIs,
-    AWS_PHISHING_DOMAIN,
-    "https://cybersecuritynews.com/hackers-leverage-websites-hosted-aws"
-  );
-  const {
-    codeHostingSiteFlagged: sectionForAzureFlagged,
-    sections: azureSections,
-  } = sectionsForCodeHostingSiteLink(
-    fullLinkURIs,
-    AZURE_PHISHING_DOMAIN,
-    "https://www.bleepingcomputer.com/news/security/phishing-attack-uses-azure-blob-storage-to-impersonate-microsoft"
-  );
-  const {
-    codeHostingSiteFlagged: sectionForBitlyFlagged,
-    sections: bitlySections,
-  } = sectionsForCodeHostingSiteLink(
-    fullLinkURIs,
-    BITLY_PHISHING_DOMAIN,
-    "https://www.bleepingcomputer.com/news/security/phishing-attack-uses-bitly-blob-storage-to-impersonate-microsoft"
-  );
-  const {
-    codeHostingSiteFlagged: sectionForGoogleSitesFlagged,
-    sections: googleSitesSections,
-  } = sectionsForCodeHostingSiteLink(
-    fullLinkURIs,
-    GOOGLE_SITES_PHISHING_DOMAIN,
-    "https://www.bleepingcomputer.com/news/security/phishers-abuse-google-oauth-to-spoof-google-in-dkim-replay-attack/"
-  );
-  const {
-    codeHostingSiteFlagged: sectionForGCPFlagged,
-    sections: gcpSections,
-  } = sectionsForCodeHostingSiteLink(
-    fullLinkURIs,
-    GCP_PHISHING_DOMAIN,
-    "https://www.bleepingcomputer.com/news/security/phishing-campaign-uses-google-cloud-services-to-steal-office-365-logins/"
-  );
+    codeHostingSiteFlagged,
+    codeHostingSiteURIs,
+    codeHostingSiteSections,
+  } = sectionsForCodeHostingSiteLink(fullLinkURIs);
 
   const { topMillionURIs, nonTopMillionURIs, likelyPhishingURIDicts } =
     await processLinks(fullLinkURIs, messageBodies);
@@ -76,18 +35,11 @@ export const cardForActiveUser = async (
     likelyPhishingURIDicts
   );
 
-  const potentialPhishingLinks = []
-    .concat(sectionForAWSFlagged ? AWS_PHISHING_DOMAIN : [])
-    .concat(sectionForAzureFlagged ? AZURE_PHISHING_DOMAIN : [])
-    .concat(sectionForBitlyFlagged ? BITLY_PHISHING_DOMAIN : [])
-    .concat(sectionForGoogleSitesFlagged ? GOOGLE_SITES_PHISHING_DOMAIN : [])
-    .concat(sectionForGCPFlagged ? GCP_PHISHING_DOMAIN : []);
-
   const overallPhishy =
     deceptiveLinksFlagged ||
     socialEngineeringFlagged ||
     likelyPhishingURIDicts.length > 0 ||
-    potentialPhishingLinks.length > 0;
+    codeHostingSiteURIs.length > 0;
 
   const overviewWidgets = []
     .concat({
@@ -137,15 +89,13 @@ export const cardForActiveUser = async (
         : []
     )
     .concat(
-      potentialPhishingLinks.length > 0
+      codeHostingSiteURIs.length > 0
         ? {
             decoratedText: {
               text: `Hesitate before clicking`,
-              bottomLabel: `${
-                potentialPhishingLinks.length
-              } potential phishing ${
-                potentialPhishingLinks.length > 1 ? "links" : "link"
-              }: ${potentialPhishingLinks.join(", ")}. Further details below.`,
+              bottomLabel: `${codeHostingSiteURIs.length} potential phishing ${
+                codeHostingSiteURIs.length > 1 ? "links" : "link"
+              }: ${codeHostingSiteURIs.join(", ")}. Further details below.`,
               startIcon: {
                 iconUrl: "https://toophishy.com/noun-link-orange.png",
               },
@@ -198,11 +148,7 @@ export const cardForActiveUser = async (
       .concat(likelyPhishingLinksSections)
       .concat(deceptiveLinksFlagged ? deceptiveLinksSection : [])
       .concat(socialEngineeringFlagged ? socialEngineeringSection : [])
-      .concat(sectionForAWSFlagged ? awsSections : [])
-      .concat(sectionForAzureFlagged ? azureSections : [])
-      .concat(sectionForBitlyFlagged ? bitlySections : [])
-      .concat(sectionForGoogleSitesFlagged ? googleSitesSections : [])
-      .concat(sectionForGCPFlagged ? gcpSections : []),
+      .concat(codeHostingSiteFlagged ? codeHostingSiteSections : []),
     // .concat(sectionForDebugging(nonTopMillionURIs, likelyPhishingURIs)),
   };
 };

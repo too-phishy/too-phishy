@@ -54,7 +54,7 @@ I have also already analyzed these links to see which are in the top million mos
   }
  
 
-I have also already analyzed these links to see if they link to subdomain and hosting services that have been known to host phishing sites. Therefore please do not consider sites that are known to host phishing sites because I am already doing that analysis elsewhere.
+I have also already analyzed these links to see if they link to subdomain and hosting services that have been known to host phishing sites. Therefore please do not flag sites that are known to host phishing sites because I am already doing that analysis elsewhere.
 
 Here is the email body:
 
