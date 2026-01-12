@@ -45,7 +45,9 @@ export const cardForActiveUser = async (
     .concat({
       decoratedText: {
         text: "Is it Phishy?",
-        bottomLabel: overallPhishy ? "Yes: Possibly Phishy" : "No: Not Phishy",
+        bottomLabel: overallPhishy
+          ? "Yes: This email was identified as malicious."
+          : "No: Not Phishy",
         startIcon: {
           iconUrl: overallPhishy
             ? "https://toophishy.com/red.png"
@@ -98,24 +100,6 @@ export const cardForActiveUser = async (
               }: ${codeHostingSiteURIs.join(", ")}. Further details below.`,
               startIcon: {
                 iconUrl: "https://toophishy.com/noun-link-orange.png",
-              },
-              wrapText: true,
-            },
-          }
-        : []
-    )
-    .concat(
-      topMillionURIs.length > 0
-        ? {
-            decoratedText: {
-              text: `${topMillionURIs.length} reputable ${
-                topMillionURIs.length > 1 ? "links" : "link"
-              }`,
-              bottomLabel: `${topMillionURIs
-                .map((URI) => URI.domain())
-                .join(", ")}`,
-              startIcon: {
-                iconUrl: "https://toophishy.com/noun-link-green.png",
               },
               wrapText: true,
             },
