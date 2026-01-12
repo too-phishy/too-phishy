@@ -5,11 +5,16 @@ import { TOP_MILLION_DOMAINS } from "./topDomains/topDomains.js";
 const checkLessThan21DaysOld = async (domainName) => {
   try {
     const data = await lookup(domainName);
+
+    if (!data?.record?.creationDate) {
+      throw new Error(`Missing creationDate on data record ${data.record}`);
+    }
+
     const domainRegistrationDate = new Date(data.record.creationDate);
     const now = new Date();
     const diffDays = (now - domainRegistrationDate) / (1000 * 60 * 60 * 24);
     console.log(
-      `Successfully fetched domainRegistrationDate data for ${domainName}: ${domainRegistrationDate}`
+      `Successfully fetched domainRegistrationDate data for ${domainName}: ${data.record.creationDate}`
     );
     return {
       domainRegistrationDate,
@@ -28,7 +33,7 @@ const checkLessThan21DaysOld = async (domainName) => {
   }
 };
 
-export const processLinks = async (fullLinkURIs, messageBodies) => {
+export const processLinks = async (fullLinkURIs) => {
   const uniqueTopMillionURIs = new Set();
   const uniqueNonTopMillionURIs = new Set();
   const uniqueLikelyPhishingURIs = new Set();

@@ -1,7 +1,7 @@
 import { sectionForDebugging } from "../sections/sectionForDebugging.js";
 import { processLinks } from "../processLinks.js";
-import { sectionsForLikelyPhishingLinks } from "../sections/sectionsForLikelyPhishingLinks.js";
-import { sectionsForCodeHostingSiteLink } from "../sections/sectionsForCodeHostingSiteLink.js";
+import { sectionForLikelyPhishingLinks } from "../sections/sectionForLikelyPhishingLinks.js";
+import { sectionForCodeHostingSiteLink } from "../sections/sectionForCodeHostingSiteLink.js";
 import { performAIAnalysis } from "../performAIAnalysis.js";
 
 export const cardForActiveUser = async (
@@ -12,12 +12,12 @@ export const cardForActiveUser = async (
 ) => {
   const {
     codeHostingSiteFlagged,
-    codeHostingSiteURIs,
-    codeHostingSiteSections,
-  } = sectionsForCodeHostingSiteLink(fullLinkURIs);
+    codeHostingSiteURIDicts,
+    codeHostingSiteSection,
+  } = sectionForCodeHostingSiteLink(fullLinkURIs);
 
   const { topMillionURIs, nonTopMillionURIs, likelyPhishingURIDicts } =
-    await processLinks(fullLinkURIs, messageBodies);
+    await processLinks(fullLinkURIs);
 
   const {
     deceptiveLinksFlagged,
@@ -31,7 +31,7 @@ export const cardForActiveUser = async (
     messageBodies
   );
 
-  const { likelyPhishingLinksSections } = sectionsForLikelyPhishingLinks(
+  const likelyPhishingLinksSection = sectionForLikelyPhishingLinks(
     likelyPhishingURIDicts
   );
 
@@ -39,7 +39,7 @@ export const cardForActiveUser = async (
     deceptiveLinksFlagged ||
     socialEngineeringFlagged ||
     likelyPhishingURIDicts.length > 0 ||
-    codeHostingSiteURIs.length > 0;
+    codeHostingSiteURIDicts.length > 0;
 
   const overviewWidgets = []
     .concat({
@@ -61,7 +61,7 @@ export const cardForActiveUser = async (
         ? {
             decoratedText: {
               text: `This email was identified as malicious.`,
-              bottomLabel: `More details below.`,
+              bottomLabel: `Further details below.`,
               startIcon: {
                 iconUrl: "https://toophishy.com/noun-link-red.png",
               },
@@ -91,13 +91,17 @@ export const cardForActiveUser = async (
         : []
     )
     .concat(
-      codeHostingSiteURIs.length > 0
+      codeHostingSiteURIDicts.length > 0
         ? {
             decoratedText: {
               text: `Hesitate before clicking`,
-              bottomLabel: `${codeHostingSiteURIs.length} potential phishing ${
-                codeHostingSiteURIs.length > 1 ? "links" : "link"
-              }: ${codeHostingSiteURIs.join(", ")}. Further details below.`,
+              bottomLabel: `${
+                codeHostingSiteURIDicts.length
+              } potential phishing ${
+                codeHostingSiteURIDicts.length > 1 ? "links" : "link"
+              }: ${codeHostingSiteURIDicts
+                .map((URIDict) => URIDict.URI.domain())
+                .join(", ")}. Further details below.`,
               startIcon: {
                 iconUrl: "https://toophishy.com/noun-link-orange.png",
               },
@@ -129,10 +133,12 @@ export const cardForActiveUser = async (
         collapsible: false,
       },
     ]
-      .concat(likelyPhishingLinksSections)
+      .concat(
+        likelyPhishingURIDicts.length > 0 ? likelyPhishingLinksSection : []
+      )
       .concat(deceptiveLinksFlagged ? deceptiveLinksSection : [])
       .concat(socialEngineeringFlagged ? socialEngineeringSection : [])
-      .concat(codeHostingSiteFlagged ? codeHostingSiteSections : []),
+      .concat(codeHostingSiteFlagged ? codeHostingSiteSection : []),
     // .concat(sectionForDebugging(nonTopMillionURIs, likelyPhishingURIs)),
   };
 };

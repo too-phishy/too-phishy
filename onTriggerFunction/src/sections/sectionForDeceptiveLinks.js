@@ -3,7 +3,7 @@ export const sectionForDeceptiveLinks = (deceptiveLinkDicts) => {
     {
       decoratedText: {
         text: ``,
-        bottomLabel: `The email body contains deceptive links. The appearance of the links does not match their true nature.`,
+        bottomLabel: `Contains deceptive links. The appearance of the links does not match their true nature.`,
         wrapText: true,
       },
     },
