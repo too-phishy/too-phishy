@@ -36,10 +36,10 @@ const checkLessThan21DaysOld = async (domainName) => {
 export const processLinks = async (fullLinkURIs) => {
   const uniqueTopMillionURIs = new Set();
   const uniqueNonTopMillionURIs = new Set();
-  const uniqueLikelyPhishingURIs = new Set();
+  const uniqueRecentlyRegisteredURIs = new Set();
   const topMillionURIs = [];
   const nonTopMillionURIs = [];
-  const likelyPhishingURIDicts = [];
+  const recentlyRegisteredURIDicts = [];
   for (const URI of fullLinkURIs) {
     if (TOP_MILLION_DOMAINS.has(URI.domain())) {
       if (!uniqueTopMillionURIs.has(URI.domain())) {
@@ -50,13 +50,13 @@ export const processLinks = async (fullLinkURIs) => {
       const { domainRegistrationDate, isRecentlyRegistered, diffDays } =
         await checkLessThan21DaysOld(URI.domain());
       if (isRecentlyRegistered) {
-        if (!uniqueLikelyPhishingURIs.has(URI.domain())) {
-          likelyPhishingURIDicts.push({
+        if (!uniqueRecentlyRegisteredURIs.has(URI.domain())) {
+          recentlyRegisteredURIDicts.push({
             URI,
             domainRegistrationDate,
             diffDays,
           });
-          uniqueLikelyPhishingURIs.add(URI.domain());
+          uniqueRecentlyRegisteredURIs.add(URI.domain());
         }
       } else {
         if (!uniqueNonTopMillionURIs.has(URI.domain())) {
@@ -69,6 +69,6 @@ export const processLinks = async (fullLinkURIs) => {
   return {
     topMillionURIs,
     nonTopMillionURIs,
-    likelyPhishingURIDicts,
+    recentlyRegisteredURIDicts,
   };
 };

@@ -31,7 +31,7 @@ export const sectionForLinks = (codeHostingSiteURIDicts) => {
           wrapText: true,
           startIcon: {
             iconUrl:
-              "https://toophishy.com/noun-outgoing-mail-367819-FF001C.png",
+              "https://toophishy.com/noun-outgoing-mail-367819-993AE0.png",
           },
         },
       },
@@ -39,11 +39,7 @@ export const sectionForLinks = (codeHostingSiteURIDicts) => {
     linkWidgets.push(...URIWidgets);
   }
   return {
-    header: `${
-      codeHostingSiteURIDicts.length > 1 ? "Links" : "link"
-    } associated with code hosting ${
-      codeHostingSiteURIDicts.length > 1 ? "sites" : "site"
-    }`,
+    header: `Code Hosting`,
     widgets: widgets.concat(linkWidgets),
     collapsible: true,
   };

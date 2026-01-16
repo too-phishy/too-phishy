@@ -73,8 +73,8 @@ describe("performAIAnalysis", () => {
   test("catches deceptive links and social engineering in sony email", async () => {
     try {
       const { headers, fullLinkURIs, messageBodies } = processMessage(sony);
-        const { topMillionURIs, nonTopMillionURIs, likelyPhishingURIDicts } =
-        await processLinks(fullLinkURIs);
+        const { topMillionURIs, nonTopMillionURIs, recentlyRegisteredURIDicts } =
+            await processLinks(fullLinkURIs);
       const {
         deceptiveLinksFlagged,
         deceptiveLinksSection,
@@ -83,7 +83,7 @@ describe("performAIAnalysis", () => {
       } = await performAIAnalysis(
         fullLinkURIs,
         topMillionURIs,
-        likelyPhishingURIDicts,
+        recentlyRegisteredURIDicts,
         messageBodies
       );
 
@@ -98,7 +98,7 @@ describe("performAIAnalysis", () => {
     try {
       const { headers, fullLinkURIs, messageBodies } =
         processMessage(john_podesta);
-        const { topMillionURIs, nonTopMillionURIs, likelyPhishingURIDicts } =
+        const { topMillionURIs, nonTopMillionURIs, recentlyRegisteredURIDicts } =
             await processLinks(fullLinkURIs);
       const {
         deceptiveLinksFlagged,
@@ -108,7 +108,7 @@ describe("performAIAnalysis", () => {
       } = await performAIAnalysis(
         fullLinkURIs,
         topMillionURIs,
-        likelyPhishingURIDicts,
+        recentlyRegisteredURIDicts,
         messageBodies
       );
 
@@ -121,7 +121,9 @@ describe("performAIAnalysis", () => {
 
   test("catches social engineering in irs email", async () => {
     try {
-        const { topMillionURIs, nonTopMillionURIs, likelyPhishingURIDicts } =
+        const { headers, fullLinkURIs, messageBodies, attachments } =
+            processMessage(irs);
+        const { topMillionURIs, nonTopMillionURIs, recentlyRegisteredURIDicts } =
             await processLinks(fullLinkURIs);
       const {
         deceptiveLinksFlagged,
@@ -131,7 +133,7 @@ describe("performAIAnalysis", () => {
       } = await performAIAnalysis(
         fullLinkURIs,
         topMillionURIs,
-        likelyPhishingURIDicts,
+        recentlyRegisteredURIDicts,
         messageBodies
       );
 
@@ -147,7 +149,7 @@ describe("performAIAnalysis", () => {
       const { headers, fullLinkURIs, messageBodies } = processMessage(
         id_badge_update_needed
       );
-        const { topMillionURIs, nonTopMillionURIs, likelyPhishingURIDicts } =
+        const { topMillionURIs, nonTopMillionURIs, recentlyRegisteredURIDicts } =
             await processLinks(fullLinkURIs);
       const {
         deceptiveLinksFlagged,
@@ -157,7 +159,7 @@ describe("performAIAnalysis", () => {
       } = await performAIAnalysis(
         fullLinkURIs,
         topMillionURIs,
-        likelyPhishingURIDicts,
+        recentlyRegisteredURIDicts,
         messageBodies
       );
 
@@ -173,7 +175,7 @@ describe("performAIAnalysis", () => {
       const { headers, fullLinkURIs, messageBodies } = processMessage(
         deceptive_link_false_positive
       );
-        const { topMillionURIs, nonTopMillionURIs, likelyPhishingURIDicts } =
+        const { topMillionURIs, nonTopMillionURIs, recentlyRegisteredURIDicts } =
             await processLinks(fullLinkURIs);
       const {
         deceptiveLinksFlagged,
@@ -183,7 +185,7 @@ describe("performAIAnalysis", () => {
       } = await performAIAnalysis(
         fullLinkURIs,
         topMillionURIs,
-        likelyPhishingURIDicts,
+        recentlyRegisteredURIDicts,
         messageBodies
       );
 
@@ -199,7 +201,7 @@ describe("performAIAnalysis", () => {
       const { headers, fullLinkURIs, messageBodies } = processMessage(sony);
       const topMillionURIs = [];
       const nonTopMillionURIs = [];
-      const likelyPhishingURIDicts = [
+      const recentlyRegisteredURIDicts = [
         {
           URI: fullLinkURIs[0],
           domainRegistrationDate: new Date(),
@@ -214,7 +216,7 @@ describe("performAIAnalysis", () => {
       } = await performAIAnalysis(
         fullLinkURIs,
         topMillionURIs,
-        likelyPhishingURIDicts,
+        recentlyRegisteredURIDicts,
         messageBodies
       );
 

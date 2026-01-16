@@ -3,7 +3,13 @@ export const sectionForDeceptiveLinks = (deceptiveLinkDicts) => {
     {
       decoratedText: {
         text: ``,
-        bottomLabel: `Contains deceptive links. The appearance of the links does not match their true nature.`,
+        bottomLabel: `Contains ${
+          deceptiveLinkDicts > 0 ? "deceptive links" : "a deceptive link"
+        }. The appearance of ${
+          deceptiveLinkDicts > 0 ? "these links" : "this link"
+        } does not match ${
+          deceptiveLinkDicts > 0 ? "their" : "its"
+        } true nature.`,
         wrapText: true,
       },
     },
@@ -15,7 +21,7 @@ export const sectionForDeceptiveLinks = (deceptiveLinkDicts) => {
         bottomLabel: dict.explanation,
         wrapText: true,
         startIcon: {
-          iconUrl: "https://toophishy.com/noun-link-red.png",
+          iconUrl: "https://toophishy.com/noun-link-orange.png",
         },
       },
     };
