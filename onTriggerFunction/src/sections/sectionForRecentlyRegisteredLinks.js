@@ -1,9 +1,9 @@
-export const sectionForLikelyPhishingLinks = (URIDicts) => {
+export const sectionForRecentlyRegisteredLinks = (URIDicts) => {
   const widgets = [
     {
       decoratedText: {
         text: ``,
-        bottomLabel: `Contains recently registered links. One of the best ways to identify a phishing link is if its domain was registered in the past 21 days.`,
+        bottomLabel: `One of the best ways to identify a phishing link is if its domain was registered in the past 21 days.`,
         wrapText: true,
       },
     },

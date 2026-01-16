@@ -3,17 +3,10 @@ export const sectionForSocialEngineering = (socialEngineeringExplanation) => {
     {
       decoratedText: {
         text: ``,
-        bottomLabel: `The email body contains text which prompts user action in line with social engineering techniques.`,
-        wrapText: true,
-      },
-    },
-    {
-      decoratedText: {
-        text: ``,
         bottomLabel: socialEngineeringExplanation,
         wrapText: true,
         startIcon: {
-          iconUrl: "https://toophishy.com/noun-link-red.png",
+          iconUrl: "https://toophishy.com/noun-hate-mail-124279-3B6BF9.png",
         },
       },
     },

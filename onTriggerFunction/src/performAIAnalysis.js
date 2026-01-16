@@ -23,7 +23,7 @@ const EmailAnalysis = z.object({
 export const performAIAnalysis = async (
   fullLinkURIs,
   topMillionURIs,
-  likelyPhishingURIDicts,
+  recentlyRegisteredURIDicts,
   messageBodies
 ) => {
   const deceptiveURIDicts = [];
@@ -38,9 +38,9 @@ Here is a list of all the links in the email to consider for question 1: ${
   }
 
 I have already analyzed these links to see which were registered in the past 21 days. Here is a list of all the links registered in the past 21 days:  ${
-    Object.keys(likelyPhishingURIDicts).length === 0
+    Object.keys(recentlyRegisteredURIDicts).length === 0
       ? "[None]"
-      : likelyPhishingURIDicts
+      : recentlyRegisteredURIDicts
           .map((URIDict) => {
             return `\n * Registered ${
               URIDict.diffDays
@@ -96,6 +96,7 @@ ${messageBodies[0]}
 
   return {
     deceptiveLinksFlagged,
+    deceptiveLinkDicts,
     deceptiveLinksSection,
     socialEngineeringFlagged,
     socialEngineeringSection,

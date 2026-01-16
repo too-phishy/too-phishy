@@ -107,7 +107,7 @@ describe("processLinks", () => {
     try {
       const { headers, fullLinkURIs, messageBodies, attachments } =
         processMessage(sony);
-      const { topMillionURIs, nonTopMillionURIs, likelyPhishingURIDicts } =
+      const { topMillionURIs, nonTopMillionURIs, recentlyRegisteredURIDicts } =
         await processLinks(fullLinkURIs, messageBodies);
       const {
         deceptiveLinksFlagged,
@@ -117,7 +117,7 @@ describe("processLinks", () => {
       } = await performAIAnalysis(
         fullLinkURIs,
         topMillionURIs,
-        likelyPhishingURIDicts,
+        recentlyRegisteredURIDicts,
         messageBodies
       );
 
@@ -132,7 +132,7 @@ describe("processLinks", () => {
     try {
       const { headers, fullLinkURIs, messageBodies, attachments } =
         processMessage(john_podesta);
-      const { topMillionURIs, nonTopMillionURIs, likelyPhishingURIDicts } =
+      const { topMillionURIs, nonTopMillionURIs, recentlyRegisteredURIDicts } =
         await processLinks(fullLinkURIs, messageBodies);
       const {
         deceptiveLinksFlagged,
@@ -142,7 +142,7 @@ describe("processLinks", () => {
       } = await performAIAnalysis(
         fullLinkURIs,
         topMillionURIs,
-        likelyPhishingURIDicts,
+        recentlyRegisteredURIDicts,
         messageBodies
       );
 
@@ -157,7 +157,7 @@ describe("processLinks", () => {
     try {
       const { headers, fullLinkURIs, messageBodies, attachments } =
         processMessage(irs);
-      const { topMillionURIs, nonTopMillionURIs, likelyPhishingURIDicts } =
+      const { topMillionURIs, nonTopMillionURIs, recentlyRegisteredURIDicts } =
         await processLinks(fullLinkURIs, messageBodies);
       const {
         deceptiveLinksFlagged,
@@ -167,7 +167,7 @@ describe("processLinks", () => {
       } = await performAIAnalysis(
         fullLinkURIs,
         topMillionURIs,
-        likelyPhishingURIDicts,
+        recentlyRegisteredURIDicts,
         messageBodies
       );
 
@@ -182,7 +182,7 @@ describe("processLinks", () => {
     try {
       const { headers, fullLinkURIs, messageBodies, attachments } =
         processMessage(id_badge_update_needed);
-      const { topMillionURIs, nonTopMillionURIs, likelyPhishingURIDicts } =
+      const { topMillionURIs, nonTopMillionURIs, recentlyRegisteredURIDicts } =
         await processLinks(fullLinkURIs, messageBodies);
       const {
         deceptiveLinksFlagged,
@@ -192,7 +192,7 @@ describe("processLinks", () => {
       } = await performAIAnalysis(
         fullLinkURIs,
         topMillionURIs,
-        likelyPhishingURIDicts,
+        recentlyRegisteredURIDicts,
         messageBodies
       );
 
@@ -207,7 +207,7 @@ describe("processLinks", () => {
     try {
       const { headers, fullLinkURIs, messageBodies, attachments } =
         processMessage(deceptive_link_false_positive);
-      const { topMillionURIs, nonTopMillionURIs, likelyPhishingURIDicts } =
+      const { topMillionURIs, nonTopMillionURIs, recentlyRegisteredURIDicts } =
         await processLinks(fullLinkURIs, messageBodies);
       const {
         deceptiveLinksFlagged,
@@ -217,7 +217,7 @@ describe("processLinks", () => {
       } = await performAIAnalysis(
         fullLinkURIs,
         topMillionURIs,
-        likelyPhishingURIDicts,
+        recentlyRegisteredURIDicts,
         messageBodies
       );
 
@@ -234,7 +234,7 @@ describe("processLinks", () => {
         processMessage(sony);
       const topMillionURIs = [];
       const nonTopMillionURIs = [];
-      const likelyPhishingURIDicts = [
+      const recentlyRegisteredURIDicts = [
         {
           URI: fullLinkURIs[0],
           domainRegistrationDate: new Date(),
@@ -249,7 +249,7 @@ describe("processLinks", () => {
       } = await performAIAnalysis(
         fullLinkURIs,
         topMillionURIs,
-        likelyPhishingURIDicts,
+        recentlyRegisteredURIDicts,
         messageBodies
       );
 
