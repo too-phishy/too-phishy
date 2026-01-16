@@ -1,13 +1,15 @@
 import { lookup } from "rdapper";
+import * as util from "util";
 
 import { TOP_MILLION_DOMAINS } from "./topDomains/topDomains.js";
 
 const checkLessThan21DaysOld = async (domainName) => {
+  let data;
   try {
-    const data = await lookup(domainName);
+    data = await lookup(domainName);
 
     if (!data?.record?.creationDate) {
-      throw new Error(`Missing creationDate on data record ${data.record}`);
+      throw new Error(`Missing creationDate on data record`);
     }
 
     const domainRegistrationDate = new Date(data.record.creationDate);
@@ -23,7 +25,10 @@ const checkLessThan21DaysOld = async (domainName) => {
     };
   } catch (err) {
     console.error(
-      `Error fetching domainRegistrationDate data for ${domainName}: ${err}`
+      `Error fetching domainRegistrationDate data from data record ${util.inspect(
+        data.record,
+        { depth: null }
+      )} for ${domainName}: ${err}`
     );
     return {
       domainRegistrationDate: null,
