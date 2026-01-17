@@ -6,7 +6,23 @@ import { TOP_MILLION_DOMAINS } from "./topDomains/topDomains.js";
 const checkLessThan21DaysOld = async (domainName) => {
   let data;
   try {
-    data = await lookup(domainName);
+    const maxRetries = 3;
+
+    for (let attempt = 0; attempt < maxRetries; attempt++) {
+      data = await lookup(domainName);
+
+      if (!data?.record?.creationDate) {
+        const delay = Math.min(1000 * 2 ** attempt, 10000);
+        console.log(
+          `Retrying after ${delay}ms (attempt ${attempt + 1}/${maxRetries})`
+        );
+        await new Promise((resolve) => setTimeout(resolve, delay));
+        continue;
+      }
+
+      // SUCCESS: If we have the date, break out of the retry loop
+      break;
+    }
 
     if (!data?.record?.creationDate) {
       throw new Error(`Missing creationDate on data record`);
