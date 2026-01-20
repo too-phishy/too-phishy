@@ -3,7 +3,7 @@ export const sectionForSocialEngineering = (socialEngineeringExplanation) => {
     {
       decoratedText: {
         text: ``,
-        bottomLabel: socialEngineeringExplanation,
+        bottomLabel: `${socialEngineeringExplanation}`,
         wrapText: true,
         startIcon: {
           iconUrl: "https://toophishy.com/noun-hate-mail-124279-3B6BF9.png",

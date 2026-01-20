@@ -17,8 +17,8 @@ export const sectionForDeceptiveLinks = (deceptiveLinkDicts) => {
   const linkWidgets = deceptiveLinkDicts.map((dict) => {
     return {
       decoratedText: {
-        text: dict.linkUrl,
-        bottomLabel: dict.explanation,
+        text: `${dict.linkUrl}`,
+        bottomLabel: `${dict.explanation}`,
         wrapText: true,
         startIcon: {
           iconUrl: "https://toophishy.com/noun-link-orange.png",
