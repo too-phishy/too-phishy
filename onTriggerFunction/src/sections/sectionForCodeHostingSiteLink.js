@@ -1,3 +1,5 @@
+import { widgetsForNotFlagged } from "./widgetsForNotFlagged.js";
+
 export const AWS_PHISHING_DOMAIN = "s3.amazonaws.com";
 export const AZURE_PHISHING_DOMAIN = "blob.core.windows.net";
 export const BITLY_PHISHING_DOMAIN = "bit.ly";
@@ -48,7 +50,10 @@ export const sectionForLinks = (codeHostingSiteURIDicts) => {
   }
   return {
     header: `Code Hosting`,
-    widgets: widgets.concat(linkWidgets),
+    widgets:
+      codeHostingSiteURIDicts.length > 0
+        ? widgets.concat(linkWidgets)
+        : widgetsForNotFlagged,
     collapsible: true,
   };
 };

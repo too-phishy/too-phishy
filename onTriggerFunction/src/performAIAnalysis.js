@@ -97,6 +97,7 @@ ${messageBodies[0]}
 
   const deceptiveLinksSection = sectionForDeceptiveLinks(deceptiveLinkDicts);
   const socialEngineeringSection = sectionForSocialEngineering(
+    socialEngineeringFlagged,
     socialEngineeringExplanation
   );
 

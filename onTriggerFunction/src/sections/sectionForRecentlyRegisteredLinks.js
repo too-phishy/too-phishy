@@ -1,4 +1,8 @@
-export const sectionForRecentlyRegisteredLinks = (URIDicts) => {
+import { widgetsForNotFlagged } from "./widgetsForNotFlagged.js";
+
+export const sectionForRecentlyRegisteredLinks = (
+  recentlyRegisteredURIDicts
+) => {
   const widgets = [
     {
       decoratedText: {
@@ -9,7 +13,7 @@ export const sectionForRecentlyRegisteredLinks = (URIDicts) => {
     },
   ];
   const linkWidgets = [];
-  for (const URIDict of URIDicts) {
+  for (const URIDict of recentlyRegisteredURIDicts) {
     const URIWidgets = [
       {
         decoratedText: {
@@ -60,7 +64,10 @@ export const sectionForRecentlyRegisteredLinks = (URIDicts) => {
   ];
   return {
     header: `Recently Registered Links`,
-    widgets: widgets.concat(linkWidgets).concat(learnMoreWidgets),
+    widgets:
+      recentlyRegisteredURIDicts.length > 0
+        ? widgets.concat(linkWidgets).concat(learnMoreWidgets)
+        : widgetsForNotFlagged,
     collapsible: true,
   };
 };

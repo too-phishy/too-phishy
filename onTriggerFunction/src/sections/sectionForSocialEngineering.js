@@ -1,4 +1,9 @@
-export const sectionForSocialEngineering = (socialEngineeringExplanation) => {
+import { widgetsForNotFlagged } from "./widgetsForNotFlagged.js";
+
+export const sectionForSocialEngineering = (
+  socialEngineeringFlagged,
+  socialEngineeringExplanation
+) => {
   const widgets = [
     {
       decoratedText: {
@@ -13,7 +18,7 @@ export const sectionForSocialEngineering = (socialEngineeringExplanation) => {
   ];
   return {
     header: `Social Engineering`,
-    widgets: widgets,
+    widgets: socialEngineeringFlagged ? widgets : widgetsForNotFlagged,
     collapsible: true,
   };
 };

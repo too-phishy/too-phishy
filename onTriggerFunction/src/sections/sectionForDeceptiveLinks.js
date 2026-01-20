@@ -1,3 +1,5 @@
+import { widgetsForNotFlagged } from "./widgetsForNotFlagged.js";
+
 export const sectionForDeceptiveLinks = (deceptiveLinkDicts) => {
   const widgets = [
     {
@@ -28,7 +30,10 @@ export const sectionForDeceptiveLinks = (deceptiveLinkDicts) => {
   });
   return {
     header: `Deceptive Links`,
-    widgets: widgets.concat(linkWidgets),
+    widgets:
+      deceptiveLinkDicts.length > 0
+        ? widgets.concat(linkWidgets)
+        : widgetsForNotFlagged,
     collapsible: true,
   };
 };

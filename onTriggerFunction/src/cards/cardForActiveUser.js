@@ -152,14 +152,10 @@ export const cardForActiveUser = async (
         collapsible: false,
       },
     ]
-      .concat(
-        recentlyRegisteredURIDicts.length > 0
-          ? recentlyRegisteredLinksSection
-          : []
-      )
-      .concat(deceptiveLinksFlagged ? deceptiveLinksSection : [])
-      .concat(socialEngineeringFlagged ? socialEngineeringSection : [])
-      .concat(codeHostingSiteFlagged ? codeHostingSiteSection : []),
+      .concat(recentlyRegisteredLinksSection)
+      .concat(deceptiveLinksSection)
+      .concat(socialEngineeringSection)
+      .concat(codeHostingSiteSection),
     // .concat(sectionForDebugging(nonTopMillionURIs, recentlyRegisteredURIs)),
   };
 };
