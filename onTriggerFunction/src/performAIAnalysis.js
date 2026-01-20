@@ -29,9 +29,9 @@ export const performAIAnalysis = async (
   fullLinkURIs,
   topMillionURIs,
   recentlyRegisteredURIDicts,
-  messageBodies
+  messageBodies,
+  codeHostingSiteFlagged
 ) => {
-  const deceptiveURIDicts = [];
   const topMillionURIsMinusCodeHostingSiteLinks = topMillionURIs.filter(
     (URI) => {
       const notCodeHostingDomain = !HOSTING_DOMAINS_AS_SET.has(URI.domain());
@@ -109,7 +109,10 @@ ${messageBodies[0]}
   const deceptiveLinksSection = sectionForDeceptiveLinks(deceptiveLinkDicts);
   const socialEngineeringSection = sectionForSocialEngineering(
     socialEngineeringFlagged,
-    socialEngineeringExplanation
+    socialEngineeringExplanation,
+    codeHostingSiteFlagged,
+    deceptiveLinksFlagged,
+    recentlyRegisteredURIDicts
   );
 
   return {

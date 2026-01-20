@@ -2,7 +2,10 @@ import { widgetsForNotFlagged } from "./widgetsForNotFlagged.js";
 
 export const sectionForSocialEngineering = (
   socialEngineeringFlagged,
-  socialEngineeringExplanation
+  socialEngineeringExplanation,
+  codeHostingSiteFlagged,
+  deceptiveLinksFlagged,
+  recentlyRegisteredURIDicts
 ) => {
   const widgets = [
     {
@@ -18,7 +21,13 @@ export const sectionForSocialEngineering = (
   ];
   return {
     header: `Social Engineering`,
-    widgets: socialEngineeringFlagged ? widgets : widgetsForNotFlagged,
+    widgets:
+      (codeHostingSiteFlagged ||
+        deceptiveLinksFlagged ||
+        recentlyRegisteredURIDicts.length > 0) &&
+      socialEngineeringFlagged
+        ? widgets
+        : widgetsForNotFlagged,
     collapsible: true,
   };
 };

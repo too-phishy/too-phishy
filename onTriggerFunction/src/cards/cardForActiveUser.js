@@ -3,6 +3,7 @@ import { processLinks } from "../processLinks.js";
 import { sectionForRecentlyRegisteredLinks } from "../sections/sectionForRecentlyRegisteredLinks.js";
 import { sectionForCodeHostingSiteLink } from "../sections/sectionForCodeHostingSiteLink.js";
 import { performAIAnalysis } from "../performAIAnalysis.js";
+import { widgetsForNotFlagged } from "../sections/widgetsForNotFlagged.js";
 
 export const cardForActiveUser = async (
   headers,
@@ -29,7 +30,8 @@ export const cardForActiveUser = async (
     fullLinkURIs,
     topMillionURIs,
     recentlyRegisteredURIDicts,
-    messageBodies
+    messageBodies,
+    codeHostingSiteFlagged
   );
 
   const recentlyRegisteredLinksSection = sectionForRecentlyRegisteredLinks(
@@ -38,7 +40,6 @@ export const cardForActiveUser = async (
 
   const overallPhishy =
     deceptiveLinksFlagged ||
-    socialEngineeringFlagged ||
     recentlyRegisteredURIDicts.length > 0 ||
     codeHostingSiteFlagged;
 
@@ -115,7 +116,10 @@ export const cardForActiveUser = async (
         : []
     )
     .concat(
-      socialEngineeringFlagged
+      (codeHostingSiteFlagged ||
+        deceptiveLinksFlagged ||
+        recentlyRegisteredURIDicts.length > 0) &&
+        socialEngineeringFlagged
         ? {
             decoratedText: {
               text: `Don't get tricked.`,
