@@ -4,6 +4,12 @@ import { sectionForRecentlyRegisteredLinks } from "../sections/sectionForRecentl
 import { sectionForCodeHostingSiteLink } from "../sections/sectionForCodeHostingSiteLink.js";
 import { performAIAnalysis } from "../performAIAnalysis.js";
 import { widgetsForNotFlagged } from "../sections/widgetsForNotFlagged.js";
+import URI from "urijs";
+
+export const FORMATTER = new Intl.ListFormat("en", {
+  style: "long",
+  type: "conjunction",
+});
 
 export const cardForActiveUser = async (
   headers,
@@ -67,9 +73,11 @@ export const cardForActiveUser = async (
                 recentlyRegisteredURIDicts.length
               } recently registered ${
                 recentlyRegisteredURIDicts.length > 1 ? "links" : "link"
-              }: ${recentlyRegisteredURIDicts
-                .map((URIDict) => URIDict.URI.domain())
-                .join(", ")}. More details below.`,
+              }: ${FORMATTER.format(
+                recentlyRegisteredURIDicts.map((URIDict) =>
+                  URIDict.URI.domain()
+                )
+              )}. More details below.`,
               startIcon: {
                 iconUrl: "https://toophishy.com/noun-link-red.png",
               },
@@ -85,9 +93,9 @@ export const cardForActiveUser = async (
               text: `Hesitate before clicking`,
               bottomLabel: `${deceptiveLinkDicts.length} deceptive ${
                 deceptiveLinkDicts.length > 1 ? "links" : "link"
-              }: ${deceptiveLinkDicts
-                .map((dict) => dict.linkUrl)
-                .join(", ")}. More details below.`,
+              }: ${FORMATTER.format(
+                deceptiveLinkDicts.map((dict) => URI(dict.linkUrl).domain())
+              )}. More details below.`,
               startIcon: {
                 iconUrl: "https://toophishy.com/noun-link-orange.png",
               },
@@ -103,9 +111,9 @@ export const cardForActiveUser = async (
               text: `Hesitate before clicking`,
               bottomLabel: `${codeHostingSiteURIDicts.length} ${
                 codeHostingSiteURIDicts.length > 1 ? "links" : "link"
-              } associated with code hosting sites: ${codeHostingSiteURIDicts
-                .map((URIDict) => URIDict.URI.domain())
-                .join(", ")}. More details below.`,
+              } associated with code hosting sites:  ${FORMATTER.format(
+                codeHostingSiteURIDicts.map((URIDict) => URIDict.URI.domain())
+              )}. More details below.`,
               startIcon: {
                 iconUrl:
                   "https://toophishy.com/noun-outgoing-mail-367819-993AE0.png",
@@ -158,8 +166,8 @@ export const cardForActiveUser = async (
     ]
       .concat(recentlyRegisteredLinksSection)
       .concat(deceptiveLinksSection)
-      .concat(socialEngineeringSection)
-      .concat(codeHostingSiteSection),
+      .concat(codeHostingSiteSection)
+      .concat(socialEngineeringSection),
     // .concat(sectionForDebugging(nonTopMillionURIs, recentlyRegisteredURIs)),
   };
 };

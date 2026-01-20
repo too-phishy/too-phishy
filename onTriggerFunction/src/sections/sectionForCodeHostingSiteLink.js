@@ -1,5 +1,6 @@
 import { widgetsForNotFlagged } from "./widgetsForNotFlagged.js";
 import { HOSTING_DOMAINS } from "../subdomains/codeHostingDomains.js";
+import { FORMATTER } from "../cards/cardForActiveUser.js";
 
 export const AWS_PHISHING_DOMAIN = "s3.amazonaws.com";
 export const AZURE_PHISHING_DOMAIN = "blob.core.windows.net";
@@ -19,7 +20,9 @@ export const sectionForLinks = (codeHostingSiteURIDicts) => {
     {
       decoratedText: {
         text: ``,
-        bottomLabel: `Hosting code on popular code hosting sites allows scammers to post their malicious code on websites thought to be safe.`,
+        bottomLabel: `Hosting code on popular code hosting sites like ${FORMATTER.format(
+          codeHostingSiteURIDicts.map((URIDict) => URIDict.URI.domain())
+        )} allows scammers to post their malicious code on websites thought to be safe.`,
         wrapText: true,
       },
     },
