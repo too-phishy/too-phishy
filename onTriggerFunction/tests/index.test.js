@@ -190,6 +190,7 @@ describe("performAIAnalysis", () => {
       );
 
       expect(deceptiveLinksFlagged).toBe(false);
+      // flaky test
       expect(socialEngineeringFlagged).toBe(true);
     } catch (e) {
       console.log(e);
