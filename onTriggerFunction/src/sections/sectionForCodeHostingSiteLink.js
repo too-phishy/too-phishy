@@ -1,4 +1,5 @@
 import { widgetsForNotFlagged } from "./widgetsForNotFlagged.js";
+import { HOSTING_DOMAINS } from "../subdomains/codeHostingDomains.js";
 
 export const AWS_PHISHING_DOMAIN = "s3.amazonaws.com";
 export const AZURE_PHISHING_DOMAIN = "blob.core.windows.net";
@@ -6,13 +7,12 @@ export const BITLY_PHISHING_DOMAIN = "bit.ly";
 export const GOOGLE_SITES_PHISHING_DOMAIN = "sites.google.com";
 export const GCP_PHISHING_DOMAIN = "storage.googleapis.com";
 
-export const CODE_HOSTING_SUBDOMAINS = new Set([
+export const CODE_HOSTING_SUBDOMAINS = [
   AWS_PHISHING_DOMAIN,
   AZURE_PHISHING_DOMAIN,
-  BITLY_PHISHING_DOMAIN,
   GOOGLE_SITES_PHISHING_DOMAIN,
   GCP_PHISHING_DOMAIN,
-]);
+];
 
 export const sectionForLinks = (codeHostingSiteURIDicts) => {
   const widgets = [
@@ -37,7 +37,7 @@ export const sectionForLinks = (codeHostingSiteURIDicts) => {
       {
         decoratedText: {
           text: `Code hosting site:`,
-          bottomLabel: URIDict.codeHostingSiteSubdomain,
+          bottomLabel: URIDict.codeHostingDomain,
           wrapText: true,
           startIcon: {
             iconUrl:
@@ -69,9 +69,23 @@ export const sectionForCodeHostingSiteLink = (fullLinkURIs) => {
       ) {
         codeHostingSiteURIDicts.push({
           URI,
-          codeHostingSiteSubdomain: subdomain,
+          codeHostingDomain: subdomain,
         });
         uniqueCodeHostingSiteSubdomains.add(subdomain);
+      }
+    }
+  }
+  for (const URI of fullLinkURIs) {
+    for (const hostingDomain of HOSTING_DOMAINS) {
+      if (
+        URI.domain() === hostingDomain &&
+        !uniqueCodeHostingSiteSubdomains.has(hostingDomain)
+      ) {
+        codeHostingSiteURIDicts.push({
+          URI,
+          codeHostingDomain: hostingDomain,
+        });
+        uniqueCodeHostingSiteSubdomains.add(hostingDomain);
       }
     }
   }

@@ -1,4 +1,4 @@
-export const HOSTING_DOMAINS = new Set([
+export const HOSTING_DOMAINS = [
   "blogspot.com",
   "web.app",
   "firebaseapp.com",
@@ -105,4 +105,6 @@ export const HOSTING_DOMAINS = new Set([
   "blogspot.tw",
   "blogspot.ug",
   "blogspot.vn",
-]);
+  "bit.ly",
+];
+export const HOSTING_DOMAINS_AS_SET = new Set(HOSTING_DOMAINS);

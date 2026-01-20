@@ -4,6 +4,10 @@ import { zodTextFormat } from "openai/helpers/zod";
 import { sectionForDeceptiveLinks } from "./sections/sectionForDeceptiveLinks.js";
 import { sectionForSocialEngineering } from "./sections/sectionForSocialEngineering.js";
 import { CODE_HOSTING_SUBDOMAINS } from "./sections/sectionForCodeHostingSiteLink.js";
+import {
+  HOSTING_DOMAINS,
+  HOSTING_DOMAINS_AS_SET,
+} from "./subdomains/codeHostingDomains.js";
 
 const openai = new OpenAI({
   apiKey: process.env.OPENAI_API_KEY, // This is the default and can be omitted
@@ -29,8 +33,15 @@ export const performAIAnalysis = async (
 ) => {
   const deceptiveURIDicts = [];
   const topMillionURIsMinusCodeHostingSiteLinks = topMillionURIs.filter(
-    (URI) => !CODE_HOSTING_SUBDOMAINS.has(URI.domain())
+    (URI) => {
+      const notCodeHostingDomain = !HOSTING_DOMAINS_AS_SET.has(URI.domain());
+      const notCodeHostingSubdomain = CODE_HOSTING_SUBDOMAINS.every(
+        (subdomain) => !URI.normalizeHostname().toString().includes(subdomain)
+      );
+      return notCodeHostingDomain && notCodeHostingSubdomain;
+    }
   );
+
   const input = `Please read the email at the bottom of this prompt and tell me the following two things.
 
 1. For each link in the email, tell me if the appearance of the link does not match its true nature, i.e. does the text indicate it links one place where it actually links somewhere else? Please explain why in two sentences or less.
