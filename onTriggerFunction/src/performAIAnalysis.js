@@ -4,10 +4,7 @@ import { zodTextFormat } from "openai/helpers/zod";
 import { sectionForDeceptiveLinks } from "./sections/sectionForDeceptiveLinks.js";
 import { sectionForSocialEngineering } from "./sections/sectionForSocialEngineering.js";
 import { CODE_HOSTING_SUBDOMAINS } from "./sections/sectionForCodeHostingSiteLink.js";
-import {
-  HOSTING_DOMAINS,
-  HOSTING_DOMAINS_AS_SET,
-} from "./subdomains/codeHostingDomains.js";
+import { HOSTING_DOMAINS_AS_SET } from "./subdomains/codeHostingDomains.js";
 
 const openai = new OpenAI({
   apiKey: process.env.OPENAI_API_KEY, // This is the default and can be omitted

@@ -27,9 +27,6 @@ export const sectionForRecentlyRegisteredLinks = (
           text: `Full link`,
           bottomLabel: URIDict.URI.toString(),
           wrapText: true,
-          startIcon: {
-            iconUrl: "https://toophishy.com/noun-link-red.png",
-          },
         },
       },
       {

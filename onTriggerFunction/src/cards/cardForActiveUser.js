@@ -79,7 +79,7 @@ export const cardForActiveUser = async (
                 )
               )}. More details below.`,
               startIcon: {
-                iconUrl: "https://toophishy.com/noun-link-red.png",
+                iconUrl: "https://toophishy.com/clock.png",
               },
               wrapText: true,
             },
