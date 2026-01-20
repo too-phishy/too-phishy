@@ -3,6 +3,7 @@ import { z } from "zod";
 import { zodTextFormat } from "openai/helpers/zod";
 import { sectionForDeceptiveLinks } from "./sections/sectionForDeceptiveLinks.js";
 import { sectionForSocialEngineering } from "./sections/sectionForSocialEngineering.js";
+import { CODE_HOSTING_SUBDOMAINS } from "./sections/sectionForCodeHostingSiteLink.js";
 
 const openai = new OpenAI({
   apiKey: process.env.OPENAI_API_KEY, // This is the default and can be omitted
@@ -27,6 +28,9 @@ export const performAIAnalysis = async (
   messageBodies
 ) => {
   const deceptiveURIDicts = [];
+  const topMillionURIsMinusCodeHostingSiteLinks = topMillionURIs.filter(
+    (URI) => !CODE_HOSTING_SUBDOMAINS.has(URI.domain())
+  );
   const input = `Please read the email at the bottom of this prompt and tell me the following two things.
 
 1. For each link in the email, tell me if the appearance of the link does not match its true nature, i.e. does the text indicate it links one place where it actually links somewhere else? Please explain why in two sentences or less.
@@ -50,7 +54,9 @@ I have already analyzed these links to see which were registered in the past 21 
   }
 
 I have also already analyzed these links to see which are in the top million most popular domains in the world. The following links are indeed top million links and are therefore likely to be safe: ${
-    topMillionURIs.length === 0 ? "[None]" : topMillionURIs.join(", ")
+    topMillionURIsMinusCodeHostingSiteLinks.length === 0
+      ? "[None]"
+      : topMillionURIsMinusCodeHostingSiteLinks.join(", ")
   }
  
 

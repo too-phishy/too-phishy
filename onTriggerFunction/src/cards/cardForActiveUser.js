@@ -17,7 +17,7 @@ export const cardForActiveUser = async (
   } = sectionForCodeHostingSiteLink(fullLinkURIs);
 
   const { topMillionURIs, nonTopMillionURIs, recentlyRegisteredURIDicts } =
-  await processLinks(fullLinkURIs);
+    await processLinks(fullLinkURIs);
 
   const {
     deceptiveLinksFlagged,

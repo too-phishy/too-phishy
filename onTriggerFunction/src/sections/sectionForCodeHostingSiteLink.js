@@ -4,6 +4,14 @@ export const BITLY_PHISHING_DOMAIN = "bit.ly";
 export const GOOGLE_SITES_PHISHING_DOMAIN = "sites.google.com";
 export const GCP_PHISHING_DOMAIN = "storage.googleapis.com";
 
+export const CODE_HOSTING_SUBDOMAINS = new Set([
+  AWS_PHISHING_DOMAIN,
+  AZURE_PHISHING_DOMAIN,
+  BITLY_PHISHING_DOMAIN,
+  GOOGLE_SITES_PHISHING_DOMAIN,
+  GCP_PHISHING_DOMAIN,
+]);
+
 export const sectionForLinks = (codeHostingSiteURIDicts) => {
   const widgets = [
     {
@@ -49,13 +57,7 @@ export const sectionForCodeHostingSiteLink = (fullLinkURIs) => {
   const uniqueCodeHostingSiteSubdomains = new Set();
   const codeHostingSiteURIDicts = [];
   for (const URI of fullLinkURIs) {
-    for (const subdomain of [
-      AWS_PHISHING_DOMAIN,
-      AZURE_PHISHING_DOMAIN,
-      BITLY_PHISHING_DOMAIN,
-      GOOGLE_SITES_PHISHING_DOMAIN,
-      GCP_PHISHING_DOMAIN,
-    ]) {
+    for (const subdomain of CODE_HOSTING_SUBDOMAINS) {
       if (
         URI.normalizeHostname().toString().indexOf(subdomain) !== -1 &&
         !uniqueCodeHostingSiteSubdomains.has(subdomain)

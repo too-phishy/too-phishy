@@ -73,8 +73,8 @@ describe("performAIAnalysis", () => {
   test("catches deceptive links and social engineering in sony email", async () => {
     try {
       const { headers, fullLinkURIs, messageBodies } = processMessage(sony);
-        const { topMillionURIs, nonTopMillionURIs, recentlyRegisteredURIDicts } =
-            await processLinks(fullLinkURIs);
+      const { topMillionURIs, nonTopMillionURIs, recentlyRegisteredURIDicts } =
+        await processLinks(fullLinkURIs);
       const {
         deceptiveLinksFlagged,
         deceptiveLinksSection,
@@ -98,8 +98,8 @@ describe("performAIAnalysis", () => {
     try {
       const { headers, fullLinkURIs, messageBodies } =
         processMessage(john_podesta);
-        const { topMillionURIs, nonTopMillionURIs, recentlyRegisteredURIDicts } =
-            await processLinks(fullLinkURIs);
+      const { topMillionURIs, nonTopMillionURIs, recentlyRegisteredURIDicts } =
+        await processLinks(fullLinkURIs);
       const {
         deceptiveLinksFlagged,
         deceptiveLinksSection,
@@ -121,10 +121,10 @@ describe("performAIAnalysis", () => {
 
   test("catches social engineering in irs email", async () => {
     try {
-        const { headers, fullLinkURIs, messageBodies, attachments } =
-            processMessage(irs);
-        const { topMillionURIs, nonTopMillionURIs, recentlyRegisteredURIDicts } =
-            await processLinks(fullLinkURIs);
+      const { headers, fullLinkURIs, messageBodies, attachments } =
+        processMessage(irs);
+      const { topMillionURIs, nonTopMillionURIs, recentlyRegisteredURIDicts } =
+        await processLinks(fullLinkURIs);
       const {
         deceptiveLinksFlagged,
         deceptiveLinksSection,
@@ -149,8 +149,8 @@ describe("performAIAnalysis", () => {
       const { headers, fullLinkURIs, messageBodies } = processMessage(
         id_badge_update_needed
       );
-        const { topMillionURIs, nonTopMillionURIs, recentlyRegisteredURIDicts } =
-            await processLinks(fullLinkURIs);
+      const { topMillionURIs, nonTopMillionURIs, recentlyRegisteredURIDicts } =
+        await processLinks(fullLinkURIs);
       const {
         deceptiveLinksFlagged,
         deceptiveLinksSection,
@@ -175,8 +175,8 @@ describe("performAIAnalysis", () => {
       const { headers, fullLinkURIs, messageBodies } = processMessage(
         deceptive_link_false_positive
       );
-        const { topMillionURIs, nonTopMillionURIs, recentlyRegisteredURIDicts } =
-            await processLinks(fullLinkURIs);
+      const { topMillionURIs, nonTopMillionURIs, recentlyRegisteredURIDicts } =
+        await processLinks(fullLinkURIs);
       const {
         deceptiveLinksFlagged,
         deceptiveLinksSection,
