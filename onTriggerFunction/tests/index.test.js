@@ -16,6 +16,7 @@ import { deceptive_link_false_positive } from "./fixtures/deceptive_link_false_p
 import { another_email_with_multiple_attachments } from "./fixtures/another_email_with_multiple_attachments.js";
 import { email_with_link_that_doesnt_get_categorized_correctly } from "./fixtures/email_with_link_that_doesnt_get_categorized_correctly.js";
 import { email_with_multiple_attachments } from "./fixtures/email_with_multiple_attachments.js";
+import { message_body_with_code_hosting_domain } from "./fixtures/message_body_with_code_hosting_domain.js";
 
 describe("processMessage", () => {
   test("process email with multiple attachments", async () => {
@@ -227,6 +228,37 @@ describe("performAIAnalysis", () => {
 
       expect(deceptiveLinksFlagged).toBe(true);
       expect(socialEngineeringFlagged).toBe(true);
+    } catch (e) {
+      console.log(e);
+    }
+  }, 100000);
+
+  test("doesn't flag as deceptive an email containing code hosting domain", async () => {
+    try {
+      const { headers, fullLinkURIs, messageBodies } = processMessage(
+        message_body_with_code_hosting_domain
+      );
+      const { topMillionURIs, nonTopMillionURIs, recentlyRegisteredURIDicts } =
+        await processLinks(fullLinkURIs);
+      const {
+        codeHostingSiteFlagged,
+        codeHostingSiteURIDicts,
+        codeHostingSiteSection,
+      } = sectionForCodeHostingSiteLink(fullLinkURIs);
+      const {
+        deceptiveLinksFlagged,
+        deceptiveLinksSection,
+        socialEngineeringFlagged,
+        socialEngineeringSection,
+      } = await performAIAnalysis(
+        fullLinkURIs,
+        topMillionURIs,
+        recentlyRegisteredURIDicts,
+        messageBodies,
+        codeHostingSiteFlagged
+      );
+
+      expect(deceptiveLinksFlagged).toBe(false);
     } catch (e) {
       console.log(e);
     }
