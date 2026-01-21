@@ -65,6 +65,6 @@ export const sectionForRecentlyRegisteredLinks = (
       recentlyRegisteredURIDicts.length > 0
         ? widgets.concat(linkWidgets).concat(learnMoreWidgets)
         : widgetsForNotFlagged,
-    collapsible: true,
+    collapsible: false,
   };
 };

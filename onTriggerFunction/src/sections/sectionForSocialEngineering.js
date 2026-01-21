@@ -28,6 +28,6 @@ export const sectionForSocialEngineering = (
       socialEngineeringFlagged
         ? widgets
         : widgetsForNotFlagged,
-    collapsible: true,
+    collapsible: false,
   };
 };

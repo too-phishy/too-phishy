@@ -57,7 +57,7 @@ export const sectionForLinks = (codeHostingSiteURIDicts) => {
       codeHostingSiteURIDicts.length > 0
         ? widgets.concat(linkWidgets)
         : widgetsForNotFlagged,
-    collapsible: true,
+    collapsible: false,
   };
 };
 
