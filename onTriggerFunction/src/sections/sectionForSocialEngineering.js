@@ -3,7 +3,7 @@ import { widgetsForNotFlagged } from "./widgetsForNotFlagged.js";
 export const sectionForSocialEngineering = (
   socialEngineeringFlagged,
   socialEngineeringExplanation,
-  codeHostingSiteFlagged,
+  webHostingSiteFlagged,
   deceptiveLinksFlagged,
   recentlyRegisteredURIDicts
 ) => {
@@ -22,7 +22,7 @@ export const sectionForSocialEngineering = (
   return {
     header: `Social Engineering`,
     widgets:
-      (codeHostingSiteFlagged ||
+      (webHostingSiteFlagged ||
         deceptiveLinksFlagged ||
         recentlyRegisteredURIDicts.length > 0) &&
       socialEngineeringFlagged

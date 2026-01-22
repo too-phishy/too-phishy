@@ -1,14 +1,18 @@
 import { sectionForDebugging } from "../sections/sectionForDebugging.js";
 import { processLinks } from "../processLinks.js";
 import { sectionForRecentlyRegisteredLinks } from "../sections/sectionForRecentlyRegisteredLinks.js";
-import { sectionForCodeHostingSiteLink } from "../sections/sectionForCodeHostingSiteLink.js";
+import { sectionForWebHostingSiteLink } from "../sections/sectionForWebHostingSiteLink.js";
 import { performAIAnalysis } from "../performAIAnalysis.js";
-import { widgetsForNotFlagged } from "../sections/widgetsForNotFlagged.js";
 import URI from "urijs";
 
-export const FORMATTER = new Intl.ListFormat("en", {
+export const AND_FORMATTER = new Intl.ListFormat("en", {
   style: "long",
   type: "conjunction",
+});
+
+export const OR_FORMATTER = new Intl.ListFormat("en", {
+  style: "long",
+  type: "disjunction",
 });
 
 export const cardForActiveUser = async (
@@ -18,10 +22,10 @@ export const cardForActiveUser = async (
   fullMessageData
 ) => {
   const {
-    codeHostingSiteFlagged,
-    codeHostingSiteURIDicts,
-    codeHostingSiteSection,
-  } = sectionForCodeHostingSiteLink(fullLinkURIs);
+    webHostingSiteFlagged,
+    webHostingSiteURIDicts,
+    webHostingSiteSection,
+  } = sectionForWebHostingSiteLink(fullLinkURIs);
 
   const { topMillionURIs, nonTopMillionURIs, recentlyRegisteredURIDicts } =
     await processLinks(fullLinkURIs);
@@ -37,7 +41,7 @@ export const cardForActiveUser = async (
     topMillionURIs,
     recentlyRegisteredURIDicts,
     messageBodies,
-    codeHostingSiteFlagged
+    webHostingSiteFlagged
   );
 
   const recentlyRegisteredLinksSection = sectionForRecentlyRegisteredLinks(
@@ -47,7 +51,7 @@ export const cardForActiveUser = async (
   const overallPhishy =
     deceptiveLinksFlagged ||
     recentlyRegisteredURIDicts.length > 0 ||
-    codeHostingSiteFlagged;
+    webHostingSiteFlagged;
 
   const overviewWidgets = []
     .concat({
@@ -73,7 +77,7 @@ export const cardForActiveUser = async (
                 recentlyRegisteredURIDicts.length
               } recently registered ${
                 recentlyRegisteredURIDicts.length > 1 ? "links" : "link"
-              }: ${FORMATTER.format(
+              }: ${AND_FORMATTER.format(
                 recentlyRegisteredURIDicts.map((URIDict) =>
                   URIDict.URI.domain()
                 )
@@ -93,7 +97,7 @@ export const cardForActiveUser = async (
               text: `Hesitate before clicking`,
               bottomLabel: `${deceptiveLinkDicts.length} deceptive ${
                 deceptiveLinkDicts.length > 1 ? "links" : "link"
-              }: ${FORMATTER.format(
+              }: ${AND_FORMATTER.format(
                 deceptiveLinkDicts.map((dict) => URI(dict.linkUrl).domain())
               )}. More details below.`,
               startIcon: {
@@ -105,14 +109,14 @@ export const cardForActiveUser = async (
         : []
     )
     .concat(
-      codeHostingSiteFlagged
+      webHostingSiteFlagged
         ? {
             decoratedText: {
               text: `Hesitate before clicking`,
-              bottomLabel: `${codeHostingSiteURIDicts.length} ${
-                codeHostingSiteURIDicts.length > 1 ? "links" : "link"
-              } associated with code hosting sites:  ${FORMATTER.format(
-                codeHostingSiteURIDicts.map((URIDict) => URIDict.URI.domain())
+              bottomLabel: `${webHostingSiteURIDicts.length} ${
+                webHostingSiteURIDicts.length > 1 ? "links" : "link"
+              } associated with web hosting sites:  ${AND_FORMATTER.format(
+                webHostingSiteURIDicts.map((URIDict) => URIDict.URI.domain())
               )}. More details below.`,
               startIcon: {
                 iconUrl:
@@ -124,7 +128,7 @@ export const cardForActiveUser = async (
         : []
     )
     .concat(
-      (codeHostingSiteFlagged ||
+      (webHostingSiteFlagged ||
         deceptiveLinksFlagged ||
         recentlyRegisteredURIDicts.length > 0) &&
         socialEngineeringFlagged
@@ -166,7 +170,7 @@ export const cardForActiveUser = async (
     ]
       .concat(recentlyRegisteredLinksSection)
       .concat(deceptiveLinksSection)
-      .concat(codeHostingSiteSection)
+      .concat(webHostingSiteSection)
       .concat(socialEngineeringSection),
     // .concat(sectionForDebugging(nonTopMillionURIs, recentlyRegisteredURIs)),
   };

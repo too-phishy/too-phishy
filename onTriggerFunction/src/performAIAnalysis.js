@@ -3,8 +3,8 @@ import { z } from "zod";
 import { zodTextFormat } from "openai/helpers/zod";
 import { sectionForDeceptiveLinks } from "./sections/sectionForDeceptiveLinks.js";
 import { sectionForSocialEngineering } from "./sections/sectionForSocialEngineering.js";
-import { CODE_HOSTING_SUBDOMAINS } from "./sections/sectionForCodeHostingSiteLink.js";
-import { HOSTING_DOMAINS_AS_SET } from "./subdomains/codeHostingDomains.js";
+import { WEB_HOSTING_SUBDOMAINS } from "./sections/sectionForWebHostingSiteLink.js";
+import { HOSTING_DOMAINS_AS_SET } from "./subdomains/webHostingDomains.js";
 
 const openai = new OpenAI({
   apiKey: process.env.OPENAI_API_KEY, // This is the default and can be omitted
@@ -27,15 +27,16 @@ export const performAIAnalysis = async (
   topMillionURIs,
   recentlyRegisteredURIDicts,
   messageBodies,
-  codeHostingSiteFlagged
+  webHostingSiteFlagged
 ) => {
-  const topMillionURIsMinusCodeHostingSiteLinks = topMillionURIs.filter(
+  const topMillionURIsMinusWebHostingSiteLinks = topMillionURIs.filter(
     (URI) => {
-      const notCodeHostingDomain = !HOSTING_DOMAINS_AS_SET.has(URI.domain());
-      const notCodeHostingSubdomain = CODE_HOSTING_SUBDOMAINS.every(
-        (subdomain) => !URI.normalizeHostname().toString().includes(subdomain)
+      const notWebHostingDomain = !HOSTING_DOMAINS_AS_SET.has(URI.domain());
+      const notWebHostingSubdomain = WEB_HOSTING_SUBDOMAINS.every(
+        (subdomainDict) =>
+          !URI.normalizeHostname().toString().includes(subdomainDict.domain)
       );
-      return notCodeHostingDomain && notCodeHostingSubdomain;
+      return notWebHostingDomain && notWebHostingSubdomain;
     }
   );
 
@@ -62,9 +63,9 @@ I have already analyzed these links to see which were registered in the past 21 
   }
 
 I have also already analyzed these links to see which are in the top million most popular domains in the world. The following links are indeed top million links and are therefore likely to be safe: ${
-    topMillionURIsMinusCodeHostingSiteLinks.length === 0
+    topMillionURIsMinusWebHostingSiteLinks.length === 0
       ? "[None]"
-      : topMillionURIsMinusCodeHostingSiteLinks.join(", ")
+      : topMillionURIsMinusWebHostingSiteLinks.join(", ")
   }
  
 
@@ -107,7 +108,7 @@ ${messageBodies[0]}
   const socialEngineeringSection = sectionForSocialEngineering(
     socialEngineeringFlagged,
     socialEngineeringExplanation,
-    codeHostingSiteFlagged,
+    webHostingSiteFlagged,
     deceptiveLinksFlagged,
     recentlyRegisteredURIDicts
   );

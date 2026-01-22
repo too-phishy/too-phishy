@@ -3,8 +3,8 @@ import { message_body_with_two_bitly_links } from "./fixtures/message_body_with_
 import {
   BITLY_PHISHING_DOMAIN,
   GCP_PHISHING_DOMAIN,
-  sectionForCodeHostingSiteLink,
-} from "../src/sections/sectionForCodeHostingSiteLink.js";
+  sectionForWebHostingSiteLink,
+} from "../src/sections/sectionForWebHostingSiteLink.js";
 import { email_with_parsing_error } from "./fixtures/email_with_parsing_error.js";
 import { john_podesta } from "./fixtures/john_podesta.js";
 import { processLinks } from "../src/processLinks.js";
@@ -84,7 +84,7 @@ describe("performAIAnalysis", () => {
         topMillionURIs,
         recentlyRegisteredURIDicts,
         messageBodies,
-        false // codeHostingSiteFlagged only affects the way socialEngineeringSection is rendered so hard coded to false here
+        false // webHostingSiteFlagged only affects the way socialEngineeringSection is rendered so hard coded to false here
       );
 
       expect(deceptiveLinksFlagged).toBe(true);
@@ -110,7 +110,7 @@ describe("performAIAnalysis", () => {
         topMillionURIs,
         recentlyRegisteredURIDicts,
         messageBodies,
-        false // codeHostingSiteFlagged only affects the way socialEngineeringSection is rendered so hard coded to false here
+        false // webHostingSiteFlagged only affects the way socialEngineeringSection is rendered so hard coded to false here
       );
 
       expect(deceptiveLinksFlagged).toBe(true);
@@ -136,7 +136,7 @@ describe("performAIAnalysis", () => {
         topMillionURIs,
         recentlyRegisteredURIDicts,
         messageBodies,
-        false // codeHostingSiteFlagged only affects the way socialEngineeringSection is rendered so hard coded to false here
+        false // webHostingSiteFlagged only affects the way socialEngineeringSection is rendered so hard coded to false here
       );
 
       expect(deceptiveLinksFlagged).toBe(false);
@@ -163,7 +163,7 @@ describe("performAIAnalysis", () => {
         topMillionURIs,
         recentlyRegisteredURIDicts,
         messageBodies,
-        false // codeHostingSiteFlagged only affects the way socialEngineeringSection is rendered so hard coded to false here
+        false // webHostingSiteFlagged only affects the way socialEngineeringSection is rendered so hard coded to false here
       );
 
       expect(deceptiveLinksFlagged).toBe(true);
@@ -190,7 +190,7 @@ describe("performAIAnalysis", () => {
         topMillionURIs,
         recentlyRegisteredURIDicts,
         messageBodies,
-        false // codeHostingSiteFlagged only affects the way socialEngineeringSection is rendered so hard coded to false here
+        false // webHostingSiteFlagged only affects the way socialEngineeringSection is rendered so hard coded to false here
       );
 
       expect(deceptiveLinksFlagged).toBe(false);
@@ -223,7 +223,7 @@ describe("performAIAnalysis", () => {
         topMillionURIs,
         recentlyRegisteredURIDicts,
         messageBodies,
-        false // codeHostingSiteFlagged only affects the way socialEngineeringSection is rendered so hard coded to false here
+        false // webHostingSiteFlagged only affects the way socialEngineeringSection is rendered so hard coded to false here
       );
 
       expect(deceptiveLinksFlagged).toBe(true);
@@ -233,7 +233,7 @@ describe("performAIAnalysis", () => {
     }
   }, 100000);
 
-  test("doesn't flag as deceptive an email containing code hosting domain", async () => {
+  test("doesn't flag as deceptive an email containing web hosting domain", async () => {
     try {
       const { headers, fullLinkURIs, messageBodies } = processMessage(
         message_body_with_code_hosting_domain
@@ -241,10 +241,10 @@ describe("performAIAnalysis", () => {
       const { topMillionURIs, nonTopMillionURIs, recentlyRegisteredURIDicts } =
         await processLinks(fullLinkURIs);
       const {
-        codeHostingSiteFlagged,
-        codeHostingSiteURIDicts,
-        codeHostingSiteSection,
-      } = sectionForCodeHostingSiteLink(fullLinkURIs);
+        webHostingSiteFlagged,
+        webHostingSiteURIDicts,
+        webHostingSiteSection,
+      } = sectionForWebHostingSiteLink(fullLinkURIs);
       const {
         deceptiveLinksFlagged,
         deceptiveLinksSection,
@@ -255,7 +255,7 @@ describe("performAIAnalysis", () => {
         topMillionURIs,
         recentlyRegisteredURIDicts,
         messageBodies,
-        codeHostingSiteFlagged
+        webHostingSiteFlagged
       );
 
       expect(deceptiveLinksFlagged).toBe(false);
