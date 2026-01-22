@@ -1,4 +1,5 @@
 export const HOSTING_DOMAINS = [
+  "vercel.app",
   "blogspot.com",
   "web.app",
   "firebaseapp.com",
@@ -11,10 +12,12 @@ export const HOSTING_DOMAINS = [
   "weebly.com",
   "pages.dev",
   "trycloudflare.com",
+  "r2.dev",
   "workers.dev",
   "za.com",
   "sa.com",
   "ru.com",
+  "es.com",
   "com.de",
   "us.com",
   "uk.com",
