@@ -76,7 +76,7 @@ Here is the email body:
 ${messageBodies[0]}
 `;
   const response = await openai.responses.parse({
-    model: "gpt-4.1-nano",
+    model: "gpt-5.1",
     input: [
       {
         role: "system",
