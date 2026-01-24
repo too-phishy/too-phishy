@@ -29,8 +29,6 @@ steps:
       - "$_REGION"
       - "--platform"
       - "managed"
-      - "--concurrency"
-      - "100"
       - "--min-instances"
       - "2"
       - "--max-instances"
