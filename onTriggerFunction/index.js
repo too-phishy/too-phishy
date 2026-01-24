@@ -80,91 +80,121 @@ export const hasActivePayment = async (email) => {
 };
 
 // Initial route for the add-on
-app.post(
-  "/",
-  asyncHandler(async (req, res) => {
-    const currentMessageId = req.body?.gmail?.messageId;
-    const event = req.body;
-    const accessToken = event?.authorizationEventObject?.userOAuthToken;
+app.post("/", (req, res) => {
+  const jobId = Date.now().toString();
 
-    if (!accessToken) {
-      return res.json(cardForUnauthorizedUser);
-    }
+  // CALL IT, BUT DON'T AWAIT IT
+  // This starts the promise but doesn't pause the code here.
+  doHeavyWork(req, res).catch((err) => console.error("Immediate error:", err));
 
-    const tokenInfo = await new OAuth2Client().getTokenInfo(accessToken);
-    const email = tokenInfo.email;
-
-    const requiredScopes = [
-      "https://www.googleapis.com/auth/gmail.addons.current.message.readonly",
-      "https://www.googleapis.com/auth/gmail.addons.execute",
-    ];
-    const hasPermission = requiredScopes.every((element) =>
-      tokenInfo.scopes.includes(element)
-    );
-
-    if (!hasPermission) {
-      return res.json(cardForUnauthorizedUser);
-    }
-
-    const activeSubscription = await hasActiveSubscription(email);
-    const activePayment = await hasActivePayment(email);
-    const activeCustomer =
-      activeSubscription || activePayment || CUSTOMER_LIST.has(email);
-
-    const timestamp = new Date().toISOString();
-    axios
-      .post(process.env.DATASTORE_ENDPOINT, {
-        operation: "create",
-        payload: {
-          Item: { id: email, createdAt: timestamp },
-          TableName: "too-phishy-active-users",
-        },
-      })
-      .then((res) => {
-        console.log(res);
-      })
-      .catch((e) => {
-        console.error(e);
-      });
-
-    const messageToken = event.gmail.accessToken;
-    const auth = new OAuth2Client();
-    auth.setCredentials({ access_token: accessToken });
-
-    const gmailResponse = await gmail.users.messages.get({
-      id: currentMessageId,
-      userId: "me",
-      format: "full",
-      auth,
-      headers: {
-        "X-Goog-Gmail-Access-Token": messageToken,
-      },
-    });
-    const messageData = gmailResponse.data;
-
-    const { headers, fullLinkURIs, messageBodies } =
-      processMessage(messageData);
-
-    const pushCard = activeCustomer
-      ? await cardForActiveUser(
-          headers,
-          fullLinkURIs,
-          messageBodies,
-          messageData
-        )
-      : cardForInactiveUser;
-    const renderAction = {
-      action: {
-        navigations: [
-          {
-            pushCard,
+  // Respond to Gmail immediately (well under the 30s limit)
+  res.json({
+    action: {
+      navigations: [
+        {
+          pushCard: {
+            sections: [
+              {
+                widgets: [
+                  {
+                    textParagraph: {
+                      text: "We're on it! Check back in a bit.",
+                    },
+                  },
+                ],
+              },
+            ],
           },
-        ],
+        },
+      ],
+    },
+  });
+});
+
+async function doHeavyWork(req, res) {
+  try {
+    await runAnalysis();
+  } catch (err) {
+    console.error("Background task failed:", err);
+  }
+}
+
+async function runAnalysis(req, res) {
+  const currentMessageId = req.body?.gmail?.messageId;
+  const event = req.body;
+  const accessToken = event?.authorizationEventObject?.userOAuthToken;
+
+  if (!accessToken) {
+    return res.json(cardForUnauthorizedUser);
+  }
+
+  const tokenInfo = await new OAuth2Client().getTokenInfo(accessToken);
+  const email = tokenInfo.email;
+
+  const requiredScopes = [
+    "https://www.googleapis.com/auth/gmail.addons.current.message.readonly",
+    "https://www.googleapis.com/auth/gmail.addons.execute",
+  ];
+  const hasPermission = requiredScopes.every((element) =>
+    tokenInfo.scopes.includes(element)
+  );
+
+  if (!hasPermission) {
+    return res.json(cardForUnauthorizedUser);
+  }
+
+  const activeSubscription = await hasActiveSubscription(email);
+  const activePayment = await hasActivePayment(email);
+  const activeCustomer =
+    activeSubscription || activePayment || CUSTOMER_LIST.has(email);
+
+  const timestamp = new Date().toISOString();
+  axios
+    .post(process.env.DATASTORE_ENDPOINT, {
+      operation: "create",
+      payload: {
+        Item: { id: email, createdAt: timestamp },
+        TableName: "too-phishy-active-users",
       },
-    };
-    res.json(renderAction);
-  })
-);
+    })
+    .then((res) => {
+      console.log(res);
+    })
+    .catch((e) => {
+      console.error(e);
+    });
+
+  const messageToken = event.gmail.accessToken;
+  const auth = new OAuth2Client();
+  auth.setCredentials({ access_token: accessToken });
+
+  const gmailResponse = await gmail.users.messages.get({
+    id: currentMessageId,
+    userId: "me",
+    format: "full",
+    auth,
+    headers: {
+      "X-Goog-Gmail-Access-Token": messageToken,
+    },
+  });
+  const messageData = gmailResponse.data;
+
+  const { headers, fullLinkURIs, messageBodies } = processMessage(messageData);
+
+  const pushCard = activeCustomer
+    ? await cardForActiveUser(headers, fullLinkURIs, messageBodies, messageData)
+    : cardForInactiveUser;
+  const renderAction = {
+    action: {
+      navigations: [
+        {
+          pushCard,
+        },
+      ],
+    },
+  };
+  res.json(renderAction);
+}
 
 // Start the server
 const port = process.env.PORT || 8080;
