@@ -63,10 +63,10 @@ export const sectionForLinks = (webHostingSiteURIDicts) => {
   };
 };
 
-export const sectionForWebHostingSiteLink = (fullLinkURIs) => {
+export const sectionForWebHostingSiteLink = (uniqueFullLinkURIs) => {
   const uniqueWebHostingSiteSubdomains = new Set();
   const webHostingSiteURIDicts = [];
-  for (const URI of fullLinkURIs) {
+  for (const URI of uniqueFullLinkURIs) {
     for (const subdomainDict of WEB_HOSTING_SUBDOMAINS) {
       if (
         URI.normalizeHostname().toString().indexOf(subdomainDict.domain) !==
@@ -81,7 +81,7 @@ export const sectionForWebHostingSiteLink = (fullLinkURIs) => {
       }
     }
   }
-  for (const URI of fullLinkURIs) {
+  for (const URI of uniqueFullLinkURIs) {
     for (const hostingDomainDict of HOSTING_DOMAINS) {
       if (
         URI.domain() === hostingDomainDict.domain &&

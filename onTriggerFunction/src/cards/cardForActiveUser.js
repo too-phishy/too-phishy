@@ -22,13 +22,17 @@ export const cardForActiveUser = async (
   fullMessageData
 ) => {
   const {
+    uniqueFullLinkURIs,
+    topMillionURIs,
+    nonTopMillionURIs,
+    recentlyRegisteredURIDicts,
+  } = await processLinks(fullLinkURIs);
+
+  const {
     webHostingSiteFlagged,
     webHostingSiteURIDicts,
     webHostingSiteSection,
-  } = sectionForWebHostingSiteLink(fullLinkURIs);
-
-  const { topMillionURIs, nonTopMillionURIs, recentlyRegisteredURIDicts } =
-    await processLinks(fullLinkURIs);
+  } = sectionForWebHostingSiteLink(uniqueFullLinkURIs);
 
   const {
     deceptiveLinksFlagged,
@@ -37,7 +41,7 @@ export const cardForActiveUser = async (
     socialEngineeringFlagged,
     socialEngineeringSection,
   } = await performAIAnalysis(
-    fullLinkURIs,
+    uniqueFullLinkURIs,
     topMillionURIs,
     recentlyRegisteredURIDicts,
     messageBodies,

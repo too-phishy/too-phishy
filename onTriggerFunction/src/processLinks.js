@@ -55,39 +55,46 @@ const checkLessThan21DaysOld = async (domainName) => {
 };
 
 export const processLinks = async (fullLinkURIs) => {
-  const uniqueTopMillionURIs = new Set();
-  const uniqueNonTopMillionURIs = new Set();
-  const uniqueRecentlyRegisteredURIs = new Set();
+  const uniqueFullLinkURIsSet = new Set();
+  const uniqueTopMillionURIsSet = new Set();
+  const uniqueNonTopMillionURIsSet = new Set();
+  const uniqueRecentlyRegisteredURIsSet = new Set();
+  const uniqueFullLinkURIs = [];
   const topMillionURIs = [];
   const nonTopMillionURIs = [];
   const recentlyRegisteredURIDicts = [];
   for (const URI of fullLinkURIs) {
+    if (!uniqueFullLinkURIsSet.has(URI.domain())) {
+      uniqueFullLinkURIs.push(URI);
+      uniqueFullLinkURIsSet.add(URI.domain());
+    }
     if (TOP_MILLION_DOMAINS.has(URI.domain())) {
-      if (!uniqueTopMillionURIs.has(URI.domain())) {
+      if (!uniqueTopMillionURIsSet.has(URI.domain())) {
         topMillionURIs.push(URI);
-        uniqueTopMillionURIs.add(URI.domain());
+        uniqueTopMillionURIsSet.add(URI.domain());
       }
     } else {
       const { domainRegistrationDate, isRecentlyRegistered, diffDays } =
         await checkLessThan21DaysOld(URI.domain());
       if (isRecentlyRegistered) {
-        if (!uniqueRecentlyRegisteredURIs.has(URI.domain())) {
+        if (!uniqueRecentlyRegisteredURIsSet.has(URI.domain())) {
           recentlyRegisteredURIDicts.push({
             URI,
             domainRegistrationDate,
             diffDays,
           });
-          uniqueRecentlyRegisteredURIs.add(URI.domain());
+          uniqueRecentlyRegisteredURIsSet.add(URI.domain());
         }
       } else {
-        if (!uniqueNonTopMillionURIs.has(URI.domain())) {
+        if (!uniqueNonTopMillionURIsSet.has(URI.domain())) {
           nonTopMillionURIs.push(URI);
-          uniqueNonTopMillionURIs.add(URI.domain());
+          uniqueNonTopMillionURIsSet.add(URI.domain());
         }
       }
     }
   }
   return {
+    uniqueFullLinkURIs,
     topMillionURIs,
     nonTopMillionURIs,
     recentlyRegisteredURIDicts,

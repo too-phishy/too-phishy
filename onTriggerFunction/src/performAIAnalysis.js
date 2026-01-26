@@ -23,7 +23,7 @@ const EmailAnalysis = z.object({
 });
 
 export const performAIAnalysis = async (
-  fullLinkURIs,
+  uniqueFullLinkURIs,
   topMillionURIs,
   recentlyRegisteredURIDicts,
   messageBodies,
@@ -47,7 +47,7 @@ export const performAIAnalysis = async (
 2. Does the email body contain text which prompts user action in line with social engineering techniques? Please explain why in two sentences or less.
 
 Here is a list of all the links in the email to consider for question 1: ${
-    fullLinkURIs.length === 0 ? "[None]" : fullLinkURIs.join(", ")
+    uniqueFullLinkURIs.length === 0 ? "[None]" : uniqueFullLinkURIs.join(", ")
   }
 
 I have already analyzed these links to see which were registered in the past 21 days. Here is a list of all the links registered in the past 21 days:  ${
