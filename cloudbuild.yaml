@@ -33,9 +33,6 @@ steps:
       - "2"
       - "--max-instances"
       - "10"
-      - "--timeout"
-      - "3m"
-      - "--no-cpu-throttling"
 
   # 3. runFunction: Deploy function
   - name: "gcr.io/google.com/cloudsdktool/cloud-sdk"
