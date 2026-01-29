@@ -32,7 +32,7 @@ export const sectionForRecentlyRegisteredLinks = (
       {
         decoratedText: {
           text: `Domain registration date`,
-          bottomLabel: URIDict.domainRegistrationDate,
+          bottomLabel: URIDict.domainRegistrationDate.toDateString(),
           wrapText: true,
           startIcon: {
             iconUrl: "https://toophishy.com/clock.png",
